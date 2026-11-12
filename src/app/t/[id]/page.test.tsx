@@ -101,8 +101,8 @@ describe("generateMetadata", () => {
     });
 
     expect(metadata.openGraph).toMatchObject({
-      title: "Coastal Run · Grand Tour",
-      siteName: "Grand Tour",
+      title: "Coastal Run · DrawMyTrip",
+      siteName: "DrawMyTrip",
     });
     expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
   });

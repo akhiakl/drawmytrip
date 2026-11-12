@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { siteJsonLd } from "./json-ld";
 
 const site = {
-  name: "Grand Tour",
-  alternateName: "Grand Tour route maps",
+  name: "DrawMyTrip",
+  alternateName: "DrawMyTrip route maps",
   description: "Route maps",
   url: "https://gt.example/",
 };
@@ -15,8 +15,8 @@ describe("siteJsonLd", () => {
 
     expect(website).toMatchObject({
       "@type": "WebSite",
-      name: "Grand Tour",
-      alternateName: "Grand Tour route maps",
+      name: "DrawMyTrip",
+      alternateName: "DrawMyTrip route maps",
       url: "https://gt.example/",
     });
   });

@@ -35,7 +35,7 @@ describe("ImportTripButton", () => {
     await pick("not json");
     expect(onImport).not.toHaveBeenCalled();
     expect(toastMocks.error).toHaveBeenCalledWith(
-      expect.stringContaining("isn't a Grand Tour backup"),
+      expect.stringContaining("isn't a DrawMyTrip backup"),
     );
   });
 });

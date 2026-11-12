@@ -1,5 +1,5 @@
 /*
- * Grand Tour service worker — keeps maps you have opened readable offline
+ * DrawMyTrip service worker — keeps maps you have opened readable offline
  * (travellers on roaming data). Registered by components/service-worker.tsx
  * in production builds only. Strategies:
  *   - pages (and their RSC payloads): network first, cached copy offline,

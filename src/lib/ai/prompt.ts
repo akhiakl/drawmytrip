@@ -33,7 +33,7 @@ const TRIP_JSON_SHAPE = `{
 
 export function buildSystemPrompt(): string {
   return [
-    "You are the route planner behind Grand Tour, a travel route map service.",
+    "You are the route planner behind DrawMyTrip, a travel route map service.",
     "Respond with ONE JSON object only — no markdown, no commentary — matching exactly this shape:",
     TRIP_JSON_SHAPE,
     "Hard rules:",

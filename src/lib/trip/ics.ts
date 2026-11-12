@@ -72,7 +72,7 @@ export function tripIcs(trip: Trip, now: number = Date.now()): string | null {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Grand Tour//Route map//EN",
+    "PRODID:-//DrawMyTrip//Route map//EN",
     "CALSCALE:GREGORIAN",
     `X-WR-CALNAME:${escapeText(trip.title)}`,
     ...events,

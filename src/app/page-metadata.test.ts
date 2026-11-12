@@ -8,18 +8,18 @@ describe("pageMetadata", () => {
 
     expect(metadata.title).toBe("How it works");
     expect(metadata.openGraph).toMatchObject({
-      title: "How it works · Grand Tour",
+      title: "How it works · DrawMyTrip",
       description: metadata.description,
-      siteName: "Grand Tour",
+      siteName: "DrawMyTrip",
     });
     expect(metadata.openGraph?.images).toEqual([
       {
         url: "/opengraph-image",
-        alt: "A Grand Tour route map",
+        alt: "A DrawMyTrip route map",
         width: 1200,
         height: 630,
       },
     ]);
-    expect(metadata.twitter).toMatchObject({ title: "How it works · Grand Tour" });
+    expect(metadata.twitter).toMatchObject({ title: "How it works · DrawMyTrip" });
   });
 });

@@ -77,7 +77,7 @@ const SECTIONS: readonly LegalSection[] = [
     title: "Who we are",
     body: (
       <p>
-        Grand Tour is run by {OPERATOR_NAME}, an individual based in{" "}
+        DrawMyTrip is run by {OPERATOR_NAME}, an individual based in{" "}
         {OPERATOR_COUNTRY}, who decides how your data is used (the “data controller”
         or “data fiduciary”). Reach us at {mail}.
       </p>
@@ -125,7 +125,7 @@ const SECTIONS: readonly LegalSection[] = [
     title: "Your browser storage",
     body: (
       <p>
-        Grand Tour uses no cookies. Your unshared maps, packing ticks, notes, theme
+        DrawMyTrip uses no cookies. Your unshared maps, packing ticks, notes, theme
         and display units are saved in your browser’s local storage so they are there
         next time. They never reach us unless you share a map. Clearing your browser
         data deletes them, and we cannot recover them.
@@ -205,7 +205,7 @@ const SECTIONS: readonly LegalSection[] = [
     title: "Children",
     body: (
       <p>
-        Grand Tour is not aimed at children. If you are under 18, please use it with
+        DrawMyTrip is not aimed at children. If you are under 18, please use it with
         a parent or guardian’s permission. We don’t knowingly collect data about
         children; if you think we have, contact us and we will delete it.
       </p>
