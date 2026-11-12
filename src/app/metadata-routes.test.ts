@@ -28,6 +28,12 @@ describe("metadata routes", () => {
     ]);
   });
 
+  it("dates every sitemap entry", () => {
+    expect(sitemap().every((entry) => entry.lastModified instanceof Date)).toBe(
+      true,
+    );
+  });
+
   it("ships installable PNG icons in the manifest", async () => {
     const result = await manifest();
     expect(result.name).toBe("Grand Tour");

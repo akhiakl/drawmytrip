@@ -23,7 +23,7 @@ export default function Image() {
   return new ImageResponse(
     <OgCard
       eyebrow={t("eyebrow")}
-      title={t("siteTitle")}
+      title={messages.Common.appName}
       subtitle={t("siteTagline")}
       // No flags: emoji are fetched from a CDN, and this image renders at build.
       stops={SAMPLE_TRIP.cities.map(({ name, ll }) => ({ name, ll }))}

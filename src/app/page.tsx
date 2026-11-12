@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { LandingCta } from "@/components/landing/landing-cta";
 import { TripExperience } from "@/components/trip/trip-experience";
-import { siteUrl, webAppJsonLd } from "@/lib/http";
+import { siteUrl, siteJsonLd } from "@/lib/http";
 import { SAMPLE_TRIP } from "@/lib/trip";
 
 /**
@@ -11,8 +11,9 @@ import { SAMPLE_TRIP } from "@/lib/trip";
  */
 export default async function Home() {
   const t = await getTranslations();
-  const jsonLd = webAppJsonLd({
+  const jsonLd = siteJsonLd({
     name: t("Common.appName"),
+    alternateName: t("Metadata.alternateName", { appName: t("Common.appName") }),
     description: t("Metadata.description"),
     url: siteUrl().toString(),
   });

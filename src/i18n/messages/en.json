@@ -8,6 +8,8 @@
   "Metadata": {
     "titleTemplate": "%s · Grand Tour",
     "description": "Craft a beautiful, interactive travel route map — drawn by AI or by hand — and share it with a single link.",
+    "homeTitle": "{appName}: travel route map maker",
+    "alternateName": "{appName} route maps",
     "manifestDescription": "Beautiful, interactive travel route maps, drawn by AI or by hand and shared with one link.",
     "plan": {
       "title": "Plan with AI",
@@ -56,6 +58,7 @@
     "group": "Start your own route",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
+    "tagline": "Draw your travel route on an interactive map, with AI or by hand, and share it with one link.",
     "howItWorks": "Free, no account needed · How it works",
     "welcomeBack": "Welcome back",
     "continue": "Continue {title}",
@@ -460,7 +463,6 @@
       "alt": "A Grand Tour route map",
       "eyebrow": "Field atlas",
       "expired": "This map has expired",
-      "siteTitle": "Grand Tour",
       "siteTagline": "Beautiful travel route maps, drawn by AI or by hand, shared with one link",
       "summary": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}}"
     },
