@@ -42,7 +42,20 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       apple: { url: "/icons/180", sizes: "180x180" },
     },
-    openGraph: { siteName: appName, type: "website" },
+    alternates: { canonical: "./" },
+    openGraph: {
+      siteName: appName,
+      type: "website",
+      title: appName,
+      description: t("description"),
+      url: "./",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: appName,
+      description: t("description"),
+    },
   };
 }
 

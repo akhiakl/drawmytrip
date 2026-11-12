@@ -26,14 +26,25 @@ export async function generateMetadata({
   if (!trip) return { title: t("notFound"), robots: { index: false } };
 
   const stats = tripStats(trip);
+  const description = t("description", {
+    cities: stats.cities,
+    nights: stats.nights,
+    countries: stats.countries,
+  });
+  // A route's openGraph replaces the layout's wholesale, so repeat siteName.
   return {
     title: trip.title,
-    description: t("description", {
-      cities: stats.cities,
-      nights: stats.nights,
-      countries: stats.countries,
-    }),
+    description,
     robots: { index: false, follow: false },
+    alternates: { canonical: `/t/${id}` },
+    openGraph: {
+      type: "website",
+      siteName: (await getTranslations("Common"))("appName"),
+      title: trip.title,
+      description,
+      url: `/t/${id}`,
+    },
+    twitter: { card: "summary_large_image", title: trip.title, description },
   };
 }
 

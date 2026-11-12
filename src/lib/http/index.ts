@@ -4,3 +4,4 @@
  */
 export * from "./ratelimit";
 export * from "./site-url";
+export * from "./json-ld";

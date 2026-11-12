@@ -441,7 +441,7 @@
       "print": "Print itinerary",
       "share": "Share…",
       "download": "Download PNG",
-      "eyebrow": "FIELD ATLAS",
+      "eyebrow": "Field atlas",
       "summary": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {countries, plural, one {# country} other {# countries}} · {distance}",
       "brand": "Grand Tour"
     },
@@ -458,8 +458,10 @@
     },
     "og": {
       "alt": "A Grand Tour route map",
-      "eyebrow": "FIELD ATLAS",
+      "eyebrow": "Field atlas",
       "expired": "This map has expired",
+      "siteTitle": "Grand Tour",
+      "siteTagline": "Beautiful travel route maps, drawn by AI or by hand, shared with one link",
       "summary": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}}"
     },
     "sketchLabel": "Route sketch: {stops}"
