@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { getTranslations } from "next-intl/server";
 
+import { pageMetadata } from "@/app/page-metadata";
 import { LegalPage, type LegalSection } from "@/components/legal/legal-page";
 import {
   CONTACT_EMAIL,
@@ -12,10 +11,7 @@ import {
 } from "@/lib/legal";
 import { GUEST_MAX_CITIES } from "@/lib/trip";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Metadata.terms");
-  return { title: t("title"), description: t("description") };
-}
+export const generateMetadata = () => pageMetadata("terms");
 
 const mail = <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>;
 

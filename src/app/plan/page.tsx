@@ -1,16 +1,13 @@
 import { ArrowLeft } from "lucide-react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { pageMetadata } from "@/app/page-metadata";
 import { AiChat } from "@/components/ai/ai-chat";
 import { accent } from "@/components/rich-text";
 import { destinationFromParam } from "@/lib/ai";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Metadata.plan");
-  return { title: t("title"), description: t("description") };
-}
+export const generateMetadata = () => pageMetadata("plan");
 
 export default async function PlanPage({
   searchParams,

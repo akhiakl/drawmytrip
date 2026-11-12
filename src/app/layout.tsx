@@ -10,7 +10,7 @@ import { TesterFeedback } from "@/components/tester-feedback";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { UnitsProvider } from "@/components/units/units-provider";
-import { siteUrl } from "@/lib/http";
+import { shareMetadata, siteUrl } from "@/lib/http";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -43,19 +43,11 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: { url: "/icons/180", sizes: "180x180" },
     },
     alternates: { canonical: "./" },
-    openGraph: {
+    ...shareMetadata({
+      title: appName,
+      description: t("description"),
       siteName: appName,
-      type: "website",
-      title: appName,
-      description: t("description"),
-      url: "./",
-      locale: "en_US",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: appName,
-      description: t("description"),
-    },
+    }),
   };
 }
 

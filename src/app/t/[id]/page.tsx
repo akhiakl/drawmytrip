@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { cache } from "react";
 
 import { TripExperience } from "@/components/trip/trip-experience";
+import { shareMetadata } from "@/lib/http";
 import { emit } from "@/lib/logging";
 import { tripStats } from "@/lib/trip";
 import { getTrip, incrViews } from "@/lib/trip/service";
@@ -21,30 +22,26 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const trip = await loadTrip(id);
-  const t = await getTranslations("Metadata.shared");
+  const t = await getTranslations();
   // Shared maps are private-by-link: unfurl them, never index them.
-  if (!trip) return { title: t("notFound"), robots: { index: false } };
+  if (!trip)
+    return { title: t("Metadata.shared.notFound"), robots: { index: false } };
 
   const stats = tripStats(trip);
-  const description = t("description", {
+  const description = t("Metadata.shared.description", {
     cities: stats.cities,
     nights: stats.nights,
     countries: stats.countries,
   });
-  // A route's openGraph replaces the layout's wholesale, so repeat siteName.
   return {
     title: trip.title,
     description,
     robots: { index: false, follow: false },
-    alternates: { canonical: `/t/${id}` },
-    openGraph: {
-      type: "website",
-      siteName: (await getTranslations("Common"))("appName"),
-      title: trip.title,
+    ...shareMetadata({
+      title: t("Metadata.titleTemplate").replace("%s", trip.title),
       description,
-      url: `/t/${id}`,
-    },
-    twitter: { card: "summary_large_image", title: trip.title, description },
+      siteName: t("Common.appName"),
+    }),
   };
 }
 

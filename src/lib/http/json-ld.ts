@@ -15,5 +15,5 @@ export function webAppJsonLd(app: {
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   });
   // "<" would let a value close the script tag early.
-  return json.replace(/</g, "\\u003c");
+  return json.replace(/</g, String.raw`\u003c`);
 }
