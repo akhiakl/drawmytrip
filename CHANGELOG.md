@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/akhiakl/drawmytrip/compare/v0.6.3...v0.7.0) (2026-11-12)
+
+
+### Features
+
+* add share cards, link-preview tags and core SEO metadata ([#120](https://github.com/akhiakl/drawmytrip/issues/120)) ([f87dc1a](https://github.com/akhiakl/drawmytrip/commit/f87dc1a515989b6ceb667d7b005b6d6cdfbc4ea4))
+* rename the product to DrawMyTrip ([#121](https://github.com/akhiakl/drawmytrip/issues/121)) ([8bc8f0e](https://github.com/akhiakl/drawmytrip/commit/8bc8f0e11c203ffa31d9bb17e38906a4c28519a1))
+
+
+### Bug Fixes
+
+* **map:** defer fly animation until the map container has a size ([#118](https://github.com/akhiakl/drawmytrip/issues/118)) ([b629fe0](https://github.com/akhiakl/drawmytrip/commit/b629fe0201a8f428dd91171bfe12d955b74711ad))
+
 ## [0.6.3](https://github.com/akhiakl/grand-tour/compare/v0.6.2...v0.6.3) (2026-11-01)
 
 
