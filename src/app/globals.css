@@ -11,7 +11,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Grand Tour — "field atlas" design tokens.
+ * DrawMyTrip — "field atlas" design tokens.
  * Brand palette (paper / ink / brass / azure) drives every shadcn token
  * so components inherit the aesthetic without per-component overrides.
  * Visual reference: reference/grand-tour.html

@@ -21,8 +21,8 @@ const SECTIONS: readonly LegalSection[] = [
     title: "About these terms",
     body: (
       <p>
-        Grand Tour is run by {OPERATOR_NAME}, an individual based in{" "}
-        {OPERATOR_COUNTRY}. By using Grand Tour, generating a route or sharing a map,
+        DrawMyTrip is run by {OPERATOR_NAME}, an individual based in{" "}
+        {OPERATOR_COUNTRY}. By using DrawMyTrip, generating a route or sharing a map,
         you agree to these terms. If you don’t agree, please don’t use the service.
       </p>
     ),
@@ -32,7 +32,7 @@ const SECTIONS: readonly LegalSection[] = [
     title: "The service",
     body: (
       <p>
-        Grand Tour is free and needs no account. Guest maps hold up to{" "}
+        DrawMyTrip is free and needs no account. Guest maps hold up to{" "}
         {GUEST_MAX_CITIES} stops. We may change, pause or stop any part of the
         service, and we will try to give notice of big changes.
       </p>
@@ -64,7 +64,7 @@ const SECTIONS: readonly LegalSection[] = [
     title: "What you must not share",
     body: (
       <>
-        <p>Don’t use Grand Tour to share anything that:</p>
+        <p>Don’t use DrawMyTrip to share anything that:</p>
         <ul>
           <li>is illegal, or promotes or helps illegal activity;</li>
           <li>harms children in any way;</li>
@@ -121,7 +121,7 @@ const SECTIONS: readonly LegalSection[] = [
     body: (
       <>
         <p>
-          Grand Tour is provided “as is”, without warranties of any kind. As far as
+          DrawMyTrip is provided “as is”, without warranties of any kind. As far as
           the law allows, we are not liable for indirect or consequential losses,
           lost bookings or travel disruption arising from your use of the service.
         </p>
@@ -158,7 +158,7 @@ export default function TermsPage() {
       sections={SECTIONS}
       summary={
         <p>
-          <strong>In short:</strong> Grand Tour is free and as-is. Share only what
+          <strong>In short:</strong> DrawMyTrip is free and as-is. Share only what
           you have the right to share; anyone with a link can see it. AI suggestions
           can be wrong, so check before you travel. We remove maps that break the
           rules.

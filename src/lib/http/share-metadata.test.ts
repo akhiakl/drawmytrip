@@ -5,21 +5,21 @@ import { shareMetadata } from "./share-metadata";
 describe("shareMetadata", () => {
   it("repeats the title and description for Open Graph and a large Twitter card", () => {
     const result = shareMetadata({
-      title: "How it works · Grand Tour",
+      title: "How it works · DrawMyTrip",
       description: "Draw a route.",
-      siteName: "Grand Tour",
+      siteName: "DrawMyTrip",
     });
 
     expect(result.openGraph).toMatchObject({
       type: "website",
-      siteName: "Grand Tour",
-      title: "How it works · Grand Tour",
+      siteName: "DrawMyTrip",
+      title: "How it works · DrawMyTrip",
       description: "Draw a route.",
       url: "./",
     });
     expect(result.twitter).toEqual({
       card: "summary_large_image",
-      title: "How it works · Grand Tour",
+      title: "How it works · DrawMyTrip",
       description: "Draw a route.",
     });
   });
@@ -34,7 +34,7 @@ describe("shareMetadata", () => {
     const result = shareMetadata({
       title: "How it works",
       description: "Draw a route.",
-      siteName: "Grand Tour",
+      siteName: "DrawMyTrip",
       image,
     });
 

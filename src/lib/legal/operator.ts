@@ -3,7 +3,7 @@ export const CONTACT_EMAIL = "hello@akhiakl.in";
 
 // TODO(legal): replace with the operator's real name before v1.0.0. The
 // IT (Intermediary Guidelines) Rules 2021 require a named Grievance Officer.
-export const OPERATOR_NAME = "the Grand Tour operator";
+export const OPERATOR_NAME = "the DrawMyTrip operator";
 
 /** Where the operator is based; also the governing law in the Terms. */
 export const OPERATOR_COUNTRY = "India";

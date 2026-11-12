@@ -28,7 +28,7 @@ docs instead of trusting memory — Next majors move fast.
   is a Promise in Next 15+ — `const { id } = await params;`.
 - Use `notFound()` + a route-level `not-found.tsx` for missing/expired
   resources; design the page in-voice.
-- `generateMetadata` for per-page titles (template `"%s · Grand Tour"` is
+- `generateMetadata` for per-page titles (template `"%s · DrawMyTrip"` is
   set in the root layout) and `opengraph-image.tsx` with `next/og` for
   share cards.
 

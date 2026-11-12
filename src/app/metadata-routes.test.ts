@@ -36,7 +36,7 @@ describe("metadata routes", () => {
 
   it("ships installable PNG icons in the manifest", async () => {
     const result = await manifest();
-    expect(result.name).toBe("Grand Tour");
+    expect(result.name).toBe("DrawMyTrip");
     const sizes = result.icons?.map((icon) => icon.sizes);
     expect(sizes).toEqual(expect.arrayContaining(["192x192", "512x512"]));
   });

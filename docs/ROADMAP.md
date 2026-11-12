@@ -117,7 +117,7 @@ Branch: `feature/share-links`
    - "Create your own" CTA → `/new`.
 2. Missing/expired id → `notFound()` with a designed in-voice
    `not-found.tsx` ("This map has expired…") + create CTA.
-3. `generateMetadata` (title = trip title via the `%s · Grand Tour`
+3. `generateMetadata` (title = trip title via the `%s · DrawMyTrip`
    template, description from stats) **and** `opengraph-image.tsx` with
    `next/og`: brand tokens, route line drawn from city coordinates
    (scale `routeBounds` into the 1200×630 canvas), city names, title.

@@ -1,12 +1,12 @@
 {
   "Common": {
-    "appName": "Grand Tour",
+    "appName": "DrawMyTrip",
     "backToAtlas": "Field Atlas",
     "offTheMap": "Off the map",
     "loading": "Unfolding the map…"
   },
   "Metadata": {
-    "titleTemplate": "%s · Grand Tour",
+    "titleTemplate": "%s · DrawMyTrip",
     "description": "Craft a beautiful, interactive travel route map — drawn by AI or by hand — and share it with a single link.",
     "homeTitle": "{appName}: travel route map maker",
     "alternateName": "{appName} route maps",
@@ -31,7 +31,7 @@
     },
     "shared": {
       "notFound": "Map not found",
-      "description": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}} — a route drawn with Grand Tour."
+      "description": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}} — a route drawn with DrawMyTrip."
     },
     "about": {
       "title": "How it works",
@@ -39,15 +39,15 @@
     },
     "contact": {
       "title": "Contact",
-      "description": "Feedback, privacy requests and map reports for Grand Tour."
+      "description": "Feedback, privacy requests and map reports for DrawMyTrip."
     },
     "terms": {
       "title": "Terms",
-      "description": "The rules for using Grand Tour and sharing maps with it."
+      "description": "The rules for using DrawMyTrip and sharing maps with it."
     },
     "privacy": {
       "title": "Privacy",
-      "description": "What Grand Tour collects, who processes it, how long it is kept and how to reach us."
+      "description": "What DrawMyTrip collects, who processes it, how long it is kept and how to reach us."
     }
   },
   "Plan": {
@@ -301,8 +301,8 @@
     "import": {
       "button": "Import",
       "fileLabel": "Map backup file",
-      "too_large": "That file is far too big to be a Grand Tour map.",
-      "not_json": "That file isn't a Grand Tour backup. Pick a .json map file.",
+      "too_large": "That file is far too big to be a DrawMyTrip map.",
+      "not_json": "That file isn't a DrawMyTrip backup. Pick a .json map file.",
       "not_a_trip": "That file doesn't hold a map this atlas can read (up to 5 stops)."
     }
   },
@@ -446,10 +446,10 @@
       "download": "Download PNG",
       "eyebrow": "Field atlas",
       "summary": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {countries, plural, one {# country} other {# countries}} · {distance}",
-      "brand": "Grand Tour"
+      "brand": "DrawMyTrip"
     },
     "print": {
-      "eyebrow": "Grand Tour itinerary",
+      "eyebrow": "DrawMyTrip itinerary",
       "stop": "Stop {number} · {country}",
       "dayByDay": "Day by day",
       "mustSee": "Must see",
@@ -460,7 +460,7 @@
       "gettingAround": "Getting around: {transport}."
     },
     "og": {
-      "alt": "A Grand Tour route map",
+      "alt": "A DrawMyTrip route map",
       "eyebrow": "Field atlas",
       "expired": "This map has expired",
       "siteTagline": "Beautiful travel route maps, drawn by AI or by hand, shared with one link",
@@ -474,7 +474,7 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "about": "About",
-    "footerCredit": "Grand Tour · Map data © OpenStreetMap contributors",
+    "footerCredit": "DrawMyTrip · Map data © OpenStreetMap contributors",
     "onThisPage": "On this page",
     "lastUpdated": "Last updated {date}",
     "copy": "Copy",
@@ -503,7 +503,7 @@
     "eyebrow": "Get in touch",
     "title": "Contact",
     "inbox": "One inbox for feedback, privacy requests and map reports.",
-    "operator": "Grand Tour is run by {operator}, an individual based in {country}. We usually reply within a few working days.",
+    "operator": "DrawMyTrip is run by {operator}, an individual based in {country}. We usually reply within a few working days.",
     "write": {
       "title": "What to write about",
       "feedback": "<strong>Feedback and bugs.</strong> What you tried, what happened, and the page or map link if there is one.",
@@ -523,7 +523,7 @@
   },
   "About": {
     "title": "Every journey deserves a map <em>worth sharing</em>",
-    "lede": "Grand Tour turns a trip idea into an interactive route map: cities, nights, trains and flights, drawn by AI or by hand. Free, and no account needed.",
+    "lede": "DrawMyTrip turns a trip idea into an interactive route map: cities, nights, trains and flights, drawn by AI or by hand. Free, and no account needed.",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
     "example": {

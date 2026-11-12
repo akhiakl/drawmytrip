@@ -1,5 +1,5 @@
 /**
- * The Grand Tour mark — a dotted brass route between three stops on an
+ * The DrawMyTrip mark — a dotted brass route between three stops on an
  * ink tile. Image routes can't read CSS tokens, so the palette (dark-theme
  * brass, light paper, ink) is spelled out here, as in the OG image.
  */

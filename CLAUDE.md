@@ -1,6 +1,6 @@
-# Grand Tour — AI assistant instructions
+# DrawMyTrip — AI assistant instructions
 
-Grand Tour is a guest-first service for creating beautiful, interactive travel
+DrawMyTrip is a guest-first service for creating beautiful, interactive travel
 route maps — populated by AI chat or manually — shared via short links
 (`/t/{id}`). No accounts, no user DB in Phase 1.
 
