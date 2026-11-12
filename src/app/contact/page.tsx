@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
+import { pageMetadata } from "@/app/page-metadata";
 import { CopyEmail } from "@/components/legal/copy-email";
 import { LegalPage, type LegalSection } from "@/components/legal/legal-page";
 import { privacyLink } from "@/components/rich-text";
@@ -15,10 +14,7 @@ import {
 } from "@/lib/legal";
 import { GUEST_MAX_CITIES, SHARE_TTL_DAYS } from "@/lib/trip";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Metadata.contact");
-  return { title: t("title"), description: t("description") };
-}
+export const generateMetadata = () => pageMetadata("contact");
 
 const strong = (chunks: ReactNode) => <strong>{chunks}</strong>;
 

@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { getTranslations } from "next-intl/server";
 
+import { pageMetadata } from "@/app/page-metadata";
 import { LegalPage, type LegalSection } from "@/components/legal/legal-page";
 import {
   CONTACT_EMAIL,
@@ -11,10 +10,7 @@ import {
   OPERATOR_NAME,
 } from "@/lib/legal";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Metadata.privacy");
-  return { title: t("title"), description: t("description") };
-}
+export const generateMetadata = () => pageMetadata("privacy");
 
 const mail = <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>;
 

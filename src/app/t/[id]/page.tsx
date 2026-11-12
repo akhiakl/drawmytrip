@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { cache } from "react";
 
 import { TripExperience } from "@/components/trip/trip-experience";
+import { shareMetadata } from "@/lib/http";
 import { emit } from "@/lib/logging";
 import { tripStats } from "@/lib/trip";
 import { getTrip, incrViews } from "@/lib/trip/service";
@@ -21,19 +22,26 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const trip = await loadTrip(id);
-  const t = await getTranslations("Metadata.shared");
+  const t = await getTranslations();
   // Shared maps are private-by-link: unfurl them, never index them.
-  if (!trip) return { title: t("notFound"), robots: { index: false } };
+  if (!trip)
+    return { title: t("Metadata.shared.notFound"), robots: { index: false } };
 
   const stats = tripStats(trip);
+  const description = t("Metadata.shared.description", {
+    cities: stats.cities,
+    nights: stats.nights,
+    countries: stats.countries,
+  });
   return {
     title: trip.title,
-    description: t("description", {
-      cities: stats.cities,
-      nights: stats.nights,
-      countries: stats.countries,
-    }),
+    description,
     robots: { index: false, follow: false },
+    ...shareMetadata({
+      title: t("Metadata.titleTemplate").replace("%s", trip.title),
+      description,
+      siteName: t("Common.appName"),
+    }),
   };
 }
 

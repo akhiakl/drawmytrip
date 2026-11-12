@@ -1,9 +1,8 @@
 import { ArrowLeft, ArrowRight, PenLine, Sparkles } from "lucide-react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { getTranslations } from "next-intl/server";
 
+import { pageMetadata } from "@/app/page-metadata";
 import { AboutFaq } from "@/components/about/about-faq";
 import { HowItWorks } from "@/components/about/how-it-works";
 import { SiteFooter } from "@/components/legal/site-footer";
@@ -12,10 +11,7 @@ import { RouteSketch } from "@/components/trip/route-sketch";
 import { Button } from "@/components/ui/button";
 import { GUEST_MAX_CITIES, SAMPLE_TRIP, tripStats } from "@/lib/trip";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Metadata.about");
-  return { title: t("title"), description: t("description") };
-}
+export const generateMetadata = () => pageMetadata("about");
 
 function StartButtons() {
   const t = useTranslations("About");

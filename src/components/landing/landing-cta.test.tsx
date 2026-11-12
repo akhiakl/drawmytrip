@@ -31,6 +31,14 @@ beforeEach(() => {
 });
 
 describe("LandingCta", () => {
+  it("says in plain words what the product does", () => {
+    render(<LandingCta />);
+
+    expect(
+      screen.getByText(/draw your travel route on an interactive map/i),
+    ).toBeVisible();
+  });
+
   it("offers both ways to start a route, grouped for screen readers", () => {
     render(<LandingCta />);
 

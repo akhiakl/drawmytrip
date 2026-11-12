@@ -10,7 +10,7 @@ import { TesterFeedback } from "@/components/tester-feedback";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { UnitsProvider } from "@/components/units/units-provider";
-import { siteUrl } from "@/lib/http";
+import { shareMetadata, siteUrl, siteVerification } from "@/lib/http";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -30,10 +30,12 @@ const outfit = Outfit({
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata");
   const appName = (await getTranslations("Common"))("appName");
+  const homeTitle = t("homeTitle", { appName });
   return {
     metadataBase: siteUrl(),
+    verification: siteVerification(),
     applicationName: appName,
-    title: { default: appName, template: t("titleTemplate") },
+    title: { default: homeTitle, template: t("titleTemplate") },
     description: t("description"),
     icons: {
       icon: [
@@ -42,7 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       apple: { url: "/icons/180", sizes: "180x180" },
     },
-    openGraph: { siteName: appName, type: "website" },
+    alternates: { canonical: "./" },
+    ...shareMetadata({
+      title: homeTitle,
+      description: t("description"),
+      siteName: appName,
+    }),
   };
 }
 

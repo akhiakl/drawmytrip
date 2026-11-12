@@ -66,6 +66,8 @@ export function LandingCta() {
         }
       />
 
+      <p className="text-sm text-ink-soft">{t("tagline")}</p>
+
       <Link
         href="/about"
         className="inline-flex w-fit items-center gap-1 rounded-sm text-xs text-ink-soft underline-offset-4 outline-none hover:text-ink hover:underline focus-visible:ring-2 focus-visible:ring-ring"

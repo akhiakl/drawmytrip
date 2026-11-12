@@ -93,6 +93,20 @@ describe("generateMetadata", () => {
     expect(metadata.robots).toEqual({ index: false, follow: false });
   });
 
+  it("sets explicit unfurl tags and a large Twitter card for a found trip", async () => {
+    mocks.getTrip.mockResolvedValue(makeTrip(3, { title: "Coastal Run" }));
+
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ id: "abc12345" }),
+    });
+
+    expect(metadata.openGraph).toMatchObject({
+      title: "Coastal Run · Grand Tour",
+      siteName: "Grand Tour",
+    });
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
+  });
+
   it("falls back to a plain title for a missing trip", async () => {
     mocks.getTrip.mockResolvedValue(null);
 
