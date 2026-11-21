@@ -525,12 +525,13 @@ Results Test; `grand-tour-review` Must-fix resolved.
 - [ ] Affiliate programs (after the first production deploy; most need a
       live site): Travelpayouts, Booking.com or Stay22, then set the
       `NEXT_PUBLIC_AFFILIATE_*` ids in the deploy host env (Step 13).
-- [ ] SEO launch tasks (after the first production deploy): set
-      `NEXT_PUBLIC_SITE_URL=https://drawmytrip.akhiakl.in`; verify the site
-      in Google Search Console and Bing Webmaster Tools (the
-      `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` env vars) and
-      submit `/sitemap.xml`; redirect any `www` or extra host to the one
-      domain in Vercel; confirm the destination list for Step 17.
+- [ ] SEO launch tasks (after the first production deploy): check that
+      `/sitemap.xml` and the page canonicals show
+      `https://drawmytrip.akhiakl.in`; verify the site in Google Search
+      Console and Bing Webmaster Tools (the `GOOGLE_SITE_VERIFICATION` /
+      `BING_SITE_VERIFICATION` env vars) and submit `/sitemap.xml`;
+      redirect any `www` or extra host to the one domain in Vercel;
+      confirm the destination list for Step 17.
 - [ ] `VERCEL_TOKEN` repo secret for the release deploy; `main` auto-deploy is
       skipped by Vercel's Ignored Build Step (see `docs/RELEASE.md`).
 
