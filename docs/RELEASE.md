@@ -99,11 +99,9 @@ checked before merging the `1.0.0` release PR.
 - [ ] OG image verified in a real unfurler (Slack / WhatsApp / X)
 - [ ] Branch protection on `main` with all required checks + review
 - [ ] Domain + HTTPS, favicon, metadata/robots sane
-- [ ] `NEXT_PUBLIC_SITE_URL=https://drawmytrip.akhiakl.in` set in the deploy
-      host env, so link previews and posters print the real address
-
-### Legal, contact & analytics
-
+- [ ] `/sitemap.xml`, `/robots.txt` and a page's canonical tag show
+      `https://drawmytrip.akhiakl.in` (production builds default to it;
+      `NEXT_PUBLIC_SITE_URL` only overrides)
 - [ ] `OPERATOR_NAME` in `src/lib/legal/operator.ts` set to the operator's
       real name (IT Rules 2021 require a named Grievance Officer)
 - [ ] `hello@akhiakl.in` forwards to a monitored inbox
