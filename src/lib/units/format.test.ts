@@ -27,16 +27,16 @@ describe("formatMoney", () => {
 
   it("shows USD amounts exactly", () => {
     expect(formatMoney(125, "USD", null)).toBe("$125");
-    expect(formatMoney([90, 160], "USD", rates)).toBe("$90–$160");
+    expect(formatMoney([90, 160], "USD", rates)).toBe("$90 to $160");
   });
 
   it("converts and marks estimates", () => {
-    expect(formatMoney([100, 200], "EUR", rates)).toBe("~€90–€180");
+    expect(formatMoney([100, 200], "EUR", rates)).toBe("~€90 to €180");
     expect(formatMoney(100, "JPY", rates)).toBe("~¥15,000");
   });
 
   it("falls back to USD without a rate", () => {
-    expect(formatMoney([90, 160], "EUR", null)).toBe("$90–$160");
+    expect(formatMoney([90, 160], "EUR", null)).toBe("$90 to $160");
     expect(formatMoney(90, "CHF", rates)).toBe("$90");
   });
 });

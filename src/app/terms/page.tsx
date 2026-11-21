@@ -152,7 +152,7 @@ const SECTIONS: readonly LegalSection[] = [
       <p>
         These terms are governed by the laws of {OPERATOR_COUNTRY}. If you live in
         the EU or UK, you keep the protection of your local consumer law. We may
-        update these terms; the date at the top shows the latest version.
+        update these terms. The date at the top shows the latest version.
       </p>
     ),
   },
@@ -170,7 +170,7 @@ export default function TermsPage() {
       summary={
         <p>
           <strong>In short:</strong> DrawMyTrip is free and as-is. Share only what
-          you have the right to share; anyone with a link can see it. AI suggestions
+          you have the right to share. Anyone with a link can see it. AI suggestions
           can be wrong, so check before you travel. We remove maps that break the
           rules.
         </p>

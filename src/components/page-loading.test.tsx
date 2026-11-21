@@ -6,6 +6,6 @@ import { PageLoading } from "./page-loading";
 describe("PageLoading", () => {
   it("tells assistive tech the page is loading", () => {
     render(<PageLoading />);
-    expect(screen.getByRole("status")).toHaveTextContent("Unfolding the map…");
+    expect(screen.getByRole("status")).toHaveTextContent("Loading the map…");
   });
 });

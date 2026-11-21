@@ -82,14 +82,14 @@ describe("useShareTrip", () => {
     );
   });
 
-  it("shows an in-voice toast for rate limiting", async () => {
+  it("shows a rate-limit toast", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({}, 429)));
     const { result } = renderHook(() => useShareTrip({ onCityLimit: vi.fn() }));
 
     await act(() => result.current.share(makeTrip()));
 
     expect(toastMocks.error).toHaveBeenCalledWith(
-      expect.stringContaining("breather"),
+      expect.stringContaining("Too many requests"),
     );
   });
 
@@ -100,7 +100,7 @@ describe("useShareTrip", () => {
     await act(() => result.current.share(makeTrip()));
 
     expect(toastMocks.error).toHaveBeenCalledWith(
-      "Couldn't share that map — try again.",
+      "Could not share that map. Try again.",
     );
   });
 
@@ -111,7 +111,7 @@ describe("useShareTrip", () => {
     await act(() => result.current.share(makeTrip()));
 
     expect(toastMocks.error).toHaveBeenCalledWith(
-      expect.stringContaining("Couldn't reach the atlas"),
+      expect.stringContaining("Could not reach the server"),
     );
     await waitFor(() => expect(result.current.sharing).toBe(false));
   });

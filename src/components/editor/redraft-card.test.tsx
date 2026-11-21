@@ -51,7 +51,7 @@ describe("RedraftCard", () => {
     fetchMock.mockResolvedValue(jsonResponse({}, 429));
     render(<RedraftCard defaults={makeGenerateRequest()} onDrafted={onDrafted} />);
     await userEvent.click(screen.getByRole("button", { name: "Redraft route" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent(/breather/);
+    expect(await screen.findByRole("alert")).toHaveTextContent(/too many requests/i);
     expect(onDrafted).not.toHaveBeenCalled();
   });
 });

@@ -8,7 +8,7 @@ describe("AboutPage", () => {
   it("leads with the pitch and both ways to start", () => {
     render(<AboutPage />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Every journey deserves a map worth sharing",
+      "Draw your trip as a shareable map",
     );
     expect(
       screen.getAllByRole("link", { name: /plan with ai/i })[0],
@@ -21,7 +21,7 @@ describe("AboutPage", () => {
   it("walks through the three steps in order", () => {
     render(<AboutPage />);
     const steps = within(
-      screen.getByRole("region", { name: /from a hunch/i }),
+      screen.getByRole("region", { name: /from idea to shared map/i }),
     ).getAllByRole("listitem");
     expect(steps.map((step) => step.querySelector("h3")?.textContent)).toEqual([
       "Describe",

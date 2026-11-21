@@ -5,17 +5,17 @@
     "appNameTail": "Trip",
     "backToAtlas": "Field Atlas",
     "offTheMap": "Off the map",
-    "loading": "Unfolding the map…"
+    "loading": "Loading the map…"
   },
   "Metadata": {
     "titleTemplate": "%s · DrawMyTrip",
-    "description": "Craft a beautiful, interactive travel route map — drawn by AI or by hand — and share it with a single link.",
-    "homeTitle": "{appName}: travel route map maker",
+    "description": "Draw a travel route on an interactive map, by hand or with AI, and share it with one link. Free, with no account needed.",
+    "homeTitle": "{appName}: draw your travel route on an interactive map",
     "alternateName": "{appName} route maps",
-    "manifestDescription": "Beautiful, interactive travel route maps, drawn by AI or by hand and shared with one link.",
+    "manifestDescription": "Interactive travel route maps, drawn by hand or with AI and shared with one link.",
     "plan": {
       "title": "Plan with AI",
-      "description": "Three questions, one drafted route. Tell the atlas where, how long and what pace; then make it yours."
+      "description": "Answer three questions and get a draft route. Say where you are going, for how long and at what pace, then edit it."
     },
     "new": {
       "title": "Build a trip",
@@ -33,7 +33,7 @@
     },
     "shared": {
       "notFound": "Map not found",
-      "description": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}} — a route drawn with DrawMyTrip."
+      "description": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}}. A route drawn with DrawMyTrip."
     },
     "about": {
       "title": "How it works",
@@ -53,14 +53,22 @@
     }
   },
   "Plan": {
-    "title": "Plan with the <em>atlas</em>",
-    "lede": "Three questions, one drafted route. You edit everything after."
+    "title": "Plan with <em>AI</em>",
+    "lede": "Answer three questions and get a draft route. You can edit everything afterwards."
   },
   "Landing": {
     "group": "Start your own route",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
-    "tagline": "Draw your travel route on an interactive map, with AI or by hand, and share it with one link.",
+    "heading": "Draw your travel route on an interactive map",
+    "tagline": "Plan with AI or build it by hand, then share it with one link.",
+    "about": {
+      "title": "What you can do here",
+      "plan": "DrawMyTrip turns a trip idea into a route map. Add cities and nights, choose how you travel between them, and see the whole route on one interactive map. You can <plan>plan it with AI</plan> or <build>build it by hand</build>.",
+      "ai": "The AI planner asks three questions: where you are going, for how long and at what pace. It returns a draft route that you can change stop by stop. Each stop has notes on what to see, where to eat, where to stay and how to get around, and every leg shows the transport mode and travel time.",
+      "share": "When the route is ready, share it with one link, download it as a poster or print the itinerary. Guest maps are free, need no account and hold up to {max} stops. A shared link stays live for {days} days after its last visit. <how>Read how it works</how>.",
+      "credit": "Map data comes from <osm>OpenStreetMap contributors</osm>."
+    },
     "howItWorks": "Free, no account needed · How it works",
     "welcomeBack": "Welcome back",
     "continue": "Continue {title}",
@@ -72,9 +80,9 @@
   },
   "Errors": {
     "notFound": {
-      "title": "No road leads here",
-      "body": "This page isn't on any map we've drawn. Head back and start a new route from the atlas.",
-      "action": "Back to the atlas"
+      "title": "Page not found",
+      "body": "This page does not exist. Go back and start a new route.",
+      "action": "Back to home"
     },
     "expired": {
       "title": "This map has expired",
@@ -87,13 +95,13 @@
       "action": "Back to My Maps"
     },
     "offline": {
-      "title": "Out of signal",
-      "body": "This page wasn't saved before the connection dropped. Maps you have already opened on this device still work offline.",
-      "action": "Try the atlas again"
+      "title": "You are offline",
+      "body": "This page was not saved before the connection dropped. Maps you have already opened on this device still work offline.",
+      "action": "Try again"
     },
     "global": {
-      "title": "We lost the trail for a moment.",
-      "body": "Something went wrong on our side. Your maps are safe — try picking up where you left off.",
+      "title": "Something went wrong",
+      "body": "The problem is on our side. Your maps are safe. Try again from where you left off.",
       "action": "Try again"
     }
   },
@@ -118,12 +126,12 @@
     "daysLabel": "Number of days",
     "daysUnit": "days",
     "paceLabel": "Pace",
-    "askDestination": "Where should this journey go? A country, a region, or a string of cities all work.",
+    "askDestination": "Where do you want to go? A country, a region or a few cities all work.",
     "askDays": "How many days do you have, from 2 to 30?",
     "answerDays": "{days} days",
     "askPace": "And the pace?",
     "drafting": "Drafting your route…",
-    "rateLimited": "The atlas needs a breather. Too many drafts in a short while; give it a minute and try again.",
+    "rateLimited": "Too many requests in a short time. Wait a minute and try again.",
     "failed": "That route didn't come together. Try once more, or start from a blank page.",
     "retry": "Try again",
     "byHand": "Build it by hand"
@@ -168,7 +176,7 @@
     },
     "search": {
       "placeholder": "Search for a city…",
-      "unreachable": "Couldn't reach the map atlas — try again in a moment.",
+      "unreachable": "Could not reach city search. Try again in a moment.",
       "noResults": "No cities found.",
       "label": "Search for a city"
     },
@@ -221,14 +229,14 @@
     },
     "redraft": {
       "eyebrow": "Redraft with AI",
-      "hint": "Replaces your stops in one step; undo brings them back.",
+      "hint": "Replaces your stops in one step. Undo brings them back.",
       "where": "Where",
       "days": "Days",
       "pace": "Pace",
       "submit": "Redraft route",
       "drafting": "Drafting your route…",
-      "rateLimited": "The atlas needs a breather. Give it a minute and try again.",
-      "failed": "That redraft didn't come together. Your route is untouched; try again."
+      "rateLimited": "Too many requests. Wait a minute and try again.",
+      "failed": "The redraft failed. Your route is unchanged. Try again."
     },
     "previewEmpty": "Add a stop to see it appear on the map."
   },
@@ -248,9 +256,9 @@
     "ratesUnavailable": "Live rates are out of reach right now, so amounts show in US dollars."
   },
   "Upsell": {
-    "eyebrow": "The atlas grows",
+    "eyebrow": "Guest limit",
     "title": "{max} stops, for now",
-    "description": "Guest maps travel light — {max} cities and a {days}-day link. Sign up (coming soon) for a longer itinerary and a few more keepsakes.",
+    "description": "Guest maps have up to {max} cities and a {days}-day link. Accounts with longer itineraries are coming soon.",
     "features": {
       "stops": "15 stops",
       "permanent": "Permanent links",
@@ -262,23 +270,23 @@
   "Share": {
     "eyebrow": "Ready to travel",
     "title": "Your map is live",
-    "description": "Anyone with this link can view the route. It stays live for {days} days after its last visit; share again after editing.",
+    "description": "Anyone with this link can view the route. It stays live for {days} days after its last visit. Share again after editing.",
     "copy": "Copy",
     "copied": "Copied",
-    "copiedToast": "Map shared — link copied",
-    "copyFailed": "Couldn't copy — select and copy the link manually.",
+    "copiedToast": "Map shared. Link copied.",
+    "copyFailed": "Could not copy. Select and copy the link manually.",
     "nativeShare": "Share via…",
     "errors": {
-      "tooLarge": "That map is too big to share — trim a few details and retry.",
-      "rateLimited": "The atlas needs a breather — try sharing again shortly.",
-      "failed": "Couldn't share that map — try again.",
-      "offline": "Couldn't reach the atlas — check your connection and retry."
+      "tooLarge": "That map is too big to share. Remove a few details and try again.",
+      "rateLimited": "Too many requests. Try sharing again shortly.",
+      "failed": "Could not share that map. Try again.",
+      "offline": "Could not reach the server. Check your connection and try again."
     }
   },
   "Maps": {
     "title": "My <em>Maps</em>",
     "newMap": "New map",
-    "empty": "No maps yet. Draft one with the atlas, or draw it stop by stop.",
+    "empty": "No maps yet. Plan one with AI, or draw it stop by stop.",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
     "imported": "Imported {title}",
@@ -305,7 +313,7 @@
       "fileLabel": "Map backup file",
       "too_large": "That file is far too big to be a DrawMyTrip map.",
       "not_json": "That file isn't a DrawMyTrip backup. Pick a .json map file.",
-      "not_a_trip": "That file doesn't hold a map this atlas can read (up to 5 stops)."
+      "not_a_trip": "That file is not a map DrawMyTrip can read (up to 5 stops)."
     }
   },
   "Trip": {
@@ -387,7 +395,7 @@
         "disclosure": "Some links are affiliate links. We may earn a commission at no extra cost to you."
       },
       "budgetCalculator": "Budget calculator",
-      "spendingStyle": "Spending style — <b>{style}</b>",
+      "spendingStyle": "Spending style: <b>{style}</b>",
       "spendStyles": {
         "backpacker": "Backpacker",
         "comfortable": "Comfortable",
@@ -449,7 +457,7 @@
     },
     "poster": {
       "title": "Share your route",
-      "description": "A clean poster of the journey — sized for Instagram (4:5), no app chrome, follows your theme. Or print the full itinerary for the road.",
+      "description": "A poster of your route, sized for Instagram (4:5) and matching your theme. Or print the full itinerary.",
       "alt": "Route poster for {title}",
       "failed": "The press jammed on this one. Close and open the poster again to retry.",
       "print": "Print itinerary",
@@ -473,7 +481,7 @@
       "alt": "A DrawMyTrip route map",
       "eyebrow": "Field atlas",
       "expired": "This map has expired",
-      "siteTagline": "Beautiful travel route maps, drawn by AI or by hand, shared with one link",
+      "siteTagline": "Travel route maps, drawn by hand or with AI and shared with one link",
       "summary": "{cities, plural, one {# city} other {# cities}} · {nights, plural, one {# night} other {# nights}} · {countries, plural, one {# country} other {# countries}}"
     },
     "sketchLabel": "Route sketch: {stops}"
@@ -528,11 +536,11 @@
       "title": "Before you write",
       "lost": "<strong>Lost a map?</strong> Unshared maps live only in the browser where you made them, so we can’t restore them.",
       "expired": "<strong>Link stopped working?</strong> Shared maps expire {days} days after their last view. Share the map again from My Maps for a fresh link.",
-      "stops": "<strong>Need more than {max} stops?</strong> Longer itineraries are coming with sign-up; for now, split a long journey into two maps."
+      "stops": "<strong>Need more than {max} stops?</strong> Longer itineraries are coming with sign-up. For now, split a long trip into two maps."
     }
   },
   "About": {
-    "title": "Every journey deserves a map <em>worth sharing</em>",
+    "title": "Draw your trip as a <em>shareable map</em>",
     "lede": "DrawMyTrip turns a trip idea into an interactive route map: cities, nights, trains and flights, drawn by AI or by hand. Free, and no account needed.",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
@@ -542,12 +550,12 @@
       "open": "Open the live map"
     },
     "start": {
-      "title": "Your next grand tour starts here",
+      "title": "Start your route",
       "body": "Up to {max} stops, one link, no account."
     },
     "how": {
       "eyebrow": "How it works",
-      "title": "From a hunch to a shared map in minutes",
+      "title": "From idea to shared map",
       "describe": {
         "title": "Describe",
         "body": "Tell the AI planner where, how long and what pace, or add cities by hand."
@@ -563,7 +571,7 @@
     },
     "faq": {
       "eyebrow": "Questions",
-      "title": "Before you set off",
+      "title": "Common questions",
       "free": {
         "q": "Is it free?",
         "a": "Yes. Guest maps are free, with up to {max} stops each."

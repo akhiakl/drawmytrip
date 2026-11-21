@@ -87,6 +87,8 @@ export function PanelHead({
   readonly onCollapsedChange: (collapsed: boolean) => void;
 }) {
   const t = useTranslations("Trip.panel");
+  // The landing's own H1 is in its call to action; the example route is a sub-heading.
+  const Title = variant === "demo" ? "h2" : "h1";
   const stats = tripStats(trip);
   const { distance } = useUnits();
 
@@ -101,9 +103,9 @@ export function PanelHead({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="eyebrow">{t(`eyebrow.${variant}`)}</p>
-          <h1 className="truncate font-display text-2xl font-medium tracking-tight lg:text-[30px] lg:leading-tight lg:whitespace-normal">
+          <Title className="truncate font-display text-2xl font-medium tracking-tight lg:text-[30px] lg:leading-tight lg:whitespace-normal">
             <TitleWithAccent title={trip.title} />
-          </h1>
+          </Title>
           <p className="mt-0.5 text-xs text-ink-soft lg:hidden">
             {t("headline", {
               nights: stats.nights,
