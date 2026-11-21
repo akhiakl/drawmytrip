@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/akhiakl/drawmytrip/compare/v0.8.0...v0.8.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* default the site address to the production domain ([#132](https://github.com/akhiakl/drawmytrip/issues/132)) ([9418932](https://github.com/akhiakl/drawmytrip/commit/941893298a2d876f4a74a589f02a510ca3582f44))
+
 ## [0.8.0](https://github.com/akhiakl/drawmytrip/compare/v0.7.0...v0.8.0) (2026-11-21)
 
 
