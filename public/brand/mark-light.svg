@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 1 52 62" role="img" aria-label="DrawMyTrip" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M20 10 H30 C46 10 56 20 56 32 C56 44 46 54 30 54 H20" stroke="#B98A2F" stroke-width="6"/>
+<path d="M20 10 V54" stroke="#16233A" stroke-width="3.6" stroke-dasharray="0.01 7.2"/>
+<circle cx="20" cy="10" r="5.5" fill="#F5F1E8" stroke="#16233A" stroke-width="3.4"/>
+<circle cx="20" cy="54" r="5.5" fill="#16233A" stroke="none"/>
+</svg>

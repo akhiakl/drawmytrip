@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { pageMetadata } from "@/app/page-metadata";
 import { AiChat } from "@/components/ai/ai-chat";
+import { LogoLink } from "@/components/brand/logo";
 import { accent } from "@/components/rich-text";
 import { destinationFromParam } from "@/lib/ai";
 
@@ -20,13 +21,14 @@ export default async function PlanPage({
   return (
     <div className="flex min-h-dvh flex-col">
       <nav aria-label={common("backToAtlas")} className="page-container">
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center justify-between">
           <Link
             href="/"
             className="eyebrow inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
           </Link>
+          <LogoLink />
         </div>
       </nav>
       <main className="page-container grid flex-1 content-start gap-10 py-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-16">

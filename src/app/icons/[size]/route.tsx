@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 
-import { BRAND_MARK_SVG, ICON_SIZES } from "../brand-mark";
+import { brandIconSvg } from "@/lib/brand";
+
+import { DOTTED_STEM_MIN_SIZE, ICON_SIZES } from "../brand-mark";
 
 export const dynamicParams = false;
 
@@ -8,7 +10,8 @@ export function generateStaticParams() {
   return ICON_SIZES.map((size) => ({ size: String(size) }));
 }
 
-const markDataUri = `data:image/svg+xml;base64,${Buffer.from(BRAND_MARK_SVG).toString("base64")}`;
+const dataUri = (svg: string) =>
+  `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 
 /** PNG renditions of the brand mark (favicon fallback, Apple touch, PWA). */
 export async function GET(
@@ -16,6 +19,7 @@ export async function GET(
   { params }: { params: Promise<{ size: string }> },
 ) {
   const size = Number((await params).size);
+  const markDataUri = dataUri(brandIconSvg(size >= DOTTED_STEM_MIN_SIZE));
   return new ImageResponse(
     // eslint-disable-next-line @next/next/no-img-element -- satori renders <img>, not next/image
     <img src={markDataUri} width={size} height={size} alt="" />,

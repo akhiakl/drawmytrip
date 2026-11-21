@@ -47,6 +47,7 @@ src/
       prompt.ts         Internal module (not exported; tests reach it relatively).
     http/
       index.ts          PUBLIC API — rate limiting, client IP (server concerns).
+    brand/              The route D mark geometry and icon SVG, shared by UI, canvas and image routes.
     units/              Display units: km/mi, currency formatting, live rates.
     geo-search/         City search (Photon) behind `searchCities`.
     legal/              Operator and contact facts, report-a-map link.

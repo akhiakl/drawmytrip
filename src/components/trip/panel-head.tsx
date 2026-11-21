@@ -1,10 +1,12 @@
 "use client";
 
 import { ChevronUp, Moon, Sun } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 
+import { Logo } from "@/components/brand/logo";
 import { UnitsButton } from "@/components/units/units-button";
 import { useUnits } from "@/components/units/units-provider";
 import { useMounted } from "@/hooks/use-mounted";
@@ -90,6 +92,12 @@ export function PanelHead({
 
   return (
     <header className="flex flex-col gap-3 px-5 pt-2 pb-4 lg:px-7 lg:pt-7">
+      <Link
+        href="/"
+        className="w-fit rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <Logo className="text-base lg:text-xl" />
+      </Link>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="eyebrow">{t(`eyebrow.${variant}`)}</p>

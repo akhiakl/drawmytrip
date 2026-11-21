@@ -1,3 +1,6 @@
+import messages from "@/i18n/messages/en.json";
+import { MARK } from "@/lib/brand";
+import { siteUrl } from "@/lib/http";
 import { makeProjector, type LatLng } from "@/lib/trip";
 
 /** 1200x630 is the size WhatsApp, iMessage, X, Slack and LinkedIn all crop to. */
@@ -9,6 +12,8 @@ export const OG_PALETTE = {
   ink: "#16233a",
   inkSoft: "#4a5568",
   brass: "#b98a2f",
+  azure: "#3e7cb1",
+  line: "#d9d6cf",
 };
 
 type Stop = { name: string; flag?: string; ll: readonly [number, number] };
@@ -29,7 +34,7 @@ export function OgCard({
   readonly subtitle: string;
   readonly stops: readonly Stop[];
 }) {
-  const box = { width: 1072, height: 300, padding: 50 };
+  const box = { width: 1072, height: 236, padding: 44 };
   const project = makeProjector(
     stops.map((s) => s.ll as LatLng),
     box,
@@ -129,6 +134,64 @@ export function OgCard({
             {stops[i].flag ? `${stops[i].flag} ${stops[i].name}` : stops[i].name}
           </div>
         ))}
+      </div>
+      <BrandFooter />
+    </div>
+  );
+}
+
+/** Wordmark left, site address right: how a shared link finds its way back. */
+function BrandFooter() {
+  const { appNameLead, appNameTail } = messages.Common;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginTop: "auto",
+        paddingTop: 14,
+        borderTop: `1px solid ${OG_PALETTE.line}`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <svg width={36} height={36} viewBox="0 0 64 64" fill="none">
+          <path
+            d={MARK.curve}
+            stroke={OG_PALETTE.brass}
+            strokeWidth={MARK.curveWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d={MARK.stem}
+            stroke={OG_PALETTE.ink}
+            strokeWidth={MARK.stemWidth}
+            strokeDasharray={MARK.stemDots}
+            strokeLinecap="round"
+          />
+          <circle
+            {...MARK.start}
+            fill={OG_PALETTE.paper}
+            stroke={OG_PALETTE.ink}
+            strokeWidth={MARK.ringWidth}
+          />
+          <circle {...MARK.end} fill={OG_PALETTE.ink} />
+        </svg>
+        <div
+          style={{
+            display: "flex",
+            fontSize: 30,
+            fontWeight: 600,
+            color: OG_PALETTE.ink,
+          }}
+        >
+          {appNameLead}
+          <span style={{ color: OG_PALETTE.azure }}>{appNameTail}</span>
+        </div>
+      </div>
+      <div style={{ display: "flex", fontSize: 24, color: OG_PALETTE.inkSoft }}>
+        {siteUrl().host}
       </div>
     </div>
   );

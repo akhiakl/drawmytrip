@@ -20,6 +20,7 @@ export function siteJsonLd(site: {
         alternateName,
         description,
         url,
+        image: new URL("/icons/512", url).toString(),
         isPartOf: { "@id": `${url}#website` },
         applicationCategory: "TravelApplication",
         operatingSystem: "Any",

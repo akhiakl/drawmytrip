@@ -113,7 +113,9 @@ export function PosterDialog({
     distance: distance(stats.totalKm),
   });
   const perPerson = perPersonText("perPerson", { amount: money(stats.budget) });
-  const brand = t("brand");
+  const common = useTranslations("Common");
+  const brandLead = common("appNameLead");
+  const brandTail = common("appNameTail");
 
   useEffect(() => {
     if (!open) return;
@@ -123,7 +125,14 @@ export function PosterDialog({
     const render = async () => {
       const fonts = await readFonts();
       const canvas = document.createElement("canvas");
-      const copy: PosterCopy = { eyebrow, summary, perPerson, brand };
+      const copy: PosterCopy = {
+        eyebrow,
+        summary,
+        perPerson,
+        brandLead,
+        brandTail,
+        host: window.location.host,
+      };
       await drawPoster(canvas, trip, readTheme(), fonts, copy);
       const rendered = await new Promise<Blob | null>((resolve) =>
         canvas.toBlob(resolve, "image/png"),
@@ -152,7 +161,7 @@ export function PosterDialog({
       setUrl(null);
       setFailed(false);
     };
-  }, [open, trip, eyebrow, summary, perPerson, brand]);
+  }, [open, trip, eyebrow, summary, perPerson, brandLead, brandTail]);
 
   const download = () => {
     if (!url) return;

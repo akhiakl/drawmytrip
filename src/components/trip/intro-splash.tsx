@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 /** How long the splash holds before lifting; the route draws right after. */
@@ -48,6 +49,7 @@ export function IntroSplash({
       )}
     >
       <div className="flex flex-col items-center gap-3 px-6 text-center">
+        <Logo className="mb-5 text-2xl" />
         <p className="eyebrow">{eyebrow}</p>
         <h1 className="font-display text-5xl font-normal tracking-tight sm:text-7xl">
           <TitleWithAccent title={title} />

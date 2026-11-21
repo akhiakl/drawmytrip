@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
+import { LogoLink } from "@/components/brand/logo";
 import { LEGAL_LAST_UPDATED } from "@/lib/legal";
 
 import { SiteFooter } from "./site-footer";
@@ -37,13 +38,14 @@ export function LegalPage({
   return (
     <div className="flex min-h-dvh flex-col">
       <nav aria-label={common("backToAtlas")} className="page-container">
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center justify-between">
           <Link
             href="/"
             className="eyebrow inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
           </Link>
+          <LogoLink />
         </div>
       </nav>
       <main className="page-container grid flex-1 gap-12 py-10 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)] lg:gap-x-8 lg:gap-y-14 lg:py-16">

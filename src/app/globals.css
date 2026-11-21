@@ -24,6 +24,8 @@
   /* Brass for small text and icons on paper: the fill brass is 2.8:1. */
   --brass-text: #8a6420;
   --azure: #3e7cb1;
+  /* Small azure text: the plain azure is under 4.5:1 on paper. */
+  --azure-text: #2f6697;
   --line: rgba(22, 35, 58, 0.12);
   --card-solid: #ffffff;
 
@@ -64,6 +66,7 @@
   --brass: #d4a94e;
   --brass-text: var(--brass);
   --azure: #6fa8d6;
+  --azure-text: var(--azure);
   --line: rgba(237, 234, 226, 0.12);
   --card-solid: #161f30;
 
@@ -88,6 +91,7 @@
   --color-brass: var(--brass);
   --color-brass-text: var(--brass-text);
   --color-azure: var(--azure);
+  --color-azure-text: var(--azure-text);
   --color-line: var(--line);
   --color-card-solid: var(--card-solid);
 
