@@ -51,6 +51,7 @@ src/
     units/              Display units: km/mi, currency formatting, live rates.
     geo-search/         City search (Photon) behind `searchCities`.
     legal/              Operator and contact facts, report-a-map link.
+    affiliate/          Booking links from operator URL templates (`affiliateLinks`).
     analytics/          Cookieless Vercel Web Analytics + Speed Insights helpers.
     utils.ts            cn() — kept at this path for shadcn compatibility.
   test/

@@ -377,6 +377,15 @@
       "gettingAround": "Getting around",
       "whereToStay": "Where to stay",
       "localTips": "Local tips",
+      "book": {
+        "title": "Plan and book",
+        "stay": "Find a stay in {city}",
+        "activity": "Things to do in {city}",
+        "esim": "Get an eSIM for {country}",
+        "insurance": "Compare travel insurance",
+        "newTab": "opens in a new tab",
+        "disclosure": "Some links are affiliate links. We may earn a commission at no extra cost to you."
+      },
       "budgetCalculator": "Budget calculator",
       "spendingStyle": "Spending style — <b>{style}</b>",
       "spendStyles": {

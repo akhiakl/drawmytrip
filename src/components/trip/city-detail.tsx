@@ -115,7 +115,7 @@ export function CityDetail({
             <FoodSection city={city} />
           </TabsContent>
           <TabsContent value="practical">
-            <PracticalSection city={city} />
+            <PracticalSection city={city} dates={dates} />
           </TabsContent>
           <TabsContent value="planner">
             <PlannerSection city={city} />

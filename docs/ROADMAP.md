@@ -49,7 +49,11 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 | 10   | Legal pages, report link, AI notice, analytics                 | ✅ done |
 | 11   | `/about` story page, motion limits on the map                  | ✅ done |
 | 12   | Landing: destination search, returning visitors                | ✅ done |
-| 13   | Logo (route D) across icons, UI, previews and poster; SEO data | ✅ done |
+| 13   | Affiliate links, phase A (stays, activities, eSIM, insurance)  | ✅ done |
+| 13b  | Affiliate links: transit and car legs                          | planned |
+| 13c  | Affiliate links: flights (IATA) and packing gear               | planned |
+| 14   | Share-loop branding: link preview, poster, remix measurement   | planned |
+| 15   | Logo (route D) across icons, UI, previews and poster; SEO data | ✅ done |
 
 ---
 
@@ -238,6 +242,152 @@ desktop and mobile; Lighthouse a11y ≥ 95 on `/`, `/new`, `/maps/[id]`.
 
 ---
 
+## Step 13 — Affiliate links, phase A
+
+Branch: `feat/affiliate-links`
+
+Monetise through contextual booking links instead of display ads: no
+script on our pages, no cookies until a visitor clicks, nothing over the
+map. Links are computed at render time from the trip, so the schema,
+Redis snapshots and the 50KB cap do not change.
+
+**Decisions (change before starting if wrong)**
+
+- Network: Travelpayouts umbrella first (one marker ID covers
+  GetYourGuide, Viator, Airalo and others); Booking.com or Stay22 for
+  stays. A provider without an ID in env is hidden, so the feature ships
+  dark and turns on per provider.
+- Phase A covers stays, activities, eSIM and travel insurance. Transit
+  and car legs are 13b; flights and packing gear are 13c.
+- Link formats are NOT assumed: each program's deep-link pattern is
+  confirmed from its partner dashboard after approval, then recorded in
+  `src/lib/affiliate/providers.ts` with a test per provider.
+
+**Deliverables**
+
+1. `src/lib/affiliate/` (internal package, `index.ts` public API, pure,
+   no server-only). `config.ts` reads the `NEXT_PUBLIC_AFFILIATE_*` ids
+   (public by nature, not secrets) and exposes which providers are on.
+   `providers.ts` holds one URL builder per provider. `links.ts` exposes
+   `stopLinks(city, dates?)` and `tripLinks(trip)`, returning
+   `{ id, kind, provider, href, messageKey }[]`. `lib` returns message
+   keys, never copy.
+2. Safety in the builders: every href is `https`, built on a fixed
+   provider host, with user text only in `encodeURIComponent`ed query
+   values. A test asserts the host allowlist. Campaign tags are static
+   (`dmt-stay`, `dmt-act`, `dmt-esim`, `dmt-ins`); never a trip id.
+3. UI: an `AffiliateBlock` (props in, no fetching) in the city detail
+   Practical tab, under local tips: eyebrow label, 3 to 4 plain text
+   rows with an external-link icon, and one disclosure line. Also on the
+   shared `/t/{id}` view. Not on the map, poster, print view, OG image,
+   editor, or landing. Hidden entirely when no provider is on.
+4. Link attributes: `target="_blank"` and
+   `rel="sponsored noopener noreferrer"`. `noreferrer` also keeps the
+   `/t/{id}` share URL from reaching partners.
+5. Copy in `src/i18n/messages/en.json` (labels, disclosure line). Styling
+   with existing tokens only; both themes, reduced motion, keyboard focus
+   visible, 44px touch rows on mobile.
+6. Analytics: add `affiliate_click` to `AnalyticsEvent` and fire it on
+   click. `shortcut: no provider property, Vercel Hobby drops custom
+events anyway, upgrade when on Pro.`
+7. Legal: `/privacy` gains a third-party links section naming each
+   partner and the data sent on click (destination, dates); `/terms`
+   gains the affiliate disclosure. Update `docs/RELEASE.md` checklist.
+8. Docs: `docs/ARCHITECTURE.md` module map entry for `lib/affiliate`;
+   `.env.example` lists every `NEXT_PUBLIC_AFFILIATE_*` key.
+
+**Tests (written with the code)**
+
+- Unit: each provider builder (encoding, accents and `&` in city names,
+  dated vs undated stays, disabled provider omitted, host allowlist);
+  `stopLinks`/`tripLinks` ordering and empty result.
+- Component: block renders rows and attributes, disclosure present,
+  renders nothing with no providers, click fires the event.
+- Fixtures: `makeAffiliateConfig` and link builders in
+  `src/test/fixtures/`.
+- e2e: extend the shared-view journey to assert link attributes only.
+
+**Definition of done**: gates green, coverage above 85%, light+dark
+screenshots at 360/768/1280 checked, `grand-tour-review` Must-fix
+resolved, `TODO(legal)` items updated.
+
+## Step 13b — Transit and car legs
+
+Per-leg link under the leg row, chosen by `leg.mode`: train and bus
+(Omio, Trainline, 12Go), ferry (Direct Ferries), car (Discover Cars).
+Dated from `StopDates` when the trip has a start date. Same lib,
+component and legal rules as Step 13.
+
+## Step 13c — Flights and packing gear
+
+Flights need IATA codes: add a small city-to-IATA dataset or lookup
+(`shortcut:` with a documented upgrade path), then flight-leg links.
+Packing items (adapter, power bank, bottle) gain "Get one" links per
+storefront region. Only after 13 and 13b show real clicks.
+
+---
+
+## Step 14 — Share-loop branding
+
+Branch: `feat/share-branding`
+
+Every shared map is the product's best advert, so someone who sees the
+link preview or the poster should be able to find the site. The remix
+button already exists on `/t/[id]` (`PrimaryActions`, "Remix this
+trip" next to "Create your own"); this step does not rebuild it.
+
+**What exists today**: the poster footer says "DrawMyTrip" but shows no
+address; the `/t/[id]` link preview (`og-card.tsx`) shows the route with
+no brand or address at all; nothing measures whether remix is used.
+
+**Decisions (change before starting if wrong)**
+
+- Branding is the wordmark plus the site host (from
+  `NEXT_PUBLIC_SITE_URL` via `@/lib/http/site-url`), kept as one value
+  so a Phase 2 premium "no watermark" can drop it later. No toggle now.
+- Keep the remix button as is; only fix its placement if the mobile
+  check below shows it hidden.
+- The host in production comes from `NEXT_PUBLIC_SITE_URL`; set it
+  before launch or the preview shows the Vercel fallback host.
+
+**Deliverables**
+
+1. Link preview: a small footer in `OgCard` with the wordmark and host,
+   the map area shrunk to fit. Both brand strings come from `en.json`
+   (the OG route reads the catalog directly, as `opengraph-image.tsx`
+   does now).
+2. Poster: the host line under the existing "DrawMyTrip" brand line in
+   `draw-poster.ts` (footer already ends near y 1276 of 1350). The share
+   action also sends the site URL as text with the image.
+3. A pure `siteHost(url)` helper (strip scheme, `www.` and trailing
+   slash) with tests, used by both the preview and the poster. Confirm
+   first that `site-url.ts` is safe to import from client code; if not,
+   pass the host in as a prop from a server component.
+4. Measure the loop: add `remix_started` and `poster_downloaded` to
+   `AnalyticsEvent`, fired from the remix handler in `trip-experience`
+   and the poster download. `shortcut: no properties, custom events need
+Vercel Pro (see the existing TODO(analytics)), upgrade on Pro.`
+5. Mobile check: on `/t/[id]` at 390px, confirm the remix button is
+   visible without expanding the bottom card. If it is hidden, make the
+   collapsed card show it; otherwise change nothing.
+
+**Tests (with the code)**
+
+- Unit: `siteHost` cases (scheme, `www.`, trailing slash, port,
+  invalid input falls back).
+- `og-card` test: brand and host render; long titles still fit.
+- `poster-dialog` test: the share call includes the URL text; the
+  download fires its event. Remix handler fires its event once.
+- Fixtures: reuse `makeTrip`; no new mock data in test files.
+
+**Definition of done**: gates green, coverage above 85%; screenshots
+checked: poster in light and dark, the `/t/[id]/opengraph-image` PNG
+with a short and a long trip title, and `/t/[id]` at 390 and 1280;
+`grand-tour-review` Must-fix resolved; `docs/RELEASE.md` mentions
+setting `NEXT_PUBLIC_SITE_URL`.
+
+---
+
 ## One-time human tasks (not agent work)
 
 - [ ] Upstash Redis created; `UPSTASH_REDIS_REST_URL` / `_TOKEN` in
@@ -252,6 +402,9 @@ desktop and mobile; Lighthouse a11y ≥ 95 on `/`, `/new`, `/maps/[id]`.
 - [ ] Optional: allowlist `ui.shadcn.com` in the remote environment's
       network policy so `shadcn add` works in cloud sessions.
 - [ ] `RELEASE_PLEASE_TOKEN` repo secret (PAT) so CI runs on release PRs.
+- [ ] Affiliate programs (after the first production deploy; most need a
+      live site): Travelpayouts, Booking.com or Stay22, then set the
+      `NEXT_PUBLIC_AFFILIATE_*` ids in the deploy host env (Step 13).
 - [ ] `VERCEL_TOKEN` repo secret for the release deploy; `main` auto-deploy is
       skipped by Vercel's Ignored Build Step (see `docs/RELEASE.md`).
 
