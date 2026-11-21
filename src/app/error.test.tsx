@@ -15,11 +15,11 @@ describe("RouteError", () => {
 
     expect(monitoring.captureError).toHaveBeenCalledWith(error);
     expect(
-      screen.getByRole("heading", { name: "We lost the trail for a moment." }),
+      screen.getByRole("heading", { name: "Something went wrong" }),
     ).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(reset).toHaveBeenCalledOnce();
-    expect(screen.getByRole("link", { name: "Back to the atlas" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Back to home" })).toHaveAttribute(
       "href",
       "/",
     );

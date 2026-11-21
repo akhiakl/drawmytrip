@@ -36,7 +36,7 @@ describe("ShareDialog", () => {
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
       expect.stringContaining("/t/abc12345"),
     );
-    expect(toastMocks.success).toHaveBeenCalledWith("Map shared — link copied");
+    expect(toastMocks.success).toHaveBeenCalledWith("Map shared. Link copied.");
     expect(
       await screen.findByRole("button", { name: /copied/i }),
     ).toBeInTheDocument();

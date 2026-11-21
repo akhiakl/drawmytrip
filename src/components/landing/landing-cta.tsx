@@ -66,7 +66,8 @@ export function LandingCta() {
         }
       />
 
-      <p className="text-sm text-ink-soft">{t("tagline")}</p>
+      <h1 className="text-sm font-medium text-ink">{t("heading")}</h1>
+      <p className="-mt-1 text-sm text-ink-soft">{t("tagline")}</p>
 
       <Link
         href="/about"

@@ -23,10 +23,10 @@
         "Musée de la Vie Romantique"
       ],
       "food": [
-        ["Jambon-beurre", "Any proper boulangerie — eat it on a bench by the Seine"],
+        ["Jambon-beurre", "Any proper boulangerie. Eat it on a bench by the Seine"],
         [
           "Steak frites",
-          "Classic bistro dinner; Le Relais de l'Entrecôte keeps it simple"
+          "Classic bistro dinner. Le Relais de l'Entrecôte keeps it simple"
         ],
         ["Éclair au café", "Worth the queue at a pâtisserie in Saint-Germain"]
       ],
@@ -48,11 +48,11 @@
         ]
       ],
       "budget": [155, 240],
-      "transport": "Métro carnet or Navigo Easy card; everything central is walkable",
+      "transport": "Métro carnet or Navigo Easy card. Everything central is walkable",
       "stay": "Le Marais or Saint-Germain for atmosphere within walking distance of both banks",
       "tips": [
         "Book Sainte-Chapelle and Orsay timed entries ahead",
-        "Most museums close Monday or Tuesday — check before planning",
+        "Most museums close Monday or Tuesday, so check before planning",
         "Lunch prix-fixe menus are the affordable way into great kitchens"
       ]
     },
@@ -62,7 +62,7 @@
       "flag": "🇨🇭",
       "ll": [46.2044, 6.1432],
       "nights": 2,
-      "why": "The alpine hinge of the journey — a calm, watchmaker-precise city on a glacial lake, with the Alps standing by for a first proper mountain day.",
+      "why": "The alpine hinge of the trip. A calm, precise city on a glacial lake, with the Alps close by for a first proper mountain day.",
       "must": [
         "Jet d'Eau & lake promenade",
         "Old Town & St Pierre Cathedral",
@@ -80,7 +80,7 @@
         ],
         [
           "Longeole sausage",
-          "Geneva's own — old-town brasseries serve it with lentils"
+          "Geneva's own. Old-town brasseries serve it with lentils"
         ],
         ["Chocolate", "Small makers around Rue du Rhône beat the airport brands"]
       ],
@@ -98,11 +98,11 @@
       ],
       "budget": [175, 265],
       "transport": "Free Geneva Transport Card from your accommodation covers trams, buses and lake boats",
-      "stay": "Pâquis for the lake and food stalls; Old Town for quiet cobbles",
+      "stay": "Pâquis for the lake and food stalls, or Old Town for quiet cobbles",
       "tips": [
-        "Tap water everywhere is glacial and free — carry a bottle",
+        "Tap water everywhere is cold and free, so carry a bottle",
         "Supermarket lunches (Migros, Coop) keep Swiss budgets sane",
-        "Sunday is genuinely quiet; plan the lake day for it"
+        "Sunday is genuinely quiet, so plan the lake day for it"
       ]
     },
     {
@@ -126,9 +126,9 @@
       "food": [
         [
           "Bistecca alla fiorentina",
-          "Shared, rare, priced by the etto — trattorias in Sant'Ambrogio"
+          "Shared, rare and priced by the etto. Try the trattorias in Sant'Ambrogio"
         ],
-        ["Lampredotto panino", "From a street cart; the working Florentine's lunch"],
+        ["Lampredotto panino", "From a street cart, the working Florentine's lunch"],
         [
           "Gelato",
           "Look for covered tins and seasonal flavours, never neon mountains"
@@ -152,12 +152,12 @@
         ]
       ],
       "budget": [120, 200],
-      "transport": "Entirely walkable; the C-line electric minibuses help tired feet",
-      "stay": "Oltrarno for craft-shop mornings and quieter nights; Santa Croce for trattorias",
+      "transport": "Entirely walkable, and the C-line electric minibuses help tired feet",
+      "stay": "Oltrarno for craft-shop mornings and quieter nights, or Santa Croce for trattorias",
       "tips": [
-        "Dome and Uffizi tickets sell out days ahead — book both online",
+        "Dome and Uffizi tickets sell out days ahead, so book both online",
         "Cover charges (coperto) are normal, not a scam",
-        "Churches enforce covered shoulders; carry a light scarf"
+        "Churches enforce covered shoulders, so carry a light scarf"
       ]
     },
     {
@@ -179,8 +179,8 @@
         "Basilica di San Clemente's underground layers"
       ],
       "food": [
-        ["Carbonara", "Trastevere and Testaccio classics — no cream, ever"],
-        ["Supplì", "Fried rice croquettes; the pre-dinner street snack"],
+        ["Carbonara", "Trastevere and Testaccio classics, with no cream"],
+        ["Supplì", "Fried rice croquettes, the pre-dinner street snack"],
         ["Maritozzo", "Cream-filled brioche breakfast beloved by Romans"]
       ],
       "days": [
@@ -201,12 +201,12 @@
         ]
       ],
       "budget": [120, 200],
-      "transport": "Walk the centre; metro B for the Colosseum, trams to Trastevere",
-      "stay": "Monti for boutiques near the ruins; Trastevere for the evenings",
+      "transport": "Walk the centre, take metro B to the Colosseum and trams to Trastevere",
+      "stay": "Monti for boutiques near the ruins, or Trastevere for the evenings",
       "tips": [
-        "Book Colosseum and Vatican slots well ahead — queues are brutal",
-        "House wine and water come cheap; order both",
-        "Drink from the nasoni street fountains — the water is excellent"
+        "Book Colosseum and Vatican slots well ahead because queues are long",
+        "House wine and water come cheap, so order both",
+        "Drink from the nasoni street fountains. The water is excellent"
       ]
     },
     {
@@ -215,7 +215,7 @@
       "flag": "🇮🇹",
       "ll": [45.4408, 12.3155],
       "nights": 2,
-      "why": "The traditional finale — a city that still feels like a reward. Two nights means you keep the lagoon after the day-trippers leave and see it wake in the mist.",
+      "why": "The traditional finale. Two nights let you keep the lagoon after the day-trippers leave and see it wake in the mist.",
       "must": [
         "St Mark's Basilica",
         "Doge's Palace",
@@ -228,7 +228,7 @@
       ],
       "food": [
         ["Cicchetti", "Bar-hop bacari around Rialto with an ombra of wine"],
-        ["Sarde in saor", "Sweet-sour sardines — Venice's oldest flavour"],
+        ["Sarde in saor", "Sweet-sour sardines, one of Venice's oldest flavours"],
         ["Spritz", "Select or Cynar, standing by a canal, before dinner"]
       ],
       "days": [
@@ -244,12 +244,12 @@
         ]
       ],
       "budget": [145, 220],
-      "transport": "48-hour vaporetto pass pays for itself; otherwise walk everything",
-      "stay": "Cannaregio or Castello — real neighbourhoods ten minutes from the crush",
+      "transport": "A 48-hour vaporetto pass pays for itself, otherwise walk everything",
+      "stay": "Cannaregio or Castello, real neighbourhoods ten minutes from the crowds",
       "tips": [
-        "Day-trip crowds peak 10–16h; do icons outside that window",
+        "Day-trip crowds peak between 10:00 and 16:00, so see the icons outside that window",
         "A tide app warns you about acqua alta in autumn",
-        "Sit-down coffee in Piazza San Marco costs a fortune — stand at the bar"
+        "Sit-down coffee in Piazza San Marco is expensive, so stand at the bar"
       ]
     }
   ],

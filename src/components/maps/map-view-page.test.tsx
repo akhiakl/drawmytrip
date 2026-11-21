@@ -35,7 +35,7 @@ describe("MapViewPage", () => {
   it("shows the loading state before the client has mounted", () => {
     mocks.useMounted.mockReturnValue(false);
     render(<MapViewPage />);
-    expect(screen.getByRole("status")).toHaveTextContent("Unfolding the map…");
+    expect(screen.getByRole("status")).toHaveTextContent("Loading the map…");
     expect(mocks.getLocalTrip).not.toHaveBeenCalled();
   });
 

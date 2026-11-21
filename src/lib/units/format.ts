@@ -1,5 +1,8 @@
 import { BASE_CURRENCY, convertFromBase, type Currency, type Rates } from "./rates";
 
+/** Joins the two ends of a price range: "$90 to $160". */
+const RANGE_JOINER = " to ";
+
 export type DistanceUnit = "km" | "mi";
 
 export const KM_PER_MILE = 1.609344;
@@ -41,11 +44,11 @@ export function formatMoney(
   );
 
   if (converted.includes(null)) {
-    return amounts.map((amount) => money(amount, BASE_CURRENCY)).join("–");
+    return amounts.map((amount) => money(amount, BASE_CURRENCY)).join(RANGE_JOINER);
   }
   const exact = currency === BASE_CURRENCY;
   const text = (converted as number[])
     .map((value) => money(exact ? value : niceRound(value), currency))
-    .join("–");
+    .join(RANGE_JOINER);
   return exact ? text : `~${text}`;
 }

@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState, type ReactNode } from "react";
 
+import { LandingAbout } from "@/components/landing/landing-about";
 import { LegalLinks } from "@/components/legal/legal-links";
 import { ReportMapLink } from "@/components/legal/report-map-link";
 import { usePageIdle } from "@/hooks/use-page-idle";
@@ -182,6 +183,7 @@ export function TripPanel({
                 onHover={onHover}
               />
             </section>
+            {variant === "demo" && <LandingAbout />}
             {variant === "shared" && <SharedLinkNote views={views} />}
             <LegalLinks className="border-t border-line pt-4">
               {variant === "shared" && <ReportMapLink />}

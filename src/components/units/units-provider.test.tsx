@@ -46,7 +46,7 @@ describe("UnitsProvider", () => {
     await renderProbe("en-IE");
 
     expect(
-      await screen.findByText("~€90–€180 | ~1,520 km | ready"),
+      await screen.findByText("~€90 to €180 | ~1,520 km | ready"),
     ).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/rates");
   });
@@ -54,7 +54,9 @@ describe("UnitsProvider", () => {
   it("skips the rates request for US dollars", async () => {
     await renderProbe("en-US");
 
-    expect(screen.getByText("$100–$200 | ~940 mi | not-needed")).toBeInTheDocument();
+    expect(
+      screen.getByText("$100 to $200 | ~940 mi | not-needed"),
+    ).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -63,7 +65,7 @@ describe("UnitsProvider", () => {
     await renderProbe("de-DE");
 
     expect(
-      await screen.findByText("$100–$200 | ~1,520 km | unavailable"),
+      await screen.findByText("$100 to $200 | ~1,520 km | unavailable"),
     ).toBeInTheDocument();
   });
 
@@ -74,7 +76,9 @@ describe("UnitsProvider", () => {
     act(() => units().setPrefs({ distance: "km", currency: "GBP" }));
 
     await waitFor(() =>
-      expect(screen.getByText("~£80–£160 | ~1,520 km | ready")).toBeInTheDocument(),
+      expect(
+        screen.getByText("~£80 to £160 | ~1,520 km | ready"),
+      ).toBeInTheDocument(),
     );
     expect(JSON.parse(window.localStorage.getItem("prefs:display") ?? "")).toEqual({
       distance: "km",

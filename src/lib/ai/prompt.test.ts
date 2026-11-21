@@ -15,7 +15,12 @@ describe("buildSystemPrompt", () => {
   it("pins the structural rules the schema will enforce", () => {
     expect(prompt).toContain("legs.length must equal cities.length - 1");
     expect(prompt).toContain("[latitude, longitude]");
-    expect(prompt).toContain("never invent places");
+    expect(prompt).toContain("Never invent places");
+  });
+
+  it("asks for plain writing without dashes or semicolons", () => {
+    expect(prompt).toContain("Never use em dashes, en dashes or semicolons");
+    expect(prompt).not.toMatch(/[\u2014\u2013]/);
   });
 });
 

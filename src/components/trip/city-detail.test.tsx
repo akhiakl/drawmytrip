@@ -21,7 +21,7 @@ describe("CityDetail", () => {
     renderDrawer();
     expect(screen.getByRole("heading", { name: city.name })).toBeInTheDocument();
     expect(screen.getByText(/Stop 1 of 5/)).toBeInTheDocument();
-    expect(screen.getByText(/\$90–\$160 per day/)).toBeInTheDocument();
+    expect(screen.getByText(/\$90 to \$160 per day/)).toBeInTheDocument();
   });
 
   it("opens on the overview tab with why and must-sees", () => {

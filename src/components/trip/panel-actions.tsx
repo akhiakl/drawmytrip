@@ -85,7 +85,7 @@ export function PrimaryActions({
 }
 
 const tileClass =
-  "flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[11px] font-medium text-ink-soft transition-colors outline-none hover:bg-accent hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-[18px]";
+  "flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-xs font-medium text-ink-soft transition-colors outline-none hover:bg-accent hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-[18px]";
 
 function Tile({
   icon,

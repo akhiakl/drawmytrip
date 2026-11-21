@@ -51,9 +51,9 @@ export function IntroSplash({
       <div className="flex flex-col items-center gap-3 px-6 text-center">
         <Logo className="mb-5 text-2xl" />
         <p className="eyebrow">{eyebrow}</p>
-        <h1 className="font-display text-5xl font-normal tracking-tight sm:text-7xl">
+        <p className="font-display text-5xl font-normal tracking-tight sm:text-7xl">
           <TitleWithAccent title={title} />
-        </h1>
+        </p>
         <p className="text-[15px] text-muted-foreground">{route}</p>
       </div>
     </div>

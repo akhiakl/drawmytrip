@@ -77,14 +77,14 @@ describe("AiChat", () => {
     });
   });
 
-  it("shows the breather state on 429 and retries with the same answers", async () => {
+  it("shows the rate-limit state on 429 and retries with the same answers", async () => {
     fetchMock
       .mockResolvedValueOnce(jsonResponse({ error: "rate_limited" }, 429))
       .mockResolvedValueOnce(jsonResponse(makeGeneratedDraft(), 200));
 
     const user = await answerAll();
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("needs a breather");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Too many requests");
     await user.click(screen.getByRole("button", { name: /try again/i }));
 
     expect(fetchMock).toHaveBeenCalledTimes(2);

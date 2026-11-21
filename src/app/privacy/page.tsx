@@ -21,7 +21,7 @@ const mail = <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>;
 const PROCESSORS = [
   [
     "Vercel",
-    "Hosts the app; keeps short-lived request logs (IP address, browser), counts page views and measures page speed (load and response times, device type) without cookies.",
+    "Hosts the app. Keeps short-lived request logs (IP address, browser), counts page views and measures page speed (load and response times, device type) without cookies.",
     "Logs: short-lived. Analytics and speed: aggregate figures only",
   ],
   [
@@ -47,11 +47,11 @@ const PROCESSORS = [
   [
     "Userback",
     "Only while we run a public test: if you press the feedback button, it sends the screenshot or screen recording you choose to capture, your note, and the page's console and network details.",
-    "Per Userback's retention; nothing is sent unless you press the button",
+    "Per Userback's retention. Nothing is sent unless you press the button",
   ],
   [
     "Photon by komoot",
-    "Answers city searches; your browser sends the text you type.",
+    "Answers city searches. Your browser sends the text you type.",
     "Under komoot's own policy",
   ],
   [
@@ -195,7 +195,7 @@ const SECTIONS: readonly LegalSection[] = [
       <>
         <p>
           You can ask us to access, correct or delete your data, or object to how we
-          use it. To remove a map you shared, email {mail} with its link; without
+          use it. To remove a map you shared, email {mail} with its link. Without
           accounts we can’t otherwise tell who made it. You can also nominate someone
           to act for you under India’s Digital Personal Data Protection Act.
         </p>
@@ -213,7 +213,7 @@ const SECTIONS: readonly LegalSection[] = [
       <p>
         DrawMyTrip is not aimed at children. If you are under 18, please use it with
         a parent or guardian’s permission. We don’t knowingly collect data about
-        children; if you think we have, contact us and we will delete it.
+        children. If you think we have, contact us and we will delete it.
       </p>
     ),
   },
