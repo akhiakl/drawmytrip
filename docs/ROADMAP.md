@@ -54,6 +54,9 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 | 13c  | Affiliate links: flights (IATA) and packing gear               | planned |
 | 14   | Share-loop branding: link preview, poster, remix measurement   | planned |
 | 15   | Logo (route D) across icons, UI, previews and poster; SEO data | ✅ done |
+| 16   | SEO schemas: FAQPage and BreadcrumbList                        | planned |
+| 16b  | SEO schema: Organization (gated on operator name)              | planned |
+| 17   | Destination route pages for search                             | planned |
 
 ---
 
@@ -388,6 +391,123 @@ setting `NEXT_PUBLIC_SITE_URL`.
 
 ---
 
+## Step 16 — SEO schemas: FAQPage and BreadcrumbList
+
+Branch: `feat/seo-schemas`
+
+The landing page already ships `WebSite` and `WebApplication` JSON-LD
+(`src/lib/http/json-ld.ts`). This step adds the next two schemas that
+help search engines understand the public pages, using the same safe
+serializer (`<` escaped so a value cannot close the script tag).
+
+**Decisions (change before starting if wrong)**
+
+- `FAQPage` goes on `/about`, built from the same data as `AboutFaq` so
+  the schema and the visible answers can never disagree. Google now shows
+  FAQ rich results only for well-known sites, so the gain is better
+  understanding, not a guaranteed rich result.
+- `BreadcrumbList` goes on About, Plan, Privacy, Terms and Contact
+  (Home, then the page). Shared maps (`noindex`) get nothing.
+- No `Review`, `AggregateRating` or `Product` schema: there are no real
+  reviews, and fake ones risk a manual penalty.
+- `HowTo` is skipped: Google dropped its rich result.
+
+**Deliverables**
+
+1. Move the FAQ questions and answers into one typed list that both
+   `AboutFaq` and the schema read (copy stays in `en.json`).
+2. `faqJsonLd(items)` and `breadcrumbJsonLd(trail, baseUrl)` in
+   `src/lib/http/json-ld.ts`, beside `siteJsonLd`, exported through
+   `@/lib/http`. Plain text only: markup in answers is stripped.
+3. Render each as a `<script type="application/ld+json">` on its page,
+   the way `src/app/page.tsx` does.
+4. `docs/ARCHITECTURE.md`: one line on where schemas live.
+
+**Tests (with the code)**
+
+- Unit: both builders (shape, absolute URLs from the base URL, `<`
+  escaped, empty list returns no FAQ block).
+- Page tests: the script tag is present and its answers match the
+  visible FAQ text.
+
+**Definition of done**: gates green, coverage above 85%; both schemas
+pass Google's Rich Results Test and the Schema.org validator on the
+preview deploy; `grand-tour-review` Must-fix resolved.
+
+## Step 16b — Organization schema
+
+Branch: `feat/seo-organization`
+
+`Organization` on the home page with `name`, `url`, `logo` (the
+`/icons/512` image) and a `contactPoint` using `CONTACT_EMAIL`. Linked
+from `WebSite` through `publisher`. **Blocked until `OPERATOR_NAME` in
+`src/lib/legal/operator.ts` is final** (the open `TODO(legal)`), as the
+schema would publish that name. Same builder, tests and checks as Step 16.
+
+## Step 17 — Destination route pages
+
+Branch: `feat/destination-pages`
+
+The main long-term search lever: pages that match what people type
+("7 days in Japan route map", "Italy itinerary") and give them a
+ready, editable route. Each page is static, indexable and unique.
+
+**Decisions (change before starting if wrong)**
+
+- Content: each route is a `Trip` JSON validated by `TripSchema`
+  (5 stops or fewer, under the 50KB cap), drafted with the AI planner
+  and then edited by hand. No thin or near-duplicate pages: each needs
+  its own intro text, practical notes and a distinct route.
+- First batch of 5 to 10 destinations: **confirm the list before
+  starting** (candidates: Italy, Japan, Portugal, Greece, Thailand).
+  Adding one later is one JSON file plus its copy.
+- URLs: an index at `/routes` and one page at `/routes/[slug]`, built
+  with `generateStaticParams` (no Redis, no server cost).
+- The page reuses `TripExperience`. The call to action is "Customize
+  this route", which already copies a trip into a local draft and opens
+  the editor (`handleEditRoute`). Confirm during implementation whether
+  that needs a new variant beside `demo`, `shared` and `own`, or can
+  reuse `demo` with a different `cta`.
+- Affiliate stay and activity links (Step 13) show here automatically
+  when configured, since the pages use the same city detail panel.
+
+**Deliverables**
+
+1. `src/lib/destinations/` (internal package, `index.ts` public API):
+   the curated route list, a `getDestination(slug)` lookup, and a test
+   that every file passes `TripSchema` and has a unique slug.
+2. `/routes` (index, links to each page) and `/routes/[slug]` (map,
+   route, intro text), with per-page title, description, canonical and
+   share image through `pageMetadata` and `shareMetadata`.
+3. Structured data per page: `BreadcrumbList` (Step 16 builder) and
+   `TouristTrip` (schema.org subtype of `Trip`) with the stops as the
+   `itinerary` `ItemList`. No Google rich result exists for it, so it is
+   for understanding only.
+4. Sitemap: add `/routes` and every slug, with a real `lastModified`
+   from the route file rather than the build time.
+5. Internal links: the landing page, About and the footer link to
+   `/routes`, with descriptive link text.
+6. Copy for intros and page chrome in `en.json`; the long guide text per
+   route lives beside its route data.
+7. Analytics: `route_page_customized` event on the call to action
+   (`shortcut: no properties, records on Vercel Pro only`).
+
+**Tests (with the code)**
+
+- Unit: the schema test above; slug lookup (found, unknown returns
+  null); sitemap includes every slug.
+- Page tests: metadata, canonical and the JSON-LD for one route; an
+  unknown slug returns not found.
+- e2e: open a route page, press "Customize this route", land in the
+  editor with the stops filled in.
+
+**Definition of done**: gates green, coverage above 85%; screenshots of
+`/routes` and one route page in light and dark at 390 and 1280;
+Lighthouse SEO and accessibility at or above 95; the pages pass the Rich
+Results Test; `grand-tour-review` Must-fix resolved.
+
+---
+
 ## One-time human tasks (not agent work)
 
 - [ ] Upstash Redis created; `UPSTASH_REDIS_REST_URL` / `_TOKEN` in
@@ -405,6 +525,12 @@ setting `NEXT_PUBLIC_SITE_URL`.
 - [ ] Affiliate programs (after the first production deploy; most need a
       live site): Travelpayouts, Booking.com or Stay22, then set the
       `NEXT_PUBLIC_AFFILIATE_*` ids in the deploy host env (Step 13).
+- [ ] SEO launch tasks (after the first production deploy): set
+      `NEXT_PUBLIC_SITE_URL=https://drawmytrip.akhiakl.in`; verify the site
+      in Google Search Console and Bing Webmaster Tools (the
+      `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION` env vars) and
+      submit `/sitemap.xml`; redirect any `www` or extra host to the one
+      domain in Vercel; confirm the destination list for Step 17.
 - [ ] `VERCEL_TOKEN` repo secret for the release deploy; `main` auto-deploy is
       skipped by Vercel's Ignored Build Step (see `docs/RELEASE.md`).
 
