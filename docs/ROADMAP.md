@@ -34,21 +34,24 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 
 ## Status
 
-| Step | Scope                                              | State   |
-| ---- | -------------------------------------------------- | ------- |
-| 1    | Scaffold, tooling, tokens, schema                  | ✅ done |
-| 2    | Redis service, /api/trips, /api/generate, limits   | ✅ done |
-| 3    | Map + CityDrawer + TimelineRail (reference design) | ✅ done |
-| 3.5  | Monitoring (Sentry), SonarQube, CI checks          | ✅ done |
-| 4    | Manual editor + Nominatim + localStorage + My Maps | ✅ done |
-| 5    | /t/[id] shared view + OG image + remix             | ✅ done |
-| 6    | AI chat UI + ghost-stops upsell                    | ✅ done |
-| 7    | Landing page + polish pass                         | ✅ done |
-| 8    | Playwright e2e                                     | ✅ done |
-| 9    | UX & a11y hardening (design-review follow-ups)     | ✅ done |
-| 10   | Legal pages, report link, AI notice, analytics     | ✅ done |
-| 11   | `/about` story page, motion limits on the map      | ✅ done |
-| 12   | Landing: destination search, returning visitors    | ✅ done |
+| Step | Scope                                                         | State   |
+| ---- | ------------------------------------------------------------- | ------- |
+| 1    | Scaffold, tooling, tokens, schema                             | ✅ done |
+| 2    | Redis service, /api/trips, /api/generate, limits              | ✅ done |
+| 3    | Map + CityDrawer + TimelineRail (reference design)            | ✅ done |
+| 3.5  | Monitoring (Sentry), SonarQube, CI checks                     | ✅ done |
+| 4    | Manual editor + Nominatim + localStorage + My Maps            | ✅ done |
+| 5    | /t/[id] shared view + OG image + remix                        | ✅ done |
+| 6    | AI chat UI + ghost-stops upsell                               | ✅ done |
+| 7    | Landing page + polish pass                                    | ✅ done |
+| 8    | Playwright e2e                                                | ✅ done |
+| 9    | UX & a11y hardening (design-review follow-ups)                | ✅ done |
+| 10   | Legal pages, report link, AI notice, analytics                | ✅ done |
+| 11   | `/about` story page, motion limits on the map                 | ✅ done |
+| 12   | Landing: destination search, returning visitors               | ✅ done |
+| 13   | Affiliate links, phase A (stays, activities, eSIM, insurance) | planned |
+| 13b  | Affiliate links: transit and car legs                         | planned |
+| 13c  | Affiliate links: flights (IATA) and packing gear              | planned |
 
 ---
 
@@ -237,6 +240,91 @@ desktop and mobile; Lighthouse a11y ≥ 95 on `/`, `/new`, `/maps/[id]`.
 
 ---
 
+## Step 13 — Affiliate links, phase A
+
+Branch: `feat/affiliate-links`
+
+Monetise through contextual booking links instead of display ads: no
+script on our pages, no cookies until a visitor clicks, nothing over the
+map. Links are computed at render time from the trip, so the schema,
+Redis snapshots and the 50KB cap do not change.
+
+**Decisions (change before starting if wrong)**
+
+- Network: Travelpayouts umbrella first (one marker ID covers
+  GetYourGuide, Viator, Airalo and others); Booking.com or Stay22 for
+  stays. A provider without an ID in env is hidden, so the feature ships
+  dark and turns on per provider.
+- Phase A covers stays, activities, eSIM and travel insurance. Transit
+  and car legs are 13b; flights and packing gear are 13c.
+- Link formats are NOT assumed: each program's deep-link pattern is
+  confirmed from its partner dashboard after approval, then recorded in
+  `src/lib/affiliate/providers.ts` with a test per provider.
+
+**Deliverables**
+
+1. `src/lib/affiliate/` (internal package, `index.ts` public API, pure,
+   no server-only). `config.ts` reads the `NEXT_PUBLIC_AFFILIATE_*` ids
+   (public by nature, not secrets) and exposes which providers are on.
+   `providers.ts` holds one URL builder per provider. `links.ts` exposes
+   `stopLinks(city, dates?)` and `tripLinks(trip)`, returning
+   `{ id, kind, provider, href, messageKey }[]`. `lib` returns message
+   keys, never copy.
+2. Safety in the builders: every href is `https`, built on a fixed
+   provider host, with user text only in `encodeURIComponent`ed query
+   values. A test asserts the host allowlist. Campaign tags are static
+   (`dmt-stay`, `dmt-act`, `dmt-esim`, `dmt-ins`); never a trip id.
+3. UI: an `AffiliateBlock` (props in, no fetching) in the city detail
+   Practical tab, under local tips: eyebrow label, 3 to 4 plain text
+   rows with an external-link icon, and one disclosure line. Also on the
+   shared `/t/{id}` view. Not on the map, poster, print view, OG image,
+   editor, or landing. Hidden entirely when no provider is on.
+4. Link attributes: `target="_blank"` and
+   `rel="sponsored noopener noreferrer"`. `noreferrer` also keeps the
+   `/t/{id}` share URL from reaching partners.
+5. Copy in `src/i18n/messages/en.json` (labels, disclosure line). Styling
+   with existing tokens only; both themes, reduced motion, keyboard focus
+   visible, 44px touch rows on mobile.
+6. Analytics: add `affiliate_click` to `AnalyticsEvent` and fire it on
+   click. `shortcut: no provider property, Vercel Hobby drops custom
+events anyway, upgrade when on Pro.`
+7. Legal: `/privacy` gains a third-party links section naming each
+   partner and the data sent on click (destination, dates); `/terms`
+   gains the affiliate disclosure. Update `docs/RELEASE.md` checklist.
+8. Docs: `docs/ARCHITECTURE.md` module map entry for `lib/affiliate`;
+   `.env.example` lists every `NEXT_PUBLIC_AFFILIATE_*` key.
+
+**Tests (written with the code)**
+
+- Unit: each provider builder (encoding, accents and `&` in city names,
+  dated vs undated stays, disabled provider omitted, host allowlist);
+  `stopLinks`/`tripLinks` ordering and empty result.
+- Component: block renders rows and attributes, disclosure present,
+  renders nothing with no providers, click fires the event.
+- Fixtures: `makeAffiliateConfig` and link builders in
+  `src/test/fixtures/`.
+- e2e: extend the shared-view journey to assert link attributes only.
+
+**Definition of done**: gates green, coverage above 85%, light+dark
+screenshots at 360/768/1280 checked, `grand-tour-review` Must-fix
+resolved, `TODO(legal)` items updated.
+
+## Step 13b — Transit and car legs
+
+Per-leg link under the leg row, chosen by `leg.mode`: train and bus
+(Omio, Trainline, 12Go), ferry (Direct Ferries), car (Discover Cars).
+Dated from `StopDates` when the trip has a start date. Same lib,
+component and legal rules as Step 13.
+
+## Step 13c — Flights and packing gear
+
+Flights need IATA codes: add a small city-to-IATA dataset or lookup
+(`shortcut:` with a documented upgrade path), then flight-leg links.
+Packing items (adapter, power bank, bottle) gain "Get one" links per
+storefront region. Only after 13 and 13b show real clicks.
+
+---
+
 ## One-time human tasks (not agent work)
 
 - [ ] Upstash Redis created; `UPSTASH_REDIS_REST_URL` / `_TOKEN` in
@@ -251,6 +339,9 @@ desktop and mobile; Lighthouse a11y ≥ 95 on `/`, `/new`, `/maps/[id]`.
 - [ ] Optional: allowlist `ui.shadcn.com` in the remote environment's
       network policy so `shadcn add` works in cloud sessions.
 - [ ] `RELEASE_PLEASE_TOKEN` repo secret (PAT) so CI runs on release PRs.
+- [ ] Affiliate programs (after the first production deploy; most need a
+      live site): Travelpayouts, Booking.com or Stay22, then set the
+      `NEXT_PUBLIC_AFFILIATE_*` ids in the deploy host env (Step 13).
 - [ ] `VERCEL_TOKEN` repo secret for the release deploy; `main` auto-deploy is
       skipped by Vercel's Ignored Build Step (see `docs/RELEASE.md`).
 
