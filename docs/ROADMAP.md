@@ -34,21 +34,22 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 
 ## Status
 
-| Step | Scope                                              | State   |
-| ---- | -------------------------------------------------- | ------- |
-| 1    | Scaffold, tooling, tokens, schema                  | ✅ done |
-| 2    | Redis service, /api/trips, /api/generate, limits   | ✅ done |
-| 3    | Map + CityDrawer + TimelineRail (reference design) | ✅ done |
-| 3.5  | Monitoring (Sentry), SonarQube, CI checks          | ✅ done |
-| 4    | Manual editor + Nominatim + localStorage + My Maps | ✅ done |
-| 5    | /t/[id] shared view + OG image + remix             | ✅ done |
-| 6    | AI chat UI + ghost-stops upsell                    | ✅ done |
-| 7    | Landing page + polish pass                         | ✅ done |
-| 8    | Playwright e2e                                     | ✅ done |
-| 9    | UX & a11y hardening (design-review follow-ups)     | ✅ done |
-| 10   | Legal pages, report link, AI notice, analytics     | ✅ done |
-| 11   | `/about` story page, motion limits on the map      | ✅ done |
-| 12   | Landing: destination search, returning visitors    | ✅ done |
+| Step | Scope                                                          | State   |
+| ---- | -------------------------------------------------------------- | ------- |
+| 1    | Scaffold, tooling, tokens, schema                              | ✅ done |
+| 2    | Redis service, /api/trips, /api/generate, limits               | ✅ done |
+| 3    | Map + CityDrawer + TimelineRail (reference design)             | ✅ done |
+| 3.5  | Monitoring (Sentry), SonarQube, CI checks                      | ✅ done |
+| 4    | Manual editor + Nominatim + localStorage + My Maps             | ✅ done |
+| 5    | /t/[id] shared view + OG image + remix                         | ✅ done |
+| 6    | AI chat UI + ghost-stops upsell                                | ✅ done |
+| 7    | Landing page + polish pass                                     | ✅ done |
+| 8    | Playwright e2e                                                 | ✅ done |
+| 9    | UX & a11y hardening (design-review follow-ups)                 | ✅ done |
+| 10   | Legal pages, report link, AI notice, analytics                 | ✅ done |
+| 11   | `/about` story page, motion limits on the map                  | ✅ done |
+| 12   | Landing: destination search, returning visitors                | ✅ done |
+| 13   | Logo (route D) across icons, UI, previews and poster; SEO data | ✅ done |
 
 ---
 

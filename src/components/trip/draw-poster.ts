@@ -10,6 +10,7 @@ import {
 
 import { MAP_STYLE } from "./map-style";
 import { MODE_META } from "./mode";
+import { drawBrandLockup } from "./poster-brand";
 import { drawBasemap, fadeTileEdges, type TileWindow } from "./poster-tiles";
 
 export const POSTER_WIDTH = 1080;
@@ -40,7 +41,11 @@ export interface PosterCopy {
   summary: string;
   /** The whole-trip budget line, in the viewer's currency. */
   perPerson: string;
-  brand: string;
+  /** The two halves of the wordmark: DrawMy, and the italic Trip. */
+  brandLead: string;
+  brandTail: string;
+  /** The site address under the wordmark, so a shared image can be found. */
+  host: string;
 }
 
 /** The basemap window (frame-inset, between header and footer). */
@@ -215,9 +220,7 @@ function drawFooter(
   ctx.lineTo(POSTER_WIDTH / 2 + 34, 1234);
   ctx.stroke();
 
-  ctx.fillStyle = theme.brass;
-  ctx.font = `italic 500 27px ${fonts.display}`;
-  ctx.fillText(copy.brand, POSTER_WIDTH / 2, 1276);
+  drawBrandLockup(ctx, theme, fonts, copy);
 }
 
 /**

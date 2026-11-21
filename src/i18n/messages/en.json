@@ -1,6 +1,8 @@
 {
   "Common": {
     "appName": "DrawMyTrip",
+    "appNameLead": "DrawMy",
+    "appNameTail": "Trip",
     "backToAtlas": "Field Atlas",
     "offTheMap": "Off the map",
     "loading": "Unfolding the map…"
@@ -445,8 +447,7 @@
       "share": "Share…",
       "download": "Download PNG",
       "eyebrow": "Field atlas",
-      "summary": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {countries, plural, one {# country} other {# countries}} · {distance}",
-      "brand": "DrawMyTrip"
+      "summary": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {countries, plural, one {# country} other {# countries}} · {distance}"
     },
     "print": {
       "eyebrow": "DrawMyTrip itinerary",

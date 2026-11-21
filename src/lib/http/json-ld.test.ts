@@ -21,6 +21,12 @@ describe("siteJsonLd", () => {
     });
   });
 
+  it("points the application at its icon", () => {
+    const [, app] = JSON.parse(siteJsonLd(site))["@graph"];
+
+    expect(app.image).toBe("https://gt.example/icons/512");
+  });
+
   it("describes a free travel web application that belongs to the site", () => {
     const [website, app] = JSON.parse(siteJsonLd(site))["@graph"];
 
