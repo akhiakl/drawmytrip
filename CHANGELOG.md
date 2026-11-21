@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.0](https://github.com/akhiakl/drawmytrip/compare/v0.7.0...v0.8.0) (2026-11-21)
+
+
+### Features
+
+* add affiliate booking links to stop details ([#128](https://github.com/akhiakl/drawmytrip/issues/128)) ([6f0a936](https://github.com/akhiakl/drawmytrip/commit/6f0a936ef4660586647c8c7b11517dd950a7506f))
+* route D logo across icons, UI, link preview and poster ([#129](https://github.com/akhiakl/drawmytrip/issues/129)) ([70723f1](https://github.com/akhiakl/drawmytrip/commit/70723f188d8d0d657407cd585e03ed9cf276be64))
+
 ## [0.7.0](https://github.com/akhiakl/drawmytrip/compare/v0.6.3...v0.7.0) (2026-11-12)
 
 
