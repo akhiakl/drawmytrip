@@ -52,6 +52,7 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 | 13   | Affiliate links, phase A (stays, activities, eSIM, insurance) | ✅ done |
 | 13b  | Affiliate links: transit and car legs                         | planned |
 | 13c  | Affiliate links: flights (IATA) and packing gear              | planned |
+| 14   | Share-loop branding: link preview, poster, remix measurement  | planned |
 
 ---
 
@@ -322,6 +323,67 @@ Flights need IATA codes: add a small city-to-IATA dataset or lookup
 (`shortcut:` with a documented upgrade path), then flight-leg links.
 Packing items (adapter, power bank, bottle) gain "Get one" links per
 storefront region. Only after 13 and 13b show real clicks.
+
+---
+
+## Step 14 — Share-loop branding
+
+Branch: `feat/share-branding`
+
+Every shared map is the product's best advert, so someone who sees the
+link preview or the poster should be able to find the site. The remix
+button already exists on `/t/[id]` (`PrimaryActions`, "Remix this
+trip" next to "Create your own"); this step does not rebuild it.
+
+**What exists today**: the poster footer says "DrawMyTrip" but shows no
+address; the `/t/[id]` link preview (`og-card.tsx`) shows the route with
+no brand or address at all; nothing measures whether remix is used.
+
+**Decisions (change before starting if wrong)**
+
+- Branding is the wordmark plus the site host (from
+  `NEXT_PUBLIC_SITE_URL` via `@/lib/http/site-url`), kept as one value
+  so a Phase 2 premium "no watermark" can drop it later. No toggle now.
+- Keep the remix button as is; only fix its placement if the mobile
+  check below shows it hidden.
+- The host in production comes from `NEXT_PUBLIC_SITE_URL`; set it
+  before launch or the preview shows the Vercel fallback host.
+
+**Deliverables**
+
+1. Link preview: a small footer in `OgCard` with the wordmark and host,
+   the map area shrunk to fit. Both brand strings come from `en.json`
+   (the OG route reads the catalog directly, as `opengraph-image.tsx`
+   does now).
+2. Poster: the host line under the existing "DrawMyTrip" brand line in
+   `draw-poster.ts` (footer already ends near y 1276 of 1350). The share
+   action also sends the site URL as text with the image.
+3. A pure `siteHost(url)` helper (strip scheme, `www.` and trailing
+   slash) with tests, used by both the preview and the poster. Confirm
+   first that `site-url.ts` is safe to import from client code; if not,
+   pass the host in as a prop from a server component.
+4. Measure the loop: add `remix_started` and `poster_downloaded` to
+   `AnalyticsEvent`, fired from the remix handler in `trip-experience`
+   and the poster download. `shortcut: no properties, custom events need
+Vercel Pro (see the existing TODO(analytics)), upgrade on Pro.`
+5. Mobile check: on `/t/[id]` at 390px, confirm the remix button is
+   visible without expanding the bottom card. If it is hidden, make the
+   collapsed card show it; otherwise change nothing.
+
+**Tests (with the code)**
+
+- Unit: `siteHost` cases (scheme, `www.`, trailing slash, port,
+  invalid input falls back).
+- `og-card` test: brand and host render; long titles still fit.
+- `poster-dialog` test: the share call includes the URL text; the
+  download fires its event. Remix handler fires its event once.
+- Fixtures: reuse `makeTrip`; no new mock data in test files.
+
+**Definition of done**: gates green, coverage above 85%; screenshots
+checked: poster in light and dark, the `/t/[id]/opengraph-image` PNG
+with a short and a long trip title, and `/t/[id]` at 390 and 1280;
+`grand-tour-review` Must-fix resolved; `docs/RELEASE.md` mentions
+setting `NEXT_PUBLIC_SITE_URL`.
 
 ---
 
