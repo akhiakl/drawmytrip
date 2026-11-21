@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/akhiakl/drawmytrip/compare/v0.8.1...v0.8.2) (2026-11-21)
+
+
+### Bug Fixes
+
+* seo audit fixes and plain site copy ([#134](https://github.com/akhiakl/drawmytrip/issues/134)) ([1c92be6](https://github.com/akhiakl/drawmytrip/commit/1c92be63e763306811ca652a6196f43a3fe206d2))
+
 ## [0.8.1](https://github.com/akhiakl/drawmytrip/compare/v0.8.0...v0.8.1) (2026-11-21)
 
 
