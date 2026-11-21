@@ -26,8 +26,10 @@ function drawMark(
   ctx.stroke(new Path2D(curve));
 
   ctx.strokeStyle = theme.ink;
-  ctx.lineWidth = 4;
+  ctx.lineWidth = MARK.stemWidth;
+  ctx.setLineDash(MARK.stemDots.split(" ").map(Number));
   ctx.stroke(new Path2D(stem));
+  ctx.setLineDash([]);
 
   ctx.beginPath();
   ctx.arc(start.cx, start.cy, start.r, 0, Math.PI * 2);

@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 /**
  * The route D mark in theme tokens (it flips with light and dark).
  * Decorative: pair it with the wordmark or an accessible name.
- * `detailed` draws the stem as dots; leave it off below about 40px.
+ * The stem is dotted; pass `detailed={false}` below about 40px.
  */
 export function BrandMark({
   className,
-  detailed = false,
+  detailed = true,
 }: {
   readonly className?: string;
   readonly detailed?: boolean;

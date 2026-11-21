@@ -19,25 +19,58 @@ export const MARK = {
   centerX: 36,
 } as const;
 
-/** Colors the icon files spell out, as image routes can't read CSS tokens. */
-const ICON = { tile: "#16233A", brass: "#D4A94E", paper: "#F5F1E8" } as const;
+/** The palette each export spells out, as files and image routes can't read CSS tokens. */
+export const BRAND_COLORS = {
+  light: { ink: "#16233A", brass: "#B98A2F", ground: "#F5F1E8" },
+  dark: { ink: "#EDEAE2", brass: "#D4A94E", ground: "#0E1420" },
+} as const;
+
+type Colors = { ink: string; brass: string; ground: string };
+
+/** The mark's paths and stops, in `ink`, `brass` and `ground` colors. */
+function markBody({ ink, brass, ground }: Colors, detailed: boolean): string {
+  const { curve, stem, start, end } = MARK;
+  const stemStyle = detailed
+    ? `stroke-width="${MARK.stemWidth}" stroke-dasharray="${MARK.stemDots}"`
+    : 'stroke-width="4"';
+  return `<path d="${curve}" stroke="${brass}" stroke-width="${MARK.curveWidth}"/>
+<path d="${stem}" stroke="${ink}" ${stemStyle}/>
+<circle cx="${start.cx}" cy="${start.cy}" r="${start.r}" fill="${ground}" stroke="${ink}" stroke-width="${MARK.ringWidth}"/>
+<circle cx="${end.cx}" cy="${end.cy}" r="${end.r}" fill="${ink}" stroke="none"/>`;
+}
+
+const STROKES = 'fill="none" stroke-linecap="round" stroke-linejoin="round"';
 
 /**
- * The square app icon: the mark on an ink tile. The stem is solid, as
- * dots turn to dust at favicon size. Served at `/icons/mark.svg` and
- * rendered to PNG for the favicon, Apple touch and PWA icons.
+ * The mark alone, tightly cropped, for the given colors: the file to hand
+ * to a designer or drop in a document. `detailed` draws the stem as dots;
+ * leave it off below about 40px, where dots turn to dust.
  */
-export function brandIconSvg(): string {
-  const { curve, stem, start, end, curveWidth, ringWidth } = MARK;
-  const { tile, brass, paper } = ICON;
+export function brandMarkSvg(colors: Colors, detailed = true): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 1 52 62" role="img" aria-label="DrawMyTrip" ${STROKES}>
+${markBody(colors, detailed)}
+</svg>
+`;
+}
+
+/**
+ * The square app icon: the mark on an ink tile. Served at
+ * `/icons/mark.svg` and rendered to PNG for the favicon, Apple touch and
+ * PWA icons (with a solid stem at favicon size).
+ */
+export function brandIconSvg(detailed = true): string {
+  const tile = BRAND_COLORS.light.ink;
+  const colors = {
+    ink: BRAND_COLORS.light.ground,
+    brass: BRAND_COLORS.dark.brass,
+    ground: tile,
+  };
   const move = `translate(32 32) scale(.74) translate(${-MARK.centerX} -32)`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 <rect width="64" height="64" rx="14" fill="${tile}"/>
-<g transform="${move}" fill="none" stroke-linecap="round" stroke-linejoin="round">
-<path d="${curve}" stroke="${brass}" stroke-width="${curveWidth}"/>
-<path d="${stem}" stroke="${paper}" stroke-width="4"/>
-<circle cx="${start.cx}" cy="${start.cy}" r="${start.r}" fill="${tile}" stroke="${paper}" stroke-width="${ringWidth}"/>
-<circle cx="${end.cx}" cy="${end.cy}" r="${end.r}" fill="${paper}" stroke="none"/>
+<g transform="${move}" ${STROKES}>
+${markBody(colors, detailed)}
 </g>
-</svg>`;
+</svg>
+`;
 }

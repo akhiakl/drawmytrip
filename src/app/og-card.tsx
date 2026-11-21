@@ -166,7 +166,8 @@ function BrandFooter() {
           <path
             d={MARK.stem}
             stroke={OG_PALETTE.ink}
-            strokeWidth={4}
+            strokeWidth={MARK.stemWidth}
+            strokeDasharray={MARK.stemDots}
             strokeLinecap="round"
           />
           <circle

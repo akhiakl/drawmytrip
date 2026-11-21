@@ -99,6 +99,8 @@ checked before merging the `1.0.0` release PR.
 - [ ] OG image verified in a real unfurler (Slack / WhatsApp / X)
 - [ ] Branch protection on `main` with all required checks + review
 - [ ] Domain + HTTPS, favicon, metadata/robots sane
+- [ ] `NEXT_PUBLIC_SITE_URL=https://drawmytrip.akhiakl.in` set in the deploy
+      host env, so link previews and posters print the real address
 
 ### Legal, contact & analytics
 

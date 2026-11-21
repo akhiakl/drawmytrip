@@ -1,19 +1,45 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { brandIconSvg, MARK } from ".";
+import { BRAND_COLORS, brandIconSvg, brandMarkSvg, MARK } from ".";
 
-describe("brandIconSvg", () => {
-  it("draws the D curve, stem and both stops on a tile", () => {
-    const svg = brandIconSvg();
+const file = (name: string) =>
+  readFileSync(join(process.cwd(), "public/brand", name), "utf8");
+
+describe("brandMarkSvg", () => {
+  it("draws the D curve, a dotted stem and both stops", () => {
+    const svg = brandMarkSvg(BRAND_COLORS.light);
     expect(svg).toContain(`d="${MARK.curve}"`);
-    expect(svg).toContain(`d="${MARK.stem}"`);
+    expect(svg).toContain(`stroke-dasharray="${MARK.stemDots}"`);
     expect(svg.match(/<circle/g)).toHaveLength(2);
-    expect(svg).toContain('<rect width="64" height="64"');
   });
 
-  it("is valid standalone SVG with no scripts", () => {
+  it("draws a solid stem for small sizes", () => {
+    expect(brandMarkSvg(BRAND_COLORS.light, false)).not.toContain(
+      "stroke-dasharray",
+    );
+  });
+
+  it("uses the dark palette on request", () => {
+    expect(brandMarkSvg(BRAND_COLORS.dark)).toContain(BRAND_COLORS.dark.brass);
+  });
+});
+
+describe("brandIconSvg", () => {
+  it("is the mark on a tile, dotted by default and with no scripts", () => {
     const svg = brandIconSvg();
-    expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(true);
+    expect(svg).toContain('<rect width="64" height="64"');
+    expect(svg).toContain("stroke-dasharray");
     expect(svg).not.toMatch(/<script|onload/i);
+    expect(brandIconSvg(false)).not.toContain("stroke-dasharray");
+  });
+});
+
+describe("exported brand files", () => {
+  it("match the generators, so the files never drift from the code", () => {
+    expect(file("mark-light.svg")).toBe(brandMarkSvg(BRAND_COLORS.light));
+    expect(file("mark-dark.svg")).toBe(brandMarkSvg(BRAND_COLORS.dark));
+    expect(file("icon.svg")).toBe(brandIconSvg());
   });
 });
