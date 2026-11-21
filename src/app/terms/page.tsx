@@ -104,6 +104,17 @@ const SECTIONS: readonly LegalSection[] = [
     ),
   },
   {
+    id: "affiliate",
+    title: "Booking links",
+    body: (
+      <p>
+        Some links to stays, activities, eSIMs and insurance are affiliate links, and
+        we may earn a commission if you buy through them, at no extra cost to you.
+        Prices, availability and terms are the partner’s, not ours.
+      </p>
+    ),
+  },
+  {
     id: "reports",
     title: "Reporting a map",
     body: (
