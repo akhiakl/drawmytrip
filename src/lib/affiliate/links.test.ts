@@ -47,6 +47,13 @@ describe("affiliateLinks", () => {
     );
   });
 
+  it("leaves an unknown placeholder untouched", () => {
+    const [act] = affiliateLinks(makeCity(), undefined, {
+      activity: "https://acts.test/?q={city}&x={nope}",
+    });
+    expect(act.href).toBe("https://acts.test/?q=Vienna&x={nope}");
+  });
+
   it("ignores a template that is not https", () => {
     const bad = {
       stay: "http://stays.test/?q={city}",

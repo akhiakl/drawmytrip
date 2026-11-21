@@ -167,7 +167,7 @@ const SECTIONS: readonly LegalSection[] = [
           Some maps link to booking partners (stays, activities, eSIMs, insurance).
           Those links are affiliate links: if you click one, the partner receives the
           stop’s name, country and dates in the link, and its own privacy policy and
-          cookies apply from then on. We add no ad or tracking scripts to our pages.
+          cookies apply from then on. We add no advertising scripts to our pages.
         </p>
       </>
     ),
