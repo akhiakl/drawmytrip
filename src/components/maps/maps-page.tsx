@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { LogoLink } from "@/components/brand/logo";
 import { downloadFile } from "@/components/download-file";
 import { accent } from "@/components/rich-text";
 import { ShareDialog } from "@/components/share/share-dialog";
@@ -79,6 +80,7 @@ export function MapsPage() {
     <div className="page-container py-8 lg:py-12">
       <header className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
         <div>
+          <LogoLink className="mb-5 block" />
           <Link
             href="/"
             className="eyebrow inline-flex w-fit items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"

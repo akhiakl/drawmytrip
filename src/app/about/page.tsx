@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { pageMetadata } from "@/app/page-metadata";
 import { AboutFaq } from "@/components/about/about-faq";
 import { HowItWorks } from "@/components/about/how-it-works";
+import { LogoLink } from "@/components/brand/logo";
 import { SiteFooter } from "@/components/legal/site-footer";
 import { accent } from "@/components/rich-text";
 import { RouteSketch } from "@/components/trip/route-sketch";
@@ -80,13 +81,14 @@ export default function AboutPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <nav aria-label={common("backToAtlas")} className="page-container">
-        <div className="flex h-16 items-center">
+        <div className="flex h-16 items-center justify-between">
           <Link
             href="/"
             className="eyebrow inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
           </Link>
+          <LogoLink />
         </div>
       </nav>
       <main className="flex flex-1 flex-col gap-32 pb-36 lg:gap-40">

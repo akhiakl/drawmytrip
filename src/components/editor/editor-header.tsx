@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { LogoLink } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -107,6 +108,7 @@ export function EditorHeader({
   return (
     <header className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
       <div className="flex min-w-64 flex-1 flex-col gap-2">
+        <LogoLink className="mb-3" />
         <Link
           href="/"
           className="eyebrow inline-flex w-fit items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"

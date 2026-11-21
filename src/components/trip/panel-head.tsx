@@ -94,9 +94,9 @@ export function PanelHead({
     <header className="flex flex-col gap-3 px-5 pt-2 pb-4 lg:px-7 lg:pt-7">
       <Link
         href="/"
-        className="hidden w-fit rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring lg:block"
+        className="w-fit rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <Logo />
+        <Logo className="text-base lg:text-xl" />
       </Link>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
