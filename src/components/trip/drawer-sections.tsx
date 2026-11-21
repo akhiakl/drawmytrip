@@ -7,8 +7,10 @@ import { useState } from "react";
 import { highlight } from "@/components/rich-text";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useUnits } from "@/components/units/units-provider";
-import type { City } from "@/lib/trip";
+import type { City, StopDates } from "@/lib/trip";
 import { cn } from "@/lib/utils";
+
+import { AffiliateBlock } from "./affiliate-block";
 
 function SectionHeading({ children }: { readonly children: React.ReactNode }) {
   return <h3 className="mb-2.5 font-display text-lg font-medium">{children}</h3>;
@@ -140,7 +142,13 @@ function InfoCard({
   );
 }
 
-export function PracticalSection({ city }: { readonly city: City }) {
+export function PracticalSection({
+  city,
+  dates,
+}: {
+  readonly city: City;
+  readonly dates?: StopDates;
+}) {
   const t = useTranslations("Trip");
   const { money } = useUnits();
   return (
@@ -168,6 +176,7 @@ export function PracticalSection({ city }: { readonly city: City }) {
           </ul>
         </div>
       )}
+      <AffiliateBlock city={city} dates={dates} />
     </div>
   );
 }

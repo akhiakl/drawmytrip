@@ -49,7 +49,7 @@ in `docs/RELEASE.md`. Do not wire any host to auto-deploy `main`.
 | 10   | Legal pages, report link, AI notice, analytics                | ✅ done |
 | 11   | `/about` story page, motion limits on the map                 | ✅ done |
 | 12   | Landing: destination search, returning visitors               | ✅ done |
-| 13   | Affiliate links, phase A (stays, activities, eSIM, insurance) | planned |
+| 13   | Affiliate links, phase A (stays, activities, eSIM, insurance) | ✅ done |
 | 13b  | Affiliate links: transit and car legs                         | planned |
 | 13c  | Affiliate links: flights (IATA) and packing gear              | planned |
 

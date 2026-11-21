@@ -163,6 +163,12 @@ const SECTIONS: readonly LegalSection[] = [
           States and the European Union. We don’t sell your data or use it for
           advertising.
         </p>
+        <p>
+          Some maps link to booking partners (stays, activities, eSIMs, insurance).
+          Those links are affiliate links: if you click one, the partner receives the
+          stop’s name, country and dates in the link, and its own privacy policy and
+          cookies apply from then on. We add no ad or tracking scripts to our pages.
+        </p>
       </>
     ),
   },
