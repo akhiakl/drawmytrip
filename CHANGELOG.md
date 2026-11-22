@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.3](https://github.com/akhiakl/drawmytrip/compare/v0.8.2...v0.8.3) (2026-11-22)
+
+
+### Bug Fixes
+
+* serve a 48px favicon at the default path ([#136](https://github.com/akhiakl/drawmytrip/issues/136)) ([c124f83](https://github.com/akhiakl/drawmytrip/commit/c124f8399c076210b7c6232e587c60bc2792f72a))
+
 ## [0.8.2](https://github.com/akhiakl/drawmytrip/compare/v0.8.1...v0.8.2) (2026-11-21)
 
 
