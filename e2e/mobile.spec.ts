@@ -1,4 +1,4 @@
-import { expect, test } from "./fixtures";
+import { addBlankStop, expect, test } from "./fixtures";
 
 test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 
@@ -34,5 +34,23 @@ test.describe("trip panel (mobile sheet)", () => {
     await expect(
       page.getByRole("heading", { level: 2, name: "Paris" }),
     ).toBeInViewport();
+  });
+});
+
+test.describe("editor (mobile sheet)", () => {
+  test("sharing with a nameless stop raises the sheet onto its field", async ({
+    page,
+  }) => {
+    await page.goto("/new");
+    await addBlankStop(page);
+    await addBlankStop(page);
+    await page.locator("#stop-1-name").fill("Prague");
+
+    const handle = page.getByRole("button", { name: /trip details/i });
+    await handle.click();
+    await expect(handle).toHaveAttribute("aria-expanded", "false");
+
+    await page.getByRole("button", { name: "Share map" }).click();
+    await expect(page.locator("#stop-0-name")).toBeFocused();
   });
 });

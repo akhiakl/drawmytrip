@@ -199,7 +199,9 @@ function EditorWorkspace() {
 
   const handleShare = () => {
     if (Object.keys(issues).length > 0) {
-      focusFirstIssue(issues);
+      // A lowered sheet is inert, so raise it before focusing a stop field.
+      setSnap((current) => (current === "peek" ? "half" : current));
+      requestAnimationFrame(() => focusFirstIssue(issues));
       toast.error(t("fixBeforeShare"));
       return;
     }
