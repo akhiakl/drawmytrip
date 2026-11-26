@@ -51,6 +51,21 @@ describe("AiChat", () => {
     expect(screen.getByLabelText("Number of days")).toBeVisible();
   });
 
+  it("answers the days question with one tap on a chip", async () => {
+    render(<AiChat initialDestination="Kyoto, Japan" />);
+    await userEvent.click(screen.getByRole("button", { name: "2 weeks" }));
+    expect(screen.getByText("14 days")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Number of days")).not.toBeInTheDocument();
+  });
+
+  it("shows which of the three questions is open", async () => {
+    render(<AiChat />);
+    expect(screen.getByText("Question 1 of 3")).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Destination"), "Austria");
+    await userEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByText("Question 2 of 3")).toBeInTheDocument();
+  });
+
   it("says up front that the planner is an AI", () => {
     render(<AiChat />);
     expect(screen.getByText("You're planning with an AI.")).toBeVisible();

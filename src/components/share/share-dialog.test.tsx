@@ -74,6 +74,42 @@ describe("ShareDialog", () => {
     expect(screen.getByText(/By sharing this link you agree/)).toBeVisible();
   });
 
+  it("hands off to the poster, closing itself first", async () => {
+    const onPoster = vi.fn();
+    render(
+      <ShareDialog
+        shareId="abc"
+        open
+        onOpenChange={onOpenChange}
+        onPoster={onPoster}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: /make a poster/i }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(onPoster).toHaveBeenCalledOnce();
+  });
+
+  it("offers the calendar only when the trip has dates", async () => {
+    const onCalendar = vi.fn();
+    const { rerender } = render(
+      <ShareDialog shareId="abc" open onOpenChange={onOpenChange} />,
+    );
+    expect(
+      screen.queryByRole("button", { name: /add to calendar/i }),
+    ).not.toBeInTheDocument();
+
+    rerender(
+      <ShareDialog
+        shareId="abc"
+        open
+        onOpenChange={onOpenChange}
+        onCalendar={onCalendar}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: /add to calendar/i }));
+    expect(onCalendar).toHaveBeenCalledOnce();
+  });
+
   it("renders nothing when closed", () => {
     render(
       <ShareDialog shareId="abc12345" open={false} onOpenChange={onOpenChange} />,

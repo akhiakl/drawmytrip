@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, Copy, Share2 } from "lucide-react";
+import { CalendarPlus, Check, Copy, ImageIcon, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { TermsNotice } from "@/components/legal/notices";
@@ -18,21 +18,56 @@ import { Input } from "@/components/ui/input";
 import { useMounted } from "@/hooks/use-mounted";
 import { SHARE_TTL_DAYS } from "@/lib/trip";
 
+function ShareShortcut({
+  icon,
+  label,
+  hint,
+  onClick,
+}: {
+  readonly icon: ReactNode;
+  readonly label: string;
+  readonly hint: string;
+  readonly onClick: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex min-h-14 w-full items-center gap-3 rounded-xl border border-line bg-card-solid px-3 text-left transition-colors outline-none hover:border-brass focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-5 [&_svg]:shrink-0 [&_svg]:text-brass-text"
+      >
+        {icon}
+        <span className="flex flex-col">
+          <span className="font-medium text-ink">{label}</span>
+          <span className="text-sm text-ink-soft">{hint}</span>
+        </span>
+      </button>
+    </li>
+  );
+}
+
 /**
  * Shown after a successful share: the copyable `/t/{id}` link, plus the
- * device's own share sheet where the browser offers one (mostly mobile).
+ * device's own share sheet where the browser offers one (mostly mobile),
+ * and shortcuts to a poster or calendar when the caller offers them.
  */
 export function ShareDialog({
   shareId,
   title,
   open,
   onOpenChange,
+  onPoster,
+  onCalendar,
 }: {
   readonly shareId: string | null;
   /** The trip title, offered to the share sheet alongside the link. */
   readonly title?: string;
   readonly open: boolean;
   readonly onOpenChange: (open: boolean) => void;
+  /** Opens the poster maker; this dialog closes first. */
+  readonly onPoster?: () => void;
+  /** Downloads the trip calendar; only when the trip has dates. */
+  readonly onCalendar?: () => void;
 }) {
   const t = useTranslations("Share");
   const [copied, setCopied] = useState(false);
@@ -87,6 +122,29 @@ export function ShareDialog({
           <Button type="button" variant="outline" onClick={nativeShare}>
             <Share2 /> {t("nativeShare")}
           </Button>
+        )}
+        {(onPoster || onCalendar) && (
+          <ul aria-label={t("more")} className="flex flex-col gap-2">
+            {onPoster && (
+              <ShareShortcut
+                icon={<ImageIcon />}
+                label={t("poster")}
+                hint={t("posterHint")}
+                onClick={() => {
+                  onOpenChange(false);
+                  onPoster();
+                }}
+              />
+            )}
+            {onCalendar && (
+              <ShareShortcut
+                icon={<CalendarPlus />}
+                label={t("calendar")}
+                hint={t("calendarHint")}
+                onClick={onCalendar}
+              />
+            )}
+          </ul>
         )}
         <TermsNotice action="sharing" />
       </DialogContent>

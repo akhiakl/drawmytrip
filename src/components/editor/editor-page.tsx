@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import { ShareDialog } from "@/components/share/share-dialog";
 import type { MapInsets } from "@/components/trip/fit-padding";
 import { PanelShell } from "@/components/trip/panel-shell";
 import type { SheetSnap } from "@/components/trip/sheet-snap";
+import { downloadTripCalendar } from "@/components/trip/trip-calendar";
 import { UpsellModal } from "@/components/upsell/upsell-modal";
 import type { GeneratedDraft } from "@/hooks/use-generate-trip";
 import { useMounted } from "@/hooks/use-mounted";
@@ -29,6 +31,7 @@ import {
   moveCity,
   removeCityAt,
   saveLocalTrip,
+  stopDates,
   tripFingerprint,
   updateCityAt,
   updateLegAt,
@@ -54,6 +57,11 @@ import { resolveInitialState } from "./initial-draft";
 import { RedraftCard } from "./redraft-card";
 import { StopList } from "./stop-list";
 import { useDraftHistory } from "./use-draft-history";
+
+// Opened only from the share sheet: keep it out of the editor bundle.
+const PosterDialog = dynamic(() =>
+  import("@/components/trip/poster-dialog").then((mod) => mod.PosterDialog),
+);
 
 const AUTOSAVE_DEBOUNCE_MS = 600;
 
@@ -113,6 +121,7 @@ function EditorWorkspace() {
   const [snap, setSnap] = useState<SheetSnap>("half");
   const [insets, setInsets] = useState<MapInsets>({});
   const [addOpen, setAddOpen] = useState(false);
+  const [posterOpen, setPosterOpen] = useState(false);
 
   // The AI draft is now in state; consume the handoff so a later visit to
   // /new?from=ai starts blank. Cleared here, not while rendering (see
@@ -209,6 +218,9 @@ function EditorWorkspace() {
     // Save first so the share is recorded against exactly what was shared.
     if (trip) void share(trip, persist(trip));
   };
+
+  // The share sheet's poster and calendar use the trip as it stands.
+  const sharedTrip = dialogOpen || posterOpen ? draftToTrip(draft, createdAt) : null;
 
   const issueText = (key?: DraftIssues[string]) => key && t(`issues.${key}`);
 
@@ -310,7 +322,20 @@ function EditorWorkspace() {
         title={sharedTitle}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        onPoster={sharedTrip ? () => setPosterOpen(true) : undefined}
+        onCalendar={
+          sharedTrip && stopDates(sharedTrip)
+            ? () => downloadTripCalendar(sharedTrip)
+            : undefined
+        }
       />
+      {sharedTrip && (
+        <PosterDialog
+          trip={sharedTrip}
+          open={posterOpen}
+          onOpenChange={setPosterOpen}
+        />
+      )}
       <UpsellModal open={upsellOpen} onOpenChange={setUpsellOpen} />
     </div>
   );

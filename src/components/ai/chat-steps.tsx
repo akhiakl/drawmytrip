@@ -12,6 +12,8 @@ type Vibe = GenerateRequest["vibe"];
 
 const MIN_DAYS = 2;
 const MAX_DAYS = 30;
+/** One-tap answers for the days question; typing covers the rest. */
+const DAY_CHIPS = [7, 10, 14, 21] as const;
 
 /** Free-text destination ("Austria", "the Amalfi coast", ...). */
 export function DestinationStep({
@@ -62,29 +64,47 @@ export function DaysStep({
   };
 
   return (
-    <form onSubmit={submit} className="flex items-center gap-2">
-      <Input
-        // Focus follows the conversation: this field appears because the
-        // guest just answered the previous question.
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
-        name="days"
-        aria-label={t("daysLabel")}
-        type="number"
-        inputMode="numeric"
-        min={MIN_DAYS}
-        max={MAX_DAYS}
-        value={value}
-        // Typing replaces the suggested 7 rather than appending to it.
-        onFocus={(e) => e.target.select()}
-        onChange={(e) => setValue(e.target.value)}
-        className="w-28"
-      />
-      <span className="text-sm text-ink-soft">{t("daysUnit")}</span>
-      <Button type="submit" variant="brass" disabled={!valid} className="ml-auto">
-        {t("next")} <ArrowRight />
-      </Button>
-    </form>
+    <div className="flex flex-col gap-3">
+      <div
+        role="group"
+        aria-label={t("dayChips")}
+        className="fade-end -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0"
+      >
+        {DAY_CHIPS.map((chip) => (
+          <button
+            key={chip}
+            type="button"
+            onClick={() => onAnswer(chip)}
+            className="h-11 shrink-0 rounded-full border border-line bg-card-solid px-4 text-sm font-medium text-ink transition-colors outline-none hover:border-brass focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t("dayChip", { days: chip })}
+          </button>
+        ))}
+      </div>
+      <form onSubmit={submit} className="flex items-center gap-2">
+        <Input
+          // Focus follows the conversation: this field appears because the
+          // guest just answered the previous question.
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus
+          name="days"
+          aria-label={t("daysLabel")}
+          type="number"
+          inputMode="numeric"
+          min={MIN_DAYS}
+          max={MAX_DAYS}
+          value={value}
+          // Typing replaces the suggested 7 rather than appending to it.
+          onFocus={(e) => e.target.select()}
+          onChange={(e) => setValue(e.target.value)}
+          className="w-28"
+        />
+        <span className="text-sm text-ink-soft">{t("daysUnit")}</span>
+        <Button type="submit" variant="brass" disabled={!valid} className="ml-auto">
+          {t("next")} <ArrowRight />
+        </Button>
+      </form>
+    </div>
   );
 }
 

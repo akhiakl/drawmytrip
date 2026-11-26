@@ -9,6 +9,7 @@ import { usePageIdle } from "@/hooks/use-page-idle";
 import { useShareTrip } from "@/hooks/use-share-trip";
 import {
   saveLocalTrip,
+  stopDates,
   tripStats,
   type Trip,
   type TripToolsScope,
@@ -20,6 +21,7 @@ import type { ExperienceVariant } from "./panel-actions";
 import type { PanelView } from "./panel-head";
 import { PrintItinerary } from "./print-itinerary";
 import type { SheetSnap } from "./sheet-snap";
+import { downloadTripCalendar } from "./trip-calendar";
 import { TripMap } from "./trip-map";
 import { TripPanel } from "./trip-panel";
 
@@ -172,6 +174,10 @@ export function TripExperience({
             title={sharedTitle}
             open={dialogOpen}
             onOpenChange={setDialogOpen}
+            onPoster={() => setPosterOpen(true)}
+            onCalendar={
+              stopDates(trip) ? () => downloadTripCalendar(trip) : undefined
+            }
           />
         )}
 
