@@ -100,7 +100,7 @@ export function RedraftCard({
                 title={vibes(`${option}.hint`)}
                 onClick={() => setVibeInput(option)}
                 className={cn(
-                  "h-9 flex-1 rounded-md border border-line px-2 text-xs transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring",
+                  "h-11 flex-1 rounded-md border border-line px-2 text-sm transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring",
                   vibe === option && "border-brass bg-accent text-brass-text",
                 )}
               >

@@ -13,7 +13,6 @@ import { useMounted } from "@/hooks/use-mounted";
 import { tripStats, type Trip } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
-import { TitleWithAccent } from "./intro-splash";
 import type { ExperienceVariant } from "./panel-actions";
 
 function ThemeToggle() {
@@ -104,7 +103,7 @@ export function PanelHead({
         <div className="min-w-0">
           <p className="eyebrow">{t(`eyebrow.${variant}`)}</p>
           <Title className="truncate font-display text-2xl font-medium tracking-tight lg:text-[30px] lg:leading-tight lg:whitespace-normal">
-            <TitleWithAccent title={trip.title} />
+            {trip.title}
           </Title>
           <p className="mt-0.5 text-xs text-ink-soft lg:hidden">
             {t("headline", {

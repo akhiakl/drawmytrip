@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server";
 import { pageMetadata } from "@/app/page-metadata";
 import { AiChat } from "@/components/ai/ai-chat";
 import { LogoLink } from "@/components/brand/logo";
-import { accent } from "@/components/rich-text";
 import { destinationFromParam } from "@/lib/ai";
 
 export const generateMetadata = () => pageMetadata("plan");
@@ -34,7 +33,7 @@ export default async function PlanPage({
       <main className="page-container grid flex-1 content-start gap-10 py-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-16">
         <header className="flex flex-col gap-4 lg:sticky lg:top-16 lg:self-start">
           <h1 className="font-display text-section font-medium tracking-tight text-balance text-ink">
-            {t.rich("title", { em: accent })}
+            {t("title")}
           </h1>
           <p className="max-w-[40ch] text-lead text-ink-soft">{t("lede")}</p>
         </header>

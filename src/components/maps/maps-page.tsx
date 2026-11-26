@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 import { LogoLink } from "@/components/brand/logo";
 import { downloadFile } from "@/components/download-file";
-import { accent } from "@/components/rich-text";
 import { ShareDialog } from "@/components/share/share-dialog";
 import { Button } from "@/components/ui/button";
 import { UpsellModal } from "@/components/upsell/upsell-modal";
@@ -88,7 +87,7 @@ export function MapsPage() {
             <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
           </Link>
           <h1 className="mt-3 font-display text-section font-medium tracking-tight">
-            {t.rich("title", { em: accent })}
+            {t("title")}
           </h1>
         </div>
         <div className="flex gap-2">

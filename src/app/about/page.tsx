@@ -7,7 +7,6 @@ import { AboutFaq } from "@/components/about/about-faq";
 import { HowItWorks } from "@/components/about/how-it-works";
 import { LogoLink } from "@/components/brand/logo";
 import { SiteFooter } from "@/components/legal/site-footer";
-import { accent } from "@/components/rich-text";
 import { RouteSketch } from "@/components/trip/route-sketch";
 import { Button } from "@/components/ui/button";
 import { GUEST_MAX_CITIES, SAMPLE_TRIP, tripStats } from "@/lib/trip";
@@ -95,7 +94,7 @@ export default function AboutPage() {
         <header className="page-container grid items-center gap-12 py-10 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16 lg:py-0">
           <div className="flex flex-col gap-6">
             <h1 className="font-display text-display font-medium tracking-tight text-balance text-ink">
-              {t.rich("title", { em: accent })}
+              {t("title")}
             </h1>
             <p className="max-w-[44ch] text-lead text-ink-soft">{t("lede")}</p>
             <div className="pt-2">

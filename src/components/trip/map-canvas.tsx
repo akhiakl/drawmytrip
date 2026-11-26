@@ -66,8 +66,8 @@ function CityMarker({
       L.divIcon({
         className: "marker-anchor",
         html: `<div class="marker${selected ? " marker-active" : ""}">${selected ? '<span class="marker-pulse"></span>' : ""}<span class="marker-dot"></span><span class="marker-lbl">${escapeHtml(city.flag)} ${escapeHtml(city.name)}</span></div>`,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12],
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
       }),
     [city.flag, city.name, selected],
   );

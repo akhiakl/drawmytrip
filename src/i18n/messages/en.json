@@ -53,7 +53,7 @@
     }
   },
   "Plan": {
-    "title": "Plan with <em>AI</em>",
+    "title": "Plan with AI",
     "lede": "Answer three questions and get a draft route. You can edit everything afterwards."
   },
   "Landing": {
@@ -284,7 +284,7 @@
     }
   },
   "Maps": {
-    "title": "My <em>Maps</em>",
+    "title": "My maps",
     "newMap": "New map",
     "empty": "No maps yet. Plan one with AI, or draw it stop by stop.",
     "planWithAi": "Plan with AI",
@@ -540,7 +540,7 @@
     }
   },
   "About": {
-    "title": "Draw your trip as a <em>shareable map</em>",
+    "title": "Draw your trip as a shareable map",
     "lede": "DrawMyTrip turns a trip idea into an interactive route map: cities, nights, trains and flights, drawn by AI or by hand. Free, and no account needed.",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
