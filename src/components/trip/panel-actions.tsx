@@ -1,70 +1,58 @@
 "use client";
 
 import {
-  Backpack,
   CalendarPlus,
+  ChevronLeft,
+  ChevronRight,
   ImageDown,
   Map,
   Navigation,
-  NotebookPen,
   Pencil,
   Plus,
   Share2,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import type { Trip } from "@/lib/trip";
 
 /**
  * Which page hosts the experience. "demo" (`/`): the example route, with
- * the landing CTA as its main action. "shared" (`/t/[id]`): remix a copy
- * or start fresh. "own" (`/maps/[id]`): edit in place or share it.
+ * the landing's ways in as its main actions. "shared" (`/t/[id]`): copy it
+ * to edit. "own" (`/maps/[id]`): edit in place or share it.
  */
 export type ExperienceVariant = "demo" | "shared" | "own";
 
 export type ToolId = "packing" | "notes";
 
-/** The one or two things a visitor most likely came to do. */
+/** The action bar: the one main action (brass) and at most one other. */
 export function PrimaryActions({
   variant,
-  cta,
   onEditRoute,
   onShare,
   sharing,
 }: {
   readonly variant: ExperienceVariant;
-  readonly cta?: ReactNode;
   readonly onEditRoute: () => void;
   readonly onShare?: () => void;
   readonly sharing?: boolean;
 }) {
   const t = useTranslations("Trip.actions");
-  if (variant === "demo" && cta) return cta;
 
   if (variant === "shared") {
     return (
-      <div className="flex gap-2">
-        <Button variant="brass" className="flex-1" onClick={onEditRoute}>
-          <Pencil /> {t("remix")}
-        </Button>
-        <Button asChild variant="outline" className="flex-1">
-          <Link href="/new">
-            <Plus /> {t("createOwn")}
-          </Link>
-        </Button>
-      </div>
+      <Button variant="brass" className="w-full" onClick={onEditRoute}>
+        <Pencil /> {t("remix")}
+      </Button>
     );
   }
 
   if (variant === "own") {
     return (
-      <div className="flex gap-2">
-        <Button variant="brass" className="flex-1" onClick={onEditRoute}>
-          <Pencil /> {t("edit")}
-        </Button>
+      <div className="flex gap-2.5">
         <Button
           variant="outline"
           className="flex-1"
@@ -73,71 +61,105 @@ export function PrimaryActions({
         >
           <Share2 /> {sharing ? t("sharing") : t("share")}
         </Button>
+        <Button variant="brass" className="flex-1" onClick={onEditRoute}>
+          <Pencil /> {t("edit")}
+        </Button>
       </div>
     );
   }
 
   return (
-    <Button variant="brass" onClick={onEditRoute}>
-      <Pencil /> {t("editRoute")}
-    </Button>
+    <fieldset className="flex gap-2.5">
+      <legend className="sr-only">{t("startOwn")}</legend>
+      <Button asChild variant="outline" className="flex-1">
+        <Link href="/new">{t("buildRoute")}</Link>
+      </Button>
+      <Button asChild variant="brass" className="flex-1">
+        <Link href="/plan">
+          <Sparkles /> {t("planWithAi")}
+        </Link>
+      </Button>
+    </fieldset>
   );
 }
 
-const tileClass =
-  "flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-xs font-medium text-ink-soft transition-colors outline-none hover:bg-accent hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-[18px]";
+/** Stops view: step to the previous or next stop from the thumb zone. */
+export function StopPager({
+  trip,
+  index,
+  onSelect,
+}: {
+  readonly trip: Trip;
+  readonly index: number;
+  readonly onSelect: (index: number) => void;
+}) {
+  const t = useTranslations("Trip.actions");
+  const prev = trip.cities[index - 1];
+  const next = trip.cities[index + 1];
+  return (
+    <nav aria-label={t("stopPager")} className="flex gap-2.5">
+      <Button
+        variant="outline"
+        className="min-w-0 flex-1"
+        disabled={!prev}
+        aria-label={prev ? t("prevStop", { city: prev.name }) : undefined}
+        onClick={() => onSelect(index - 1)}
+      >
+        <ChevronLeft /> <span className="truncate">{prev?.name ?? t("first")}</span>
+      </Button>
+      <Button
+        variant="outline"
+        className="min-w-0 flex-1"
+        disabled={!next}
+        aria-label={next ? t("nextStop", { city: next.name }) : undefined}
+        onClick={() => onSelect(index + 1)}
+      >
+        <span className="truncate">{next?.name ?? t("last")}</span> <ChevronRight />
+      </Button>
+    </nav>
+  );
+}
 
-function Tile({
+const ROW_CLASS =
+  "flex min-h-14 w-full items-center gap-3 rounded-xl px-2 text-left text-base text-ink transition-colors outline-none hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring [&>svg]:size-5 [&>svg]:shrink-0 [&>svg]:text-brass-text";
+
+function ToolRow({
   icon,
   label,
   onClick,
   href,
-  pressed,
 }: {
   readonly icon: ReactNode;
   readonly label: string;
   readonly onClick?: () => void;
   readonly href?: string;
-  readonly pressed?: boolean;
 }) {
-  const content = (
-    <>
-      {icon}
-      <span className="truncate">{label}</span>
-    </>
-  );
-  if (href) {
-    return (
-      <Link href={href} className={tileClass}>
-        {content}
-      </Link>
-    );
-  }
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={pressed}
-      className={cn(tileClass, pressed && "bg-accent text-brass-text")}
-    >
-      {content}
-    </button>
+    <li>
+      {href ? (
+        <Link href={href} className={ROW_CLASS}>
+          {icon}
+          {label}
+        </Link>
+      ) : (
+        <button type="button" onClick={onClick} className={ROW_CLASS}>
+          {icon}
+          {label}
+        </button>
+      )}
+    </li>
   );
 }
 
-/** Labeled secondary tools, one row: never icon-only. */
-export function SecondaryActions({
+/** Tools view: everything you can do with the route besides reading it. */
+export function ToolList({
   variant,
-  tool,
-  onTool,
   onPoster,
   onCalendar,
   onNavigate,
   onEditRoute,
 }: {
   readonly variant: ExperienceVariant;
-  readonly tool: ToolId | null;
-  readonly onTool: (tool: ToolId) => void;
   readonly onPoster: () => void;
   /** Present for dated trips: downloads the stops as calendar events. */
   readonly onCalendar?: () => void;
@@ -147,39 +169,32 @@ export function SecondaryActions({
 }) {
   const t = useTranslations("Trip.actions");
   return (
-    <nav
-      aria-label={t("tools")}
-      className={
-        variant === "demo"
-          ? "flex justify-between gap-1 [&>*]:flex-1"
-          : "grid grid-cols-3 gap-1 sm:flex sm:justify-between sm:[&>*]:flex-1"
-      }
-    >
-      {variant === "demo" && (
-        <Tile icon={<Pencil />} label={t("customize")} onClick={onEditRoute} />
-      )}
-      {variant !== "shared" && (
-        <Tile icon={<Map />} label={t("myMaps")} href="/maps" />
-      )}
-      <Tile
-        icon={<Backpack />}
-        label={t("packing")}
-        pressed={tool === "packing"}
-        onClick={() => onTool("packing")}
-      />
-      <Tile
-        icon={<NotebookPen />}
-        label={t("notes")}
-        pressed={tool === "notes"}
-        onClick={() => onTool("notes")}
-      />
-      <Tile icon={<ImageDown />} label={t("poster")} onClick={onPoster} />
-      {onCalendar && (
-        <Tile icon={<CalendarPlus />} label={t("calendar")} onClick={onCalendar} />
-      )}
-      {variant !== "demo" && (
-        <Tile icon={<Navigation />} label={t("navigate")} onClick={onNavigate} />
-      )}
+    <nav aria-label={t("tools")}>
+      <ul className="divide-y divide-line">
+        {variant === "demo" && (
+          <ToolRow icon={<Pencil />} label={t("customize")} onClick={onEditRoute} />
+        )}
+        <ToolRow icon={<ImageDown />} label={t("poster")} onClick={onPoster} />
+        {onCalendar && (
+          <ToolRow
+            icon={<CalendarPlus />}
+            label={t("calendar")}
+            onClick={onCalendar}
+          />
+        )}
+        {variant !== "demo" && (
+          <ToolRow
+            icon={<Navigation />}
+            label={t("navigate")}
+            onClick={onNavigate}
+          />
+        )}
+        {variant === "shared" ? (
+          <ToolRow icon={<Plus />} label={t("createOwn")} href="/new" />
+        ) : (
+          <ToolRow icon={<Map />} label={t("myMaps")} href="/maps" />
+        )}
+      </ul>
     </nav>
   );
 }

@@ -26,7 +26,8 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "flex items-center gap-4 overflow-x-auto border-b border-line",
+        // Pill chips that scroll sideways; the fade shows there are more.
+        "fade-end flex scroll-px-4 items-center gap-2 overflow-x-auto [scrollbar-width:none]",
         className,
       )}
       {...props}
@@ -42,7 +43,7 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "-mb-px shrink-0 border-b-2 border-transparent pb-2 text-xs font-semibold text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=active]:border-brass data-[state=active]:text-brass-text",
+        "h-11 shrink-0 rounded-full border border-line px-4 text-sm font-medium text-ink-soft transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset data-[state=active]:border-ink data-[state=active]:bg-ink data-[state=active]:font-semibold data-[state=active]:text-paper",
         className,
       )}
       {...props}

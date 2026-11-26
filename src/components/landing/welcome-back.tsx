@@ -14,7 +14,7 @@ export function WelcomeBack({ latest }: { readonly latest: LocalTripRecord }) {
   return (
     <div className="flex flex-col gap-2">
       <p className="eyebrow">{t("welcomeBack")}</p>
-      <Button asChild variant="brass">
+      <Button asChild variant="outline">
         <Link href={`/maps/${latest.id}`}>
           <span className="truncate">
             {t("continue", { title: latest.trip.title })}

@@ -57,7 +57,6 @@
     "lede": "Answer three questions and get a draft route. You can edit everything afterwards."
   },
   "Landing": {
-    "group": "Start your own route",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
     "heading": "Draw your travel route on an interactive map",
@@ -325,42 +324,51 @@
       "label": "Trip details",
       "expandSheet": "Expand trip details",
       "collapseSheet": "Collapse trip details",
-      "expandCard": "Expand trip card",
-      "collapseCard": "Collapse trip card",
-      "expandHint": "Expand",
-      "collapseHint": "Collapse",
       "theRoute": "The route",
       "routeLabel": "Route",
-      "back": "Route",
+      "back": "Back to route",
       "eyebrow": {
         "demo": "Example route",
         "shared": "Shared route",
         "own": "Your map"
       },
-      "headline": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {distance}"
+      "headline": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {distance}",
+      "views": {
+        "label": "Trip views",
+        "route": "Route",
+        "stops": "Stops",
+        "tools": "Tools"
+      }
     },
     "actions": {
-      "remix": "Remix this trip",
-      "createOwn": "Create your own",
-      "edit": "Edit",
-      "share": "Share",
+      "remix": "Make a copy to edit",
+      "createOwn": "Start a new map",
+      "edit": "Edit map",
+      "share": "Share map",
       "sharing": "Sharing…",
-      "editRoute": "Edit this route",
       "tools": "Trip tools",
-      "customize": "Customize",
+      "customize": "Edit this route",
       "myMaps": "My maps",
       "packing": "Packing",
       "notes": "Notes",
-      "poster": "Poster",
-      "calendar": "Calendar",
-      "navigate": "Navigation"
+      "poster": "Make a poster",
+      "calendar": "Add to calendar",
+      "navigate": "Open in a maps app",
+      "startOwn": "Start your own route",
+      "buildRoute": "Build a route",
+      "planWithAi": "Plan with AI",
+      "stopPager": "Stops",
+      "prevStop": "Previous stop: {city}",
+      "nextStop": "Next stop: {city}",
+      "first": "First stop",
+      "last": "Last stop"
     },
     "stats": {
       "nights": "Nights",
       "cities": "Cities",
-      "inCountries": "in {count, plural, one {# country} other {# countries}}",
-      "totalRoute": "Total route",
-      "budget": "Budget / person"
+      "totalRoute": "Route",
+      "budget": "Per person",
+      "from": "{amount}+"
     },
     "itinerary": {
       "label": "Itinerary",

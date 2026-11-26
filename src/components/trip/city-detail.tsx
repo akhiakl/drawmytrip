@@ -1,8 +1,8 @@
 "use client";
 
-import { BedDouble, CalendarDays, Wallet } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useId } from "react";
+import { useId, type ReactNode } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useUnits } from "@/components/units/units-provider";
@@ -15,9 +15,32 @@ import {
   PlannerSection,
   PracticalSection,
 } from "./drawer-sections";
-import { BackToRoute } from "./trip-tools";
 
 const TABS = ["overview", "itinerary", "food", "practical", "planner"] as const;
+
+function BackToRoute({ onBack }: { readonly onBack: () => void }) {
+  const t = useTranslations("Trip.panel");
+  return (
+    <button
+      type="button"
+      // Focus moves into the stop the guest just opened.
+      // eslint-disable-next-line jsx-a11y/no-autofocus
+      autoFocus
+      onClick={onBack}
+      className="-ml-2 flex min-h-11 w-fit items-center gap-1.5 rounded-full px-2 text-sm text-ink-soft transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
+    >
+      <ArrowLeft /> {t("back")}
+    </button>
+  );
+}
+
+function Pill({ children }: { readonly children: ReactNode }) {
+  return (
+    <span className="inline-flex h-8 items-center rounded-full bg-secondary px-3 text-sm font-medium text-ink">
+      {children}
+    </span>
+  );
+}
 
 /** One stop in depth, shown in the panel in place of the itinerary. */
 export function CityDetail({
@@ -43,10 +66,10 @@ export function CityDetail({
     <article aria-labelledby={titleId} className="flex flex-col gap-4">
       <BackToRoute onBack={onBack} />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3.5">
         <span
           aria-hidden
-          className={`hero-grad-${index % 5} grid size-16 shrink-0 place-items-center rounded-2xl text-4xl`}
+          className={`hero-grad-${index % 5} grid size-14 shrink-0 place-items-center rounded-2xl text-3xl`}
         >
           {city.flag}
         </span>
@@ -61,43 +84,17 @@ export function CityDetail({
           >
             {city.name}
           </h2>
-          <p className="flex flex-wrap gap-x-4 text-[12.5px] text-ink-soft">
-            <span>
-              <BedDouble
-                aria-hidden
-                className="mr-1 inline size-3.5 align-[-2px] text-brass-text"
-              />
-              <b className="font-semibold text-ink">
-                {t("nights", { count: city.nights })}
-              </b>
-            </span>
-            {dates && (
-              <span>
-                <CalendarDays
-                  aria-hidden
-                  className="mr-1 inline size-3.5 align-[-2px] text-brass-text"
-                />
-                <b className="font-semibold text-ink">
-                  {formatDateSpan(dates, locale)}
-                </b>
-              </span>
-            )}
-            <span>
-              <Wallet
-                aria-hidden
-                className="mr-1 inline size-3.5 align-[-2px] text-brass-text"
-              />
-              <b className="font-semibold text-ink">
-                {t("perDay", { amount: money(city.budget) })}
-              </b>
-            </span>
-          </p>
         </div>
       </div>
+      <p className="flex flex-wrap gap-2">
+        <Pill>{t("nights", { count: city.nights })}</Pill>
+        <Pill>{t("perDay", { amount: money(city.budget) })}</Pill>
+        {dates && <Pill>{formatDateSpan(dates, locale)}</Pill>}
+      </p>
 
       {/* Remount tabs per city so the active tab and planner reset. */}
       <Tabs key={`${city.name}-${index}`} defaultValue="overview">
-        <TabsList className="w-full justify-between gap-2">
+        <TabsList className="-mx-4 px-4 pr-12 lg:-mx-6 lg:px-6">
           {TABS.map((tab) => (
             <TabsTrigger key={tab} value={tab}>
               {t(`city.tabs.${tab}`)}

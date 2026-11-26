@@ -12,9 +12,7 @@ const trip = makeTrip(2, {
 });
 
 function renderTools(active: "packing" | "notes") {
-  return render(
-    <TripTools trip={trip} scope={scope} active={active} onBack={() => {}} />,
-  );
+  return render(<TripTools trip={trip} scope={scope} active={active} />);
 }
 
 beforeEach(() => {

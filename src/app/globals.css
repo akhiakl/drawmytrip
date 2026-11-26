@@ -31,6 +31,9 @@
   --azure-text: #2f6697;
   --line: rgba(22, 35, 58, 0.12);
   --card-solid: #ffffff;
+  /* Solid sheet and bars over the map on phones (no blur over WebGL). */
+  --sheet: #fbf9f4;
+  --shadow-sheet: 0 -12px 40px -16px rgba(22, 35, 58, 0.3);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -64,6 +67,8 @@
   --ease-atlas: cubic-bezier(0.32, 0.72, 0.24, 1);
   --map-filter: saturate(0.55) contrast(1.02) brightness(1.02);
   --page-gutter: 1rem;
+  /* Desktop side panel: a native 440px card, not a stretched phone. */
+  --card-w: 440px;
   --shadow-marker-dot: 0 4px 10px rgba(0, 0, 0, 0.25);
   --shadow-marker-lbl: 0 2px 8px rgba(22, 35, 58, 0.12);
 }
@@ -79,6 +84,8 @@
   --azure-text: var(--azure);
   --line: rgba(237, 234, 226, 0.12);
   --card-solid: #161f30;
+  --sheet: #131b2a;
+  --shadow-sheet: 0 -12px 40px -16px rgba(0, 0, 0, 0.6);
 
   --card: rgba(20, 28, 44, 0.72);
   --popover: rgba(21, 29, 45, 0.94);
@@ -105,6 +112,7 @@
   --color-azure-text: var(--azure-text);
   --color-line: var(--line);
   --color-card-solid: var(--card-solid);
+  --color-sheet: var(--sheet);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -141,6 +149,7 @@
   --radius-3xl: var(--radius-sheet);
 
   --shadow-soft: var(--shadow-soft);
+  --shadow-sheet: var(--shadow-sheet);
 
   --ease-atlas: var(--ease-atlas);
 
@@ -162,6 +171,11 @@
   width: 100%;
   max-width: 1440px;
   padding-inline: var(--page-gutter);
+}
+
+/* A row that scrolls sideways fades at its end, so more is implied. */
+@utility fade-end {
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
 }
 
 @media (width >= 40rem) {
@@ -274,8 +288,6 @@ input[type="range"] {
 /* The floating atlas card: frost, but dense enough that map labels
    behind it blur away instead of bleeding through. */
 .atlas-card {
-  /* Desktop width: a native 440px side panel, not a stretched phone. */
-  --card-w: 440px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sheet);
   background: color-mix(in srgb, var(--paper) 90%, transparent);

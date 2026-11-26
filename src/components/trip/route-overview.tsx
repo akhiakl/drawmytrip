@@ -17,28 +17,22 @@ import { MODE_META } from "./mode";
 
 function Stat({
   value,
-  detail,
   caption,
 }: {
   readonly value: string | number;
-  readonly detail?: string;
   readonly caption: string;
 }) {
   return (
-    <div className="min-w-0 rounded-xl border border-line px-3.5 py-2.5">
-      <b className="block font-display text-lg leading-tight font-medium wrap-break-word">
+    <div className="flex min-w-0 flex-col gap-0.5 rounded-2xl border border-line bg-card-solid px-2.5 py-2.5 lg:px-3">
+      <b className="font-display text-base leading-tight font-medium wrap-break-word">
         {value}
-        {detail && (
-          <span className="ml-1.5 inline-block font-sans text-xs font-normal text-ink-soft">
-            {detail}
-          </span>
-        )}
       </b>
-      <span className="block text-xs text-ink-soft wrap-break-word">{caption}</span>
+      <span className="text-xs text-ink-soft">{caption}</span>
     </div>
   );
 }
 
+/** The trip in four numbers (one row, even on phones), plus its dates. */
 export function StatsGrid({ trip }: { readonly trip: Trip }) {
   const t = useTranslations("Trip.stats");
   const locale = useLocale();
@@ -47,19 +41,19 @@ export function StatsGrid({ trip }: { readonly trip: Trip }) {
   const { money, distance } = useUnits();
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <Stat
-        value={stats.nights}
-        detail={range ? formatDateSpan(range, locale) : undefined}
-        caption={t("nights")}
-      />
-      <Stat
-        value={stats.cities}
-        detail={t("inCountries", { count: stats.countries })}
-        caption={t("cities")}
-      />
-      <Stat value={distance(stats.totalKm)} caption={t("totalRoute")} />
-      <Stat value={money(stats.budget)} caption={t("budget")} />
+    <div className="flex flex-col gap-2">
+      {range && (
+        <p className="text-sm text-ink-soft">{formatDateSpan(range, locale)}</p>
+      )}
+      <div className="grid grid-cols-4 gap-2">
+        <Stat value={stats.nights} caption={t("nights")} />
+        <Stat value={stats.cities} caption={t("cities")} />
+        <Stat value={distance(stats.totalKm)} caption={t("totalRoute")} />
+        <Stat
+          value={t("from", { amount: money(stats.budget[0]) })}
+          caption={t("budget")}
+        />
+      </div>
     </div>
   );
 }
@@ -71,7 +65,7 @@ function LegLine({ leg }: { readonly leg: Leg }) {
   return (
     <li
       aria-label={t("legLabel", { mode: label, duration: leg.duration })}
-      className="ml-[23px] flex items-center gap-2 border-l-2 border-dashed border-brass/50 py-2 pl-[21px] text-xs text-ink-soft"
+      className="ml-[25px] flex min-h-8 items-center gap-2 border-l-2 border-dashed border-brass-strong/60 pl-[27px] text-sm text-ink-soft"
     >
       <span aria-hidden>{emoji}</span>
       <span aria-hidden>
@@ -119,24 +113,24 @@ export function Itinerary({
               aria-current={selectedIndex === index ? "step" : undefined}
               data-hovered={hoveredIndex === index || undefined}
               className={cn(
-                "group flex w-full items-center gap-3 rounded-xl p-1.5 text-left transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-[hovered]:bg-accent",
+                "group flex min-h-15 w-full items-center gap-3 rounded-xl px-1.5 py-2 text-left transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring data-[hovered]:bg-accent",
                 selectedIndex === index && "bg-accent",
               )}
             >
               <span
                 aria-hidden
-                className="grid size-9 shrink-0 place-items-center rounded-full border border-line bg-card-solid text-lg"
+                className="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-card-solid text-lg"
               >
                 {city.flag}
               </span>
               <span className="min-w-0 flex-1">
                 <span
                   title={city.name}
-                  className="block truncate font-display text-base font-medium"
+                  className="block truncate font-display text-lg font-medium"
                 >
                   {city.name}
                 </span>
-                <span className="block text-xs text-ink-soft">
+                <span className="block text-sm text-ink-soft">
                   {t("stopLine", {
                     dates: dates ? `${formatDateSpan(dates[index], locale)} · ` : "",
                     nights: city.nights,

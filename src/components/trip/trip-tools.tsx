@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useId, useMemo, useState } from "react";
 
@@ -21,39 +21,17 @@ import { cn } from "@/lib/utils";
 
 import type { ToolId } from "./panel-actions";
 
-/** Return link shared by every panel view that replaces the itinerary. */
-export function BackToRoute({ onBack }: { readonly onBack: () => void }) {
-  const t = useTranslations("Trip.panel");
-  return (
-    <button
-      type="button"
-      // Shown when the guest opens a stop or tool in place of the
-      // itinerary; focus moves into the view they just opened.
-      // eslint-disable-next-line jsx-a11y/no-autofocus
-      autoFocus
-      onClick={onBack}
-      className="-ml-1 flex w-fit items-center gap-1.5 rounded-full px-1 text-sm text-ink-soft transition-colors outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
-    >
-      <ArrowLeft /> {t("back")}
-    </button>
-  );
-}
-
 function ToolSection({
   open,
   title,
-  onBack,
   children,
 }: {
   readonly open: boolean;
   readonly title: string;
-  readonly onBack: () => void;
   readonly children: React.ReactNode;
 }) {
   return (
-    <section hidden={!open} className="flex flex-col gap-4">
-      {open && <BackToRoute onBack={onBack} />}
-      <h2 className="font-display text-2xl font-medium">{title}</h2>
+    <section hidden={!open} aria-label={title} className="flex flex-col gap-3">
       {children}
     </section>
   );
@@ -75,7 +53,7 @@ function PackingItem({
   // a repeated id would leave every copy's checkbox without its label.
   const id = useId();
   return (
-    <li className="flex items-center gap-3 text-sm">
+    <li className="flex min-h-12 items-center gap-3 text-base">
       <Checkbox
         id={id}
         aria-label={item}
@@ -85,7 +63,7 @@ function PackingItem({
       <label
         htmlFor={id}
         className={cn(
-          "flex-1 cursor-pointer",
+          "flex-1 cursor-pointer py-2.5",
           checked && "text-muted-foreground line-through",
         )}
       >
@@ -95,7 +73,7 @@ function PackingItem({
         type="button"
         onClick={onRemove}
         aria-label={t("removeItem", { item })}
-        className="rounded-full p-1.5 text-ink-soft outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-3.5"
+        className="grid size-11 shrink-0 place-items-center rounded-full text-ink-soft outline-none hover:bg-secondary hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
       >
         <X />
       </button>
@@ -126,7 +104,7 @@ function AddItemForm({ onAdd }: { readonly onAdd: (item: string) => void }) {
       <button
         type="submit"
         aria-label={t("addItemButton")}
-        className="grid size-9 shrink-0 place-items-center rounded-md border border-line text-ink-soft outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
+        className="grid size-12 shrink-0 place-items-center rounded-lg border border-line bg-card-solid text-ink outline-none hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-5"
       >
         <Plus />
       </button>
@@ -138,7 +116,6 @@ type ToolsProps = {
   readonly trip: Trip;
   readonly scope: TripToolsScope;
   readonly active: ToolId | null;
-  readonly onBack: () => void;
 };
 
 /**
@@ -170,7 +147,7 @@ function useSuggestedLabel() {
       : t(item.key);
 }
 
-function ToolsBody({ trip, scope, active, onBack }: ToolsProps) {
+function ToolsBody({ trip, scope, active }: ToolsProps) {
   const t = useTranslations("Trip.tools");
   const label = useSuggestedLabel();
   const [state, setState] = useState<TripToolsState>(() => readTripTools(scope));
@@ -220,18 +197,14 @@ function ToolsBody({ trip, scope, active, onBack }: ToolsProps) {
 
   return (
     <>
-      <ToolSection
-        open={active === "packing"}
-        title={t("packingTitle")}
-        onBack={onBack}
-      >
+      <ToolSection open={active === "packing"} title={t("packingTitle")}>
         <progress
           aria-label={t("packed")}
           value={progress}
           max={100}
           className="h-1 w-full appearance-none overflow-hidden rounded-full bg-secondary [&::-moz-progress-bar]:rounded-full [&::-moz-progress-bar]:bg-brass [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-brass"
         />
-        <ul className="space-y-2.5">
+        <ul className="divide-y divide-line">
           {items.map((item) => (
             <PackingItem
               key={item.id}
@@ -246,7 +219,7 @@ function ToolsBody({ trip, scope, active, onBack }: ToolsProps) {
           <button
             type="button"
             onClick={() => update({ hidden: [] })}
-            className="w-fit rounded text-xs text-brass-text underline underline-offset-2 outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-h-11 w-fit rounded text-sm text-brass-text underline underline-offset-2 outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring"
           >
             {t("restoreSuggestions", { count: hiddenCount })}
           </button>
@@ -254,7 +227,7 @@ function ToolsBody({ trip, scope, active, onBack }: ToolsProps) {
         <AddItemForm onAdd={addItem} />
       </ToolSection>
 
-      <ToolSection open={active === "notes"} title={t("notesTitle")} onBack={onBack}>
+      <ToolSection open={active === "notes"} title={t("notesTitle")}>
         <textarea
           name="notes"
           aria-label={t("notesTitle")}
@@ -264,7 +237,7 @@ function ToolsBody({ trip, scope, active, onBack }: ToolsProps) {
           placeholder={t("notesPlaceholder")}
           className="min-h-48 w-full resize-y rounded-lg border border-input bg-card-solid p-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
-        <p className="text-xs text-ink-soft">{t("notesPrivacy")}</p>
+        <p className="text-sm text-ink-soft">{t("notesPrivacy")}</p>
       </ToolSection>
     </>
   );

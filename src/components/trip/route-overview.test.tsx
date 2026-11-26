@@ -16,9 +16,8 @@ describe("StatsGrid", () => {
     render(<StatsGrid trip={trip} />);
     expect(screen.getByText("Nights")).toBeInTheDocument();
     expect(screen.getByText("Cities")).toBeInTheDocument();
-    expect(screen.getByText("in 1 country")).toBeInTheDocument();
     expect(screen.getByText(/km$/)).toBeInTheDocument();
-    expect(screen.getByText("Budget / person")).toBeInTheDocument();
+    expect(screen.getByText("Per person")).toBeInTheDocument();
   });
 
   it("shows the date span beside the nights for a dated trip", () => {

@@ -6,16 +6,20 @@ import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useMap } from "react-leaflet";
 
+import { cn } from "@/lib/utils";
+
 import { fitPadding, isMapSized, type MapInsets } from "./fit-padding";
 import { MapOverlay } from "./map-overlay";
 
 function ControlButton({
   label,
   onClick,
+  className,
   children,
 }: {
   readonly label: string;
   readonly onClick: () => void;
+  readonly className?: string;
   readonly children: ReactNode;
 }) {
   return (
@@ -24,14 +28,20 @@ function ControlButton({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="grid size-9 place-items-center text-ink transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset [&_svg]:size-4"
+      className={cn(
+        "grid size-11 place-items-center text-ink transition-colors outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset [&_svg]:size-5",
+        className,
+      )}
     >
       {children}
     </button>
   );
 }
 
-/** Zoom and "fit route": the only controls floating on the map. */
+/**
+ * Zoom and "fit route": the only controls floating on the map. Phones
+ * pinch to zoom, so they get just the fit button, below the top bar.
+ */
 export function MapControls({
   bounds,
   insets,
@@ -43,11 +53,19 @@ export function MapControls({
   const t = useTranslations("Trip.map");
 
   return (
-    <MapOverlay className="top-3 right-3 flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line bg-card-solid shadow-soft">
-      <ControlButton label={t("zoomIn")} onClick={() => map.zoomIn()}>
+    <MapOverlay className="top-[calc(var(--map-inset-top,0px)+12px)] right-3 flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line bg-card-solid shadow-soft">
+      <ControlButton
+        label={t("zoomIn")}
+        onClick={() => map.zoomIn()}
+        className="hidden lg:grid"
+      >
         <Plus />
       </ControlButton>
-      <ControlButton label={t("zoomOut")} onClick={() => map.zoomOut()}>
+      <ControlButton
+        label={t("zoomOut")}
+        onClick={() => map.zoomOut()}
+        className="hidden lg:grid"
+      >
         <Minus />
       </ControlButton>
       <ControlButton

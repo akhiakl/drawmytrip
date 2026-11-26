@@ -1,12 +1,11 @@
 "use client";
 
-import { ArrowRight, PenLine, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { CitySearch } from "@/components/editor/city-search";
-import { Button } from "@/components/ui/button";
 import { useMounted } from "@/hooks/use-mounted";
 import type { CitySearchResult } from "@/lib/geo-search";
 import { listLocalTrips } from "@/lib/trip";
@@ -15,9 +14,10 @@ import { DestinationStart } from "./destination-start";
 import { WelcomeBack } from "./welcome-back";
 
 /**
- * The landing's way in, shown as the example route's main actions: pick
- * up a saved map (returning visitors), start with AI or by hand, or name
- * a destination first. The sample route stays below as inspiration.
+ * The landing's intro above the example route: pick up a saved map
+ * (returning visitors) or name a destination first. Plan with AI and
+ * Build a route sit in the action bar; the sample route stays below as
+ * inspiration.
  */
 export function LandingCta() {
   const t = useTranslations("Landing");
@@ -34,44 +34,24 @@ export function LandingCta() {
       {destination ? (
         <DestinationStart
           destination={destination}
-          primary={!returning}
           onClear={() => setDestination(null)}
         />
       ) : (
-        <fieldset className="flex gap-2">
-          <legend className="sr-only">{t("group")}</legend>
-          <Button
-            asChild
-            variant={returning ? "outline" : "brass"}
-            className="flex-1"
-          >
-            <Link href="/plan">
-              <Sparkles /> {t("planWithAi")}
-            </Link>
-          </Button>
-          <Button asChild variant="outline" className="flex-1">
-            <Link href="/new">
-              <PenLine /> {t("buildManually")}
-            </Link>
-          </Button>
-        </fieldset>
+        <CitySearch
+          onSelect={setDestination}
+          label={t("searchLabel")}
+          placeholder={
+            returning ? t("searchPlaceholderReturning") : t("searchPlaceholder")
+          }
+        />
       )}
 
-      {/* Under the buttons so they stay in view on the mobile sheet's peek. */}
-      <CitySearch
-        onSelect={setDestination}
-        label={t("searchLabel")}
-        placeholder={
-          returning ? t("searchPlaceholderReturning") : t("searchPlaceholder")
-        }
-      />
-
-      <h1 className="text-sm font-medium text-ink">{t("heading")}</h1>
-      <p className="-mt-1 text-sm text-ink-soft">{t("tagline")}</p>
+      <h1 className="text-base font-medium text-ink">{t("heading")}</h1>
+      <p className="-mt-1 text-base text-ink">{t("tagline")}</p>
 
       <Link
         href="/about"
-        className="inline-flex w-fit items-center gap-1 rounded-sm text-xs text-ink-soft underline-offset-4 outline-none hover:text-ink hover:underline focus-visible:ring-2 focus-visible:ring-ring"
+        className="inline-flex min-h-11 w-fit items-center gap-1 rounded-sm text-sm text-ink-soft underline-offset-4 outline-none hover:text-ink hover:underline focus-visible:ring-2 focus-visible:ring-ring"
       >
         {t("howItWorks")} <ArrowRight aria-hidden className="size-3" />
       </Link>

@@ -59,7 +59,7 @@ describe("CityDetail", () => {
 
   it("focuses the way back to the route and uses it", async () => {
     renderDrawer();
-    const back = screen.getByRole("button", { name: "Route" });
+    const back = screen.getByRole("button", { name: "Back to route" });
     expect(back).toHaveFocus();
     await userEvent.click(back);
     expect(onBack).toHaveBeenCalledOnce();
