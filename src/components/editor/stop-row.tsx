@@ -1,30 +1,48 @@
 "use client";
 
 import {
-  ChevronDown,
   CircleAlert,
   GripVertical,
+  MoreHorizontal,
   MoveDown,
   MoveUp,
+  Pencil,
   Trash2,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { DragEventHandler, PointerEventHandler } from "react";
+import {
+  useRef,
+  useState,
+  type DragEventHandler,
+  type PointerEventHandler,
+  type ReactNode,
+} from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clampNights, type City } from "@/lib/trip";
+import type { City } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
+import { NightsStepper } from "./nights-stepper";
 import { StopRowDetails } from "./stop-row-details";
 import type { DropSide } from "./use-stop-drag";
 
 /** Inline validation messages for the always-visible fields. */
 export type StopRowErrors = { readonly name?: string; readonly nights?: string };
 
-/** One stop: always-visible identity fields, expandable full detail form. */
+/**
+ * One stop as a compact row: grip, flag, name, a nights stepper and a menu
+ * (edit details, move, remove). Its identity fields open with the details,
+ * and stay open while the stop has no name or a name problem.
+ */
 export function StopRow({
   city,
   index,
@@ -76,138 +94,189 @@ export function StopRow({
   const name = city.name || t("fallbackName");
   const nameErrorId = `stop-${index}-name-error`;
   const nightsErrorId = `stop-${index}-nights-error`;
+  const movedFocus = useRef(false);
+  const leaveWith = (action: () => void) => {
+    movedFocus.current = true;
+    action();
+  };
+
+  const nightsLabel = t("nights");
+  // A blank stop or one with a name problem shows its identity fields.
+  // Typing a blank stop's first letter must not fold its fields away, so
+  // they stay open until focus leaves them.
+  const [typing, setTyping] = useState(false);
+  const showDetails = expanded || typing || !city.name || Boolean(errors.name);
 
   return (
     <Card
+      id={`stop-${index}`}
       draggable={draggable}
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       className={cn(
-        "relative gap-3 transition-opacity",
+        "relative gap-2 p-1.5 transition-opacity",
         dragging && "opacity-40",
-        active && "border-brass/60",
+        active && "border-brass-strong",
       )}
     >
       {dropSide && (
         <span
           aria-hidden
           className={cn(
-            "pointer-events-none absolute inset-x-4 h-0.5 rounded-full bg-brass",
+            "pointer-events-none absolute inset-x-4 h-0.5 rounded-full bg-brass-strong",
             dropSide === "before" ? "-top-1.5" : "-bottom-1.5",
           )}
         />
       )}
-      <div className="flex flex-wrap items-end gap-3">
+      <div className="flex items-center gap-1">
         <div
-          className="mt-6 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+          className="grid h-11 w-7 shrink-0 cursor-grab touch-none place-items-center text-muted-foreground active:cursor-grabbing"
           aria-hidden
           {...gripProps}
         >
           <GripVertical className="size-5" />
         </div>
+        <span
+          aria-hidden
+          className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-lg"
+        >
+          {city.flag}
+        </span>
+        <span
+          title={name}
+          className="ml-1.5 min-w-0 flex-1 truncate font-display text-lg font-medium"
+        >
+          {city.name || t("fallbackName")}
+        </span>
 
-        <div className="flex w-16 flex-col gap-1.5">
-          <Label htmlFor={`stop-${index}-flag`}>{t("flag")}</Label>
-          <Input
-            id={`stop-${index}-flag`}
-            value={city.flag}
-            maxLength={8}
-            onChange={(e) => onChange({ flag: e.target.value })}
-          />
-        </div>
+        <NightsStepper
+          nightsId={`stop-${index}-nights`}
+          name={name}
+          nights={city.nights}
+          label={nightsLabel}
+          errorId={errors.nights ? nightsErrorId : undefined}
+          onChange={(nights) => onChange({ nights })}
+        />
 
-        <div className="flex min-w-32 flex-1 flex-col gap-1.5">
-          <Label htmlFor={`stop-${index}-name`}>{t("city")}</Label>
-          <Input
-            id={`stop-${index}-name`}
-            value={city.name}
-            maxLength={60}
-            aria-invalid={errors.name ? true : undefined}
-            aria-describedby={errors.name ? nameErrorId : undefined}
-            onChange={(e) => onChange({ name: e.target.value })}
-          />
-        </div>
-
-        <div className="flex min-w-32 flex-1 flex-col gap-1.5">
-          <Label htmlFor={`stop-${index}-country`}>{t("country")}</Label>
-          <Input
-            id={`stop-${index}-country`}
-            value={city.country}
-            maxLength={60}
-            onChange={(e) => onChange({ country: e.target.value })}
-          />
-        </div>
-
-        <div className="flex w-24 flex-col gap-1.5">
-          <Label htmlFor={`stop-${index}-nights`}>{t("nights")}</Label>
-          <Input
-            id={`stop-${index}-nights`}
-            type="number"
-            min={0}
-            max={30}
-            value={city.nights}
-            aria-invalid={errors.nights ? true : undefined}
-            aria-describedby={errors.nights ? nightsErrorId : undefined}
-            onChange={(e) =>
-              onChange({ nights: clampNights(Number(e.target.value)) })
-            }
-          />
-        </div>
-
-        <div className="flex items-center gap-1">
-          <Button
-            id={`stop-${index}-move-up`}
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={t("moveUp", { name })}
-            disabled={index === 0}
-            onClick={onMoveUp}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              id={`stop-${index}-menu`}
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={t("more", { name })}
+            >
+              <MoreHorizontal />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            // Move and remove place focus themselves (on the moved stop or
+            // the next one), so the menu must not pull it back to this row.
+            onCloseAutoFocus={(event) => {
+              if (!movedFocus.current) return;
+              movedFocus.current = false;
+              event.preventDefault();
+            }}
           >
-            <MoveUp />
-          </Button>
-          <Button
-            id={`stop-${index}-move-down`}
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={t("moveDown", { name })}
-            disabled={index === count - 1}
-            onClick={onMoveDown}
-          >
-            <MoveDown />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={expanded ? t("collapse") : t("expand")}
-            aria-expanded={expanded}
-            onClick={onToggleExpand}
-          >
-            <ChevronDown
-              className={cn("transition-transform", expanded && "rotate-180")}
-            />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={t("remove", { name })}
-            onClick={onRemove}
-          >
-            <Trash2 />
-          </Button>
-        </div>
+            <DropdownMenuItem onSelect={onToggleExpand}>
+              <Pencil /> {expanded ? t("collapse") : t("expand")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              id={`stop-${index}-move-up`}
+              disabled={index === 0}
+              onSelect={() => leaveWith(onMoveUp)}
+            >
+              <MoveUp /> {t("moveUp", { name })}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              id={`stop-${index}-move-down`}
+              disabled={index === count - 1}
+              onSelect={() => leaveWith(onMoveDown)}
+            >
+              <MoveDown /> {t("moveDown", { name })}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => leaveWith(onRemove)}
+            >
+              <Trash2 /> {t("remove", { name })}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      <FieldError id={nameErrorId} message={errors.name} />
       <FieldError id={nightsErrorId} message={errors.nights} />
 
-      {expanded && <StopRowDetails city={city} index={index} onChange={onChange} />}
+      {showDetails && (
+        <div
+          className="flex flex-col gap-4 px-2.5 pt-2 pb-3"
+          onFocus={() => setTyping(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setTyping(false);
+          }}
+        >
+          <div className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-3 sm:grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,1fr)]">
+            <Field id={`stop-${index}-flag`} label={t("flag")}>
+              <Input
+                id={`stop-${index}-flag`}
+                value={city.flag}
+                maxLength={8}
+                onChange={(e) => onChange({ flag: e.target.value })}
+              />
+            </Field>
+            <Field id={`stop-${index}-name`} label={t("city")}>
+              <Input
+                id={`stop-${index}-name`}
+                value={city.name}
+                maxLength={60}
+                aria-invalid={errors.name ? true : undefined}
+                aria-describedby={errors.name ? nameErrorId : undefined}
+                onChange={(e) => onChange({ name: e.target.value })}
+              />
+            </Field>
+            <Field
+              id={`stop-${index}-country`}
+              label={t("country")}
+              className="col-span-2 sm:col-span-1"
+            >
+              <Input
+                id={`stop-${index}-country`}
+                value={city.country}
+                maxLength={60}
+                onChange={(e) => onChange({ country: e.target.value })}
+              />
+            </Field>
+          </div>
+          <FieldError id={nameErrorId} message={errors.name} />
+          {expanded && (
+            <StopRowDetails city={city} index={index} onChange={onChange} />
+          )}
+        </div>
+      )}
     </Card>
+  );
+}
+
+function Field({
+  id,
+  label,
+  className,
+  children,
+}: {
+  readonly id: string;
+  readonly label: string;
+  readonly className?: string;
+  readonly children: ReactNode;
+}) {
+  return (
+    <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
+      <Label htmlFor={id}>{label}</Label>
+      {children}
+    </div>
   );
 }
 
@@ -220,7 +289,7 @@ function FieldError({
 }) {
   if (!message) return null;
   return (
-    <p id={id} className="flex items-center gap-1.5 text-xs text-destructive">
+    <p id={id} className="flex items-center gap-1.5 px-2.5 text-sm text-destructive">
       <CircleAlert className="size-3.5 shrink-0" aria-hidden />
       {message}
     </p>

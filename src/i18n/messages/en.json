@@ -150,8 +150,7 @@
     "undoHint": "Undo (Ctrl+Z)",
     "redo": "Redo",
     "redoHint": "Redo (Ctrl+Shift+Z)",
-    "myMaps": "My Maps",
-    "share": "Share",
+    "share": "Share map",
     "shareStale": "Edited since you shared it. Share again to update the link.",
     "fixBeforeShare": "A few fields need fixing before this map can be shared.",
     "redrafted": "Route redrafted. Undo brings the previous one back.",
@@ -164,14 +163,17 @@
     },
     "stops": {
       "heading": "Stops",
-      "counter": "{count}/{max} stops",
+      "counter": "{count} of {max} free stops",
       "searchNext": "Search for the next stop.",
-      "addBlank": "Or add a blank stop",
+      "addBlank": "Add a blank stop and type it in",
       "newStopName": "New stop",
       "limit": "Guest maps top out at {max} stops.",
       "seeUnlocks": "See what unlocks",
       "moved": "{name} moved to stop {position} of {count}.",
-      "removed": "Removed {name}"
+      "removed": "Removed {name}",
+      "add": "Add stop",
+      "addTitle": "Add a stop",
+      "position": "Stop {number} of {max}"
     },
     "search": {
       "placeholder": "Search for a city…",
@@ -189,7 +191,11 @@
       "moveDown": "Move {name} down",
       "collapse": "Collapse details",
       "expand": "Edit all details",
-      "remove": "Remove {name}"
+      "remove": "Remove {name}",
+      "more": "More for {name}",
+      "nightsIn": "Nights in {name}",
+      "fewerNights": "Fewer nights in {name}",
+      "moreNights": "More nights in {name}"
     },
     "details": {
       "latitude": "Latitude",
@@ -224,7 +230,9 @@
       "duration": "Duration",
       "durationPlaceholder": "~2h 30m",
       "crowFlies": "{distance} as the crow flies",
-      "useEstimate": "Use estimate ({estimate} by {mode})"
+      "useEstimate": "Use estimate ({estimate} by {mode})",
+      "change": "Change",
+      "done": "Done"
     },
     "redraft": {
       "eyebrow": "Redraft with AI",
@@ -237,7 +245,10 @@
       "rateLimited": "Too many requests. Wait a minute and try again.",
       "failed": "The redraft failed. Your route is unchanged. Try again."
     },
-    "previewEmpty": "Add a stop to see it appear on the map."
+    "previewEmpty": "Add a stop to see it appear on the map.",
+    "backToMaps": "Back to my maps",
+    "sheetLabel": "Stops",
+    "mapLabel": "Route preview"
   },
   "Theme": {
     "toLight": "Switch to light theme",

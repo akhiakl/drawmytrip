@@ -18,14 +18,14 @@ test("AI create flow prefills the editor", async ({ page }) => {
   await planWithAi(page, makeGeneratedDraft([], 3));
 
   await expect(page.getByLabel("Trip title")).toHaveValue("Alpine Arc");
-  await expect(page.getByText("3/5 stops")).toBeVisible();
+  await expect(page.getByText("3 of 5 free stops")).toBeVisible();
   await expect(page.getByText("Stop 3").first()).toBeVisible();
 });
 
 test("a ghost stop past the guest limit opens the upsell", async ({ page }) => {
   await planWithAi(page, makeGeneratedDraft(["Ljubljana"], 5));
 
-  await expect(page.getByText("5/5 stops")).toBeVisible();
+  await expect(page.getByText("5 of 5 free stops")).toBeVisible();
   await page
     .locator(".marker-ghost", { hasText: "Ljubljana" })
     .locator(".marker-dot")

@@ -120,5 +120,10 @@ test("the editor dates a trip and undoes a title edit", async ({ page }) => {
   await expect(title).toHaveValue("Alpine Loop");
 
   await page.getByLabel("Starts").fill("2027-05-01");
+  // A leg rests as a summary; its fields and estimate open on demand.
+  await page
+    .getByRole("button", { name: /Change$/ })
+    .first()
+    .click();
   await expect(page.getByText(/as the crow flies/)).toBeVisible();
 });

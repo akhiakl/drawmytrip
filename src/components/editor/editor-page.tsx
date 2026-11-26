@@ -7,20 +7,17 @@ import { toast } from "sonner";
 
 import { PageLoading } from "@/components/page-loading";
 import { ShareDialog } from "@/components/share/share-dialog";
+import type { MapInsets } from "@/components/trip/fit-padding";
+import { PanelShell } from "@/components/trip/panel-shell";
+import type { SheetSnap } from "@/components/trip/sheet-snap";
 import { UpsellModal } from "@/components/upsell/upsell-modal";
 import type { GeneratedDraft } from "@/hooks/use-generate-trip";
 import { useMounted } from "@/hooks/use-mounted";
 import { useShareTrip } from "@/hooks/use-share-trip";
-import {
-  clearAiHandoff,
-  readAiHandoff,
-  redraftDefaults,
-  type GenerateRequest,
-} from "@/lib/ai";
+import { clearAiHandoff, redraftDefaults, type GenerateRequest } from "@/lib/ai";
 import {
   addCity,
   canAddCity,
-  createBlankDraft,
   draftFromTrip,
   draftIssues,
   draftToTrip,
@@ -32,25 +29,28 @@ import {
   moveCity,
   removeCityAt,
   saveLocalTrip,
-  startCityFromParams,
   tripFingerprint,
   updateCityAt,
   updateLegAt,
   updateStartDate,
   updateTitle,
   type City,
-  type DraftTrip,
   type DraftIssues,
   type Leg,
   type Trip,
 } from "@/lib/trip";
 
+import { AddStopDialog } from "./add-stop-dialog";
 import {
-  EditorHeader,
+  EditorActions,
+  EditorSheetHead,
+  EditorTopBar,
+  EditorTripFields,
   TRIP_START_INPUT_ID,
   TRIP_TITLE_INPUT_ID,
 } from "./editor-header";
 import { EditorMapPreview } from "./editor-map-preview";
+import { resolveInitialState } from "./initial-draft";
 import { RedraftCard } from "./redraft-card";
 import { StopList } from "./stop-list";
 import { useDraftHistory } from "./use-draft-history";
@@ -82,51 +82,6 @@ function focusFirstIssue(issues: DraftIssues) {
   }
 }
 
-function resolveInitialState(searchParams: URLSearchParams): {
-  draft: DraftTrip;
-  localId: string | null;
-  createdAt: number;
-  ghostNames: string[];
-  request: GenerateRequest | undefined;
-} {
-  const remixId = searchParams.get("remix");
-  if (remixId) {
-    const record = getLocalTrip(remixId);
-    if (record) {
-      return {
-        draft: draftFromTrip(record.trip),
-        localId: remixId,
-        createdAt: record.trip.createdAt,
-        ghostNames: [] as string[],
-        request: undefined,
-      };
-    }
-  }
-
-  if (searchParams.get("from") === "ai") {
-    const aiTrip = readAiHandoff();
-    if (aiTrip) {
-      return {
-        draft: draftFromTrip(aiTrip),
-        localId: null,
-        createdAt: Date.now(),
-        ghostNames: aiTrip.suggestedExtra,
-        request: aiTrip.request,
-      };
-    }
-  }
-
-  // /new?city=…: a destination picked on the landing becomes stop 1.
-  const startCity = startCityFromParams(searchParams);
-  return {
-    draft: startCity ? addCity(createBlankDraft(), startCity) : createBlankDraft(),
-    localId: null,
-    createdAt: Date.now(),
-    ghostNames: [] as string[],
-    request: undefined,
-  };
-}
-
 /**
  * The draft comes from localStorage or the AI handoff, which only exist in
  * the browser — resolve it after mount so server and client HTML agree.
@@ -155,6 +110,9 @@ function EditorWorkspace() {
   const [request, setRequest] = useState(initial.request);
   // The stop being edited (focused in the list or picked on the map).
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [snap, setSnap] = useState<SheetSnap>("half");
+  const [insets, setInsets] = useState<MapInsets>({});
+  const [addOpen, setAddOpen] = useState(false);
 
   // The AI draft is now in state; consume the handoff so a later visit to
   // /new?from=ai starts blank. Cleared here, not while rendering (see
@@ -227,10 +185,11 @@ function EditorWorkspace() {
     });
   };
 
-  // A stop picked on the map scrolls its row into view.
+  // A stop picked on the map raises the sheet and scrolls its row into view.
   const selectFromMap = (index: number) => {
     setActiveIndex(index);
-    document.getElementById(`stop-${index}-name`)?.scrollIntoView({
+    setSnap((current) => (current === "peek" ? "half" : current));
+    document.getElementById(`stop-${index}`)?.scrollIntoView({
       block: "nearest",
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "auto"
@@ -249,63 +208,74 @@ function EditorWorkspace() {
     if (trip) void share(trip, persist(trip));
   };
 
+  const issueText = (key?: DraftIssues[string]) => key && t(`issues.${key}`);
+
   return (
-    <div className="page-container py-8 lg:py-12">
-      <EditorHeader
-        title={draft.title}
-        onTitleChange={(title) => update((d) => updateTitle(d, title), "title")}
-        onShare={handleShare}
-        canShare={isShareable(draft)}
-        sharing={sharing}
-        titleError={issues.title && t(`issues.${issues.title}`)}
-        shareStale={shareStale}
-        startDate={draft.startDate ?? ""}
-        onStartDateChange={(value) =>
-          update((d) => updateStartDate(d, value), "startDate")
+    <div className="relative isolate h-dvh w-full overflow-hidden">
+      <PanelShell
+        label={t("sheetLabel")}
+        snap={snap}
+        onSnapChange={setSnap}
+        bodyId="editor-stops"
+        onInsetsChange={setInsets}
+        topBar={
+          <EditorTopBar
+            title={draft.title}
+            onTitleChange={(title) => update((d) => updateTitle(d, title), "title")}
+            titleError={issueText(issues.title)}
+            history={{ canUndo, canRedo, onUndo: undo, onRedo: redo }}
+          />
         }
-        history={{ canUndo, canRedo, onUndo: undo, onRedo: redo }}
-        startDateError={issues.startDate && t(`issues.${issues.startDate}`)}
-      />
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-10">
-        <StopList
-          cities={draft.cities}
-          keys={draft.keys}
-          legs={draft.legs}
-          canAddCity={canAddCity(draft)}
-          onLimitReached={() => setUpsellOpen(true)}
-          issues={issues}
-          onAddCity={(city: City) => update((d) => addCity(d, city))}
-          onRemoveCity={handleRemove}
-          onMoveCity={handleMove}
-          activeIndex={activeIndex}
-          onActivate={setActiveIndex}
-          onUpdateCity={(index, patch) =>
-            update(
-              (d) => updateCityAt(d, index, patch),
-              fieldGroup("city", index, patch),
-            )
-          }
-          onUpdateLeg={(index, patch: Partial<Leg>) =>
-            update(
-              (d) => updateLegAt(d, index, patch),
-              fieldGroup("leg", index, patch),
-            )
-          }
-        />
-
-        {/* On mobile this column dissolves into the grid: the map leads,
-            the redraft card follows the stops. */}
-        <div className="contents lg:sticky lg:top-8 lg:flex lg:flex-col lg:gap-4 lg:self-start">
-          <div className="relative isolate order-first h-64 overflow-hidden rounded-2xl border border-line lg:order-none lg:h-[min(40rem,calc(100dvh-6rem))]">
-            <EditorMapPreview
-              draft={draft}
-              ghostNames={ghostNames}
-              onGhostSelect={() => setUpsellOpen(true)}
-              selectedIndex={activeIndex}
-              onCitySelect={selectFromMap}
-            />
-          </div>
+        head={
+          <EditorSheetHead
+            count={draft.cities.length}
+            titleError={issueText(issues.title)}
+          />
+        }
+        footer={
+          <EditorActions
+            onAdd={() =>
+              canAddCity(draft) ? setAddOpen(true) : setUpsellOpen(true)
+            }
+            onShare={handleShare}
+            canShare={isShareable(draft)}
+            sharing={sharing}
+          />
+        }
+      >
+        <div className="flex flex-col gap-5 px-4 pt-1 lg:px-6">
+          <EditorTripFields
+            shareStale={shareStale}
+            startDate={draft.startDate ?? ""}
+            onStartDateChange={(value) =>
+              update((d) => updateStartDate(d, value), "startDate")
+            }
+            startDateError={issueText(issues.startDate)}
+          />
+          <StopList
+            cities={draft.cities}
+            keys={draft.keys}
+            legs={draft.legs}
+            canAddCity={canAddCity(draft)}
+            onLimitReached={() => setUpsellOpen(true)}
+            issues={issues}
+            onRemoveCity={handleRemove}
+            onMoveCity={handleMove}
+            activeIndex={activeIndex}
+            onActivate={setActiveIndex}
+            onUpdateCity={(index, patch) =>
+              update(
+                (d) => updateCityAt(d, index, patch),
+                fieldGroup("city", index, patch),
+              )
+            }
+            onUpdateLeg={(index, patch: Partial<Leg>) =>
+              update(
+                (d) => updateLegAt(d, index, patch),
+                fieldGroup("leg", index, patch),
+              )
+            }
+          />
           {draft.cities.length > 0 && (
             <RedraftCard
               key={JSON.stringify(request)}
@@ -314,8 +284,25 @@ function EditorWorkspace() {
             />
           )}
         </div>
-      </div>
+      </PanelShell>
 
+      <main aria-label={t("mapLabel")} className="absolute inset-0 z-0">
+        <EditorMapPreview
+          draft={draft}
+          ghostNames={ghostNames}
+          onGhostSelect={() => setUpsellOpen(true)}
+          selectedIndex={activeIndex}
+          onCitySelect={selectFromMap}
+          insets={insets}
+        />
+      </main>
+
+      <AddStopDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        count={draft.cities.length}
+        onAdd={(city: City) => update((d) => addCity(d, city))}
+      />
       <ShareDialog
         shareId={shareId}
         title={sharedTitle}

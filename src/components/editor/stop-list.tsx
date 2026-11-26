@@ -1,13 +1,10 @@
 "use client";
 
-import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
-  blankCity,
   GUEST_MAX_CITIES,
   indexAfterMove,
   indexAfterRemove,
@@ -17,7 +14,7 @@ import {
   type Leg,
 } from "@/lib/trip";
 
-import { CitySearch } from "./city-search";
+import { ADD_STOP_BUTTON_ID } from "./add-stop-dialog";
 import { LegRow } from "./leg-row";
 import { StopRow } from "./stop-row";
 import { useStopDrag } from "./use-stop-drag";
@@ -26,7 +23,6 @@ export function StopList({
   cities,
   keys,
   legs,
-  onAddCity,
   onRemoveCity,
   onMoveCity,
   onUpdateCity,
@@ -41,7 +37,6 @@ export function StopList({
   /** Stable per-stop ids (`DraftTrip.keys`), so rows follow their stop. */
   readonly keys: readonly string[];
   readonly legs: Leg[];
-  readonly onAddCity: (city: City) => void;
   readonly onRemoveCity: (index: number) => void;
   readonly onMoveCity: (from: number, to: number) => void;
   readonly onUpdateCity: (index: number, patch: Partial<City>) => void;
@@ -57,7 +52,6 @@ export function StopList({
   const issueText = useTranslations("Editor.issues");
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [announcement, setAnnouncement] = useState("");
-  const addCardRef = useRef<HTMLDivElement>(null);
 
   // Focus a control once React has rendered the change that creates it.
   const focusAfterRender = (find: () => HTMLElement | null | undefined) =>
@@ -79,18 +73,10 @@ export function StopList({
     );
   };
 
-  // The row moves with its stop, so focus stays on the pressed button;
-  // when the stop reaches an end of the list that button disables, so
-  // hand focus to its other move button.
-  const moveWithButton = (from: number, to: number, direction: "up" | "down") => {
+  // The row moves with its stop; focus follows to its menu button.
+  const moveWithMenu = (from: number, to: number) => {
     moveCity(from, to);
-    requestAnimationFrame(() => {
-      const same = document.getElementById(`stop-${to}-move-${direction}`);
-      const other = document.getElementById(
-        `stop-${to}-move-${direction === "up" ? "down" : "up"}`,
-      );
-      (same && !same.hasAttribute("disabled") ? same : other)?.focus();
-    });
+    focusAfterRender(() => document.getElementById(`stop-${to}-menu`));
   };
 
   const issueAt = (path: string) => {
@@ -105,8 +91,8 @@ export function StopList({
     const left = cities.length - 1;
     focusAfterRender(() =>
       left > 0
-        ? document.getElementById(`stop-${Math.min(index, left - 1)}-name`)
-        : addCardRef.current?.querySelector("input"),
+        ? document.getElementById(`stop-${Math.min(index, left - 1)}-menu`)
+        : document.getElementById(ADD_STOP_BUTTON_ID),
     );
     setExpandedIndex((current) =>
       current === null ? null : indexAfterRemove(current, index),
@@ -120,12 +106,6 @@ export function StopList({
       <p role="status" aria-live="polite" className="sr-only">
         {announcement}
       </p>
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-medium">{t("heading")}</h2>
-        <span className="eyebrow">
-          {t("counter", { count: cities.length, max: GUEST_MAX_CITIES })}
-        </span>
-      </div>
 
       {cities.map((city, index) => (
         <div key={keys[index]} onFocusCapture={() => onActivate?.(index)}>
@@ -139,8 +119,8 @@ export function StopList({
             }
             onChange={(patch) => onUpdateCity(index, patch)}
             onRemove={() => removeCity(index)}
-            onMoveUp={() => moveWithButton(index, index - 1, "up")}
-            onMoveDown={() => moveWithButton(index, index + 1, "down")}
+            onMoveUp={() => moveWithMenu(index, index - 1)}
+            onMoveDown={() => moveWithMenu(index, index + 1)}
             {...drag.rowProps(index)}
             dragging={drag.dragged === index}
             dropSide={drag.dropSide(index)}
@@ -162,52 +142,14 @@ export function StopList({
         </div>
       ))}
 
-      <Card ref={addCardRef} className="gap-3">
-        {canAddCity ? (
-          <>
-            <p className="text-sm text-muted-foreground">{t("searchNext")}</p>
-            <CitySearch
-              onSelect={(result) =>
-                onAddCity({
-                  ...blankCity(t("newStopName")),
-                  name: result.name,
-                  country: result.country,
-                  flag: result.flag,
-                  ll: result.ll,
-                })
-              }
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="self-start"
-              onClick={() => {
-                onAddCity(blankCity(t("newStopName")));
-                focusAfterRender(() =>
-                  document.getElementById(`stop-${cities.length}-name`),
-                );
-              }}
-            >
-              <Plus /> {t("addBlank")}
-            </Button>
-          </>
-        ) : (
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-muted-foreground">
-              {t("limit", { max: GUEST_MAX_CITIES })}
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={onLimitReached}
-            >
-              {t("seeUnlocks")}
-            </Button>
-          </div>
-        )}
-      </Card>
+      {!canAddCity && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-line p-3">
+          <p className="text-sm text-ink">{t("limit", { max: GUEST_MAX_CITIES })}</p>
+          <Button type="button" variant="outline" size="sm" onClick={onLimitReached}>
+            {t("seeUnlocks")}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

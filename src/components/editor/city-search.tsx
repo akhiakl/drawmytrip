@@ -132,7 +132,7 @@ export function CitySearch({
                 role="option"
                 aria-selected={index === highlighted}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm outline-none",
+                  "flex min-h-12 w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-base outline-none",
                   index === highlighted && "bg-secondary",
                 )}
                 onMouseEnter={() => setHighlighted(index)}

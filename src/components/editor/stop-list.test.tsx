@@ -6,17 +6,8 @@ import { makeCity, makeLeg } from "@/test/fixtures/trip";
 
 import { StopList } from "./stop-list";
 
-vi.mock("./city-search", () => ({
-  CitySearch: () => (
-    <div data-testid="city-search">
-      <input aria-label="Search for a city" />
-    </div>
-  ),
-}));
-
 const props = {
   keys: ["a", "b", "c", "d", "e"],
-  onAddCity: vi.fn(),
   onRemoveCity: vi.fn(),
   onMoveCity: vi.fn(),
   onUpdateCity: vi.fn(),
@@ -24,91 +15,87 @@ const props = {
   onLimitReached: vi.fn(),
 };
 
+/** Picks an item from a stop's "More for …" menu. */
+async function pick(stop: string, item: string) {
+  await userEvent.click(screen.getByRole("button", { name: `More for ${stop}` }));
+  await userEvent.click(await screen.findByRole("menuitem", { name: item }));
+}
+
+const two = () => [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
+
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
 describe("StopList", () => {
-  it("renders one row per city and a leg row between consecutive stops", () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    const legs = [makeLeg()];
-    render(<StopList {...props} cities={cities} legs={legs} canAddCity />);
+  it("renders one compact row per city and a leg between consecutive stops", () => {
+    render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
 
-    expect(screen.getByDisplayValue("Vienna")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Prague")).toBeInTheDocument();
-    expect(screen.getByText("2/5 stops")).toBeInTheDocument();
+    expect(screen.getByText("Vienna")).toBeInTheDocument();
+    expect(screen.getByText("Prague")).toBeInTheDocument();
+    expect(screen.getAllByRole("group", { name: /^Nights in/ })).toHaveLength(2);
   });
 
-  it("shows the search widget and adds a blank stop", async () => {
-    render(<StopList {...props} cities={[]} legs={[]} canAddCity />);
+  it("removes a stop from its menu", async () => {
+    render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
 
-    expect(screen.getByTestId("city-search")).toBeInTheDocument();
-    await userEvent.click(
-      screen.getByRole("button", { name: "Or add a blank stop" }),
-    );
-    expect(props.onAddCity).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "New stop" }),
-    );
-  });
-
-  it("removes a stop via its delete button", async () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    render(<StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />);
-
-    await userEvent.click(screen.getByRole("button", { name: "Remove Vienna" }));
+    await pick("Vienna", "Remove Vienna");
     expect(props.onRemoveCity).toHaveBeenCalledWith(0);
   });
 
-  it("moves a stop up and down", async () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    render(<StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />);
+  it("moves a stop up and down from its menu", async () => {
+    render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Move Prague up" }));
+    await pick("Prague", "Move Prague up");
     expect(props.onMoveCity).toHaveBeenCalledWith(1, 0);
 
-    await userEvent.click(screen.getByRole("button", { name: "Move Vienna down" }));
+    await pick("Vienna", "Move Vienna down");
     expect(props.onMoveCity).toHaveBeenCalledWith(0, 1);
   });
 
   it("announces where a moved stop went", async () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    render(<StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />);
+    render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Move Prague up" }));
+    await pick("Prague", "Move Prague up");
     expect(screen.getByRole("status")).toHaveTextContent(
       "Prague moved to stop 1 of 2.",
     );
   });
 
-  it("keeps focus on the moved stop's move buttons", async () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    const { rerender } = render(
-      <StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />,
-    );
+  it("disables moves past the ends of the list", async () => {
+    render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Move Prague up" }));
-    // The parent applies the move; Prague is now first, so its up button is
-    // disabled and focus lands on its down button.
-    rerender(
+    await userEvent.click(screen.getByRole("button", { name: "More for Vienna" }));
+    expect(
+      await screen.findByRole("menuitem", { name: "Move Vienna up" }),
+    ).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("steps nights with the stepper, within range", async () => {
+    render(
       <StopList
         {...props}
-        cities={[cities[1], cities[0]]}
-        legs={[makeLeg()]}
+        cities={[makeCity({ name: "Vienna", nights: 0 })]}
+        legs={[]}
         canAddCity
       />,
     );
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: "Move Prague down" })).toHaveFocus(),
+
+    expect(
+      screen.getByRole("button", { name: "Fewer nights in Vienna" }),
+    ).toBeDisabled();
+    await userEvent.click(
+      screen.getByRole("button", { name: "More nights in Vienna" }),
     );
+    expect(props.onUpdateCity).toHaveBeenLastCalledWith(0, { nights: 1 });
   });
 
   it("marks the stop being edited as active", async () => {
     const onActivate = vi.fn();
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
     render(
       <StopList
         {...props}
-        cities={cities}
+        cities={two()}
         legs={[makeLeg()]}
         canAddCity
         onActivate={onActivate}
@@ -116,37 +103,29 @@ describe("StopList", () => {
     );
 
     await userEvent.click(
-      screen.getByLabelText("City", { selector: "#stop-1-name" }),
+      screen.getByRole("button", { name: "More nights in Prague" }),
     );
     expect(onActivate).toHaveBeenCalledWith(1);
   });
 
-  it("disables move buttons at the ends of the list", () => {
-    const cities = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-    render(<StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />);
-
-    expect(screen.getByRole("button", { name: "Move Vienna up" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Move Prague down" })).toBeDisabled();
-  });
-
-  it("shows the guest-limit prompt instead of search once at the ceiling", async () => {
+  it("shows the guest-limit prompt once at the ceiling", async () => {
     render(<StopList {...props} cities={[]} legs={[]} canAddCity={false} />);
 
-    expect(screen.queryByTestId("city-search")).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "See what unlocks" }));
     expect(props.onLimitReached).toHaveBeenCalledOnce();
   });
 
-  it("expands a stop row to reveal its detail fields", async () => {
+  it("opens a stop's details from its menu", async () => {
     const cities = [makeCity({ name: "Vienna", why: "Coffee houses" })];
     render(<StopList {...props} cities={cities} legs={[]} canAddCity />);
 
     expect(screen.queryByDisplayValue("Coffee houses")).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Edit all details" }));
+    await pick("Vienna", "Edit all details");
+    expect(screen.getByDisplayValue("Vienna")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Coffee houses")).toBeInTheDocument();
   });
 
-  it("keeps the open detail panel on its stop after a reorder", async () => {
+  it("keeps the open details on their stop after a reorder", async () => {
     const vienna = makeCity({ name: "Vienna", why: "Coffee houses" });
     const prague = makeCity({ name: "Prague", why: "Castle district" });
     const { rerender } = render(
@@ -158,10 +137,8 @@ describe("StopList", () => {
       />,
     );
 
-    await userEvent.click(
-      screen.getAllByRole("button", { name: "Edit all details" })[0],
-    );
-    await userEvent.click(screen.getByRole("button", { name: "Move Vienna down" }));
+    await pick("Vienna", "Edit all details");
+    await pick("Vienna", "Move Vienna down");
     rerender(
       <StopList
         {...props}
@@ -175,7 +152,7 @@ describe("StopList", () => {
     expect(screen.queryByDisplayValue("Castle district")).not.toBeInTheDocument();
   });
 
-  it("closes the detail panel when its stop is removed", async () => {
+  it("closes the details when their stop is removed", async () => {
     const vienna = makeCity({ name: "Vienna", why: "Coffee houses" });
     const prague = makeCity({ name: "Prague", why: "Castle district" });
     const { rerender } = render(
@@ -187,16 +164,14 @@ describe("StopList", () => {
       />,
     );
 
-    await userEvent.click(
-      screen.getAllByRole("button", { name: "Edit all details" })[0],
-    );
-    await userEvent.click(screen.getByRole("button", { name: "Remove Vienna" }));
+    await pick("Vienna", "Edit all details");
+    await pick("Vienna", "Remove Vienna");
     rerender(<StopList {...props} cities={[prague]} legs={[]} canAddCity />);
 
     expect(screen.queryByDisplayValue("Castle district")).not.toBeInTheDocument();
   });
 
-  it("shows inline errors linked to the offending fields", () => {
+  it("opens a nameless stop's fields and links errors to them", () => {
     const cities = [makeCity({ name: "" }), makeCity({ name: "Prague" })];
     render(
       <StopList
@@ -211,68 +186,58 @@ describe("StopList", () => {
       />,
     );
 
-    const name = screen.getAllByLabelText("City")[0];
+    const name = screen.getByLabelText("City");
     expect(name).toHaveAttribute("aria-invalid", "true");
     expect(name).toHaveAccessibleDescription("Give this stop a name.");
-    expect(screen.getAllByLabelText("Nights")[1]).toHaveAccessibleDescription(
-      "Nights run from 0 to 30.",
-    );
-    expect(screen.getAllByLabelText("City")[1]).not.toHaveAttribute("aria-invalid");
+    expect(
+      screen.getByRole("group", { name: "Nights in Prague" }),
+    ).toHaveAccessibleDescription("Nights run from 0 to 30.");
   });
 
-  it("clamps typed nights into range", async () => {
-    render(
+  it("keeps a blank stop's fields open while its name is typed", async () => {
+    const { rerender } = render(
+      <StopList {...props} cities={[makeCity({ name: "" })]} legs={[]} canAddCity />,
+    );
+
+    await userEvent.click(screen.getByLabelText("City"));
+    rerender(
       <StopList
         {...props}
-        cities={[makeCity({ nights: 3 })]}
+        cities={[makeCity({ name: "V" })]}
         legs={[]}
         canAddCity
       />,
     );
-
-    const nights = screen.getByLabelText("Nights");
-    await userEvent.clear(nights);
-    expect(props.onUpdateCity).toHaveBeenLastCalledWith(0, { nights: 0 });
-    await userEvent.type(nights, "45");
-    expect(props.onUpdateCity).toHaveBeenLastCalledWith(0, { nights: 30 });
+    expect(screen.getByLabelText("City")).toHaveFocus();
   });
 
   describe("keyboard focus", () => {
-    const two = [makeCity({ name: "Vienna" }), makeCity({ name: "Prague" })];
-
-    it("lands on the stop that slid into a removed stop's place", async () => {
-      render(<StopList {...props} cities={two} legs={[makeLeg()]} canAddCity />);
-      await userEvent.click(screen.getByRole("button", { name: "Remove Vienna" }));
+    it("lands on the menu of the stop that slid into a removed stop's place", async () => {
+      render(<StopList {...props} cities={two()} legs={[makeLeg()]} canAddCity />);
+      await pick("Vienna", "Remove Vienna");
       await waitFor(() =>
-        expect(document.getElementById("stop-0-name")).toHaveFocus(),
+        expect(document.getElementById("stop-0-menu")).toHaveFocus(),
       );
     });
 
-    it("lands on the search when the last stop is removed", async () => {
+    it("follows a moved stop to its menu button", async () => {
+      const cities = two();
       const { rerender } = render(
-        <StopList {...props} cities={[two[0]]} legs={[]} canAddCity />,
+        <StopList {...props} cities={cities} legs={[makeLeg()]} canAddCity />,
       );
-      await userEvent.click(screen.getByRole("button", { name: "Remove Vienna" }));
-      rerender(<StopList {...props} cities={[]} legs={[]} canAddCity />);
+      await pick("Prague", "Move Prague up");
+      rerender(
+        <StopList
+          {...props}
+          cities={[cities[1], cities[0]]}
+          legs={[makeLeg()]}
+          canAddCity
+        />,
+      );
       await waitFor(() =>
         expect(
-          screen.getByRole("textbox", { name: "Search for a city" }),
+          screen.getByRole("button", { name: "More for Prague" }),
         ).toHaveFocus(),
-      );
-    });
-
-    it("moves to the new stop's name after adding a blank stop", async () => {
-      const { rerender } = render(
-        <StopList {...props} cities={[two[0]]} legs={[]} canAddCity />,
-      );
-      props.onAddCity.mockImplementation(() =>
-        rerender(<StopList {...props} cities={two} legs={[makeLeg()]} canAddCity />),
-      );
-      await userEvent.click(
-        screen.getByRole("button", { name: "Or add a blank stop" }),
-      );
-      await waitFor(() =>
-        expect(document.getElementById("stop-1-name")).toHaveFocus(),
       );
     });
   });

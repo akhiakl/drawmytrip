@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { placeGhostStops } from "@/lib/ai";
 import type { DraftTrip, Trip } from "@/lib/trip";
 
+import type { MapInsets } from "../trip/fit-padding";
 import { TripMap } from "../trip/trip-map";
 
 const PREVIEW_DEBOUNCE_MS = 400;
@@ -32,6 +33,7 @@ export function EditorMapPreview({
   onGhostSelect,
   selectedIndex,
   onCitySelect,
+  insets,
 }: {
   readonly draft: DraftTrip;
   /** The stop being edited; the map flies to it. */
@@ -40,6 +42,8 @@ export function EditorMapPreview({
   /** AI overflow stops; never saved with the trip. */
   readonly ghostNames?: readonly string[];
   readonly onGhostSelect?: () => void;
+  /** Map area the editor sheet covers. */
+  readonly insets?: MapInsets;
 }) {
   const t = useTranslations("Editor");
   const debounced = useDebouncedDraft(draft);
@@ -52,8 +56,8 @@ export function EditorMapPreview({
 
   if (debounced.cities.length === 0) {
     return (
-      <div className="grid h-full place-items-center p-8 text-center">
-        <p className="text-sm text-muted-foreground">{t("previewEmpty")}</p>
+      <div className="grid h-full place-items-start justify-center bg-paper p-8 pt-32 text-center">
+        <p className="text-base text-ink">{t("previewEmpty")}</p>
       </div>
     );
   }
@@ -79,6 +83,7 @@ export function EditorMapPreview({
       onCitySelect={onCitySelect}
       ghosts={ghosts}
       onGhostSelect={onGhostSelect}
+      insets={insets}
     />
   );
 }

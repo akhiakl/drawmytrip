@@ -33,3 +33,28 @@ export const test = base.extend<{ page: Page }>({
     await provide(page);
   },
 });
+
+/** Adds a blank stop from the editor's Add stop dialog. */
+export async function addBlankStop(page: Page): Promise<void> {
+  await page.getByRole("button", { name: "Add stop", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add a blank stop and type it in" })
+    .click();
+}
+
+/** Adds a city found by search from the editor's Add stop dialog. */
+export async function addCityStop(page: Page, city: string): Promise<void> {
+  await page.getByRole("button", { name: "Add stop", exact: true }).click();
+  await page.getByPlaceholder("Search for a city…").fill(city);
+  await page.getByRole("option", { name: new RegExp(city) }).click();
+}
+
+/** Picks an item from a stop's "More for …" menu. */
+export async function stopMenu(
+  page: Page,
+  stop: string,
+  item: string,
+): Promise<void> {
+  await page.getByRole("button", { name: `More for ${stop}` }).click();
+  await page.getByRole("menuitem", { name: item }).click();
+}

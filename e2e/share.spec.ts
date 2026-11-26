@@ -1,7 +1,7 @@
 import type { Trip } from "@/lib/trip";
 import { makePhotonFeature, makePhotonResponse } from "@/test/fixtures/geo-search";
 
-import { expect, seedSharedTrip, test } from "./fixtures";
+import { addCityStop, expect, seedSharedTrip, test } from "./fixtures";
 
 const SHARE_ID = "e2eShare";
 
@@ -26,13 +26,10 @@ test("manual create → share → open the link → remix", async ({ page }) => 
 
   await page.goto("/new");
   await page.getByLabel("Trip title").fill("Danube Days");
-  for (const city of Object.keys(PLACES)) {
-    await page.getByPlaceholder("Search for a city…").fill(city);
-    await page.getByRole("option", { name: new RegExp(city) }).click();
-  }
-  await expect(page.getByText("2/5 stops")).toBeVisible();
+  for (const city of Object.keys(PLACES)) await addCityStop(page, city);
+  await expect(page.getByText("2 of 5 free stops")).toBeVisible();
 
-  await page.getByRole("button", { name: "Share" }).click();
+  await page.getByRole("button", { name: "Share map" }).click();
   const dialog = page.getByRole("dialog", { name: "Your map is live" });
   await expect(dialog.getByRole("textbox")).toHaveValue(
     new RegExp(`/t/${SHARE_ID}$`),
@@ -44,5 +41,5 @@ test("manual create → share → open the link → remix", async ({ page }) => 
   await page.getByRole("button", { name: "Make a copy to edit" }).click();
   await expect(page).toHaveURL(/\/new\?remix=/);
   await expect(page.getByLabel("Trip title")).toHaveValue("Danube Days");
-  await expect(page.getByText("2/5 stops")).toBeVisible();
+  await expect(page.getByText("2 of 5 free stops")).toBeVisible();
 });
