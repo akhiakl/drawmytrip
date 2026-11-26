@@ -274,8 +274,8 @@ input[type="range"] {
 /* The floating atlas card: frost, but dense enough that map labels
    behind it blur away instead of bleeding through. */
 .atlas-card {
-  /* Desktop width: grows with the viewport, within readable bounds. */
-  --card-w: clamp(340px, 26vw, 420px);
+  /* Desktop width: a native 440px side panel, not a stretched phone. */
+  --card-w: 440px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sheet);
   background: color-mix(in srgb, var(--paper) 90%, transparent);
