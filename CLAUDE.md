@@ -126,11 +126,13 @@ Follow exactly; tokens live in `src/app/globals.css`:
   per screen, every other button outline. Use the Tailwind
   utilities (`bg-paper`, `text-ink`, `text-brass-text`,
   `border-line`, …) — never hardcode hex values in components.
-- Layout: trip views are a full-bleed map with ONE floating atlas card
-  (`.atlas-card`: dense frost, radius 22px) holding all trip content —
-  top-left from `lg`, a draggable floating bottom card below. The map
-  carries only zoom / fit-route controls and a legend; never scatter
-  other content cards over it.
+- Layout (mobile first): trip views are a full-bleed map under ONE trip
+  panel (`trip/panel-shell`). Phones: a solid floating top bar, a sheet
+  resting at three heights (peek shows the head, half, full) and a fixed
+  bottom action bar in the thumb zone; from `lg` the same parts stack in
+  one 440px side card (`--card-w`). Route / Stops / Tools switch views.
+  The map carries only fit-route (plus zoom on desktop) and a legend;
+  never scatter other content cards over it.
 - Sizes: tap targets at least 44px, buttons 48px, map stop markers a 48px
   hit area, inputs 16px text (no iOS zoom), nothing under 13px; reading
   text in ink, `ink-soft` only for meta. Radii: 12 controls and inputs,

@@ -9,23 +9,21 @@ const sharedId = (name: string) => `e2e${name}${Date.now().toString(36)}`;
 
 test("packing ticks, own items and notes survive a reload", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Packing" }).click();
+  await page.getByRole("button", { name: "Tools", exact: true }).click();
   await page.getByRole("checkbox", { name: "Power bank" }).click();
   await page.getByRole("textbox", { name: "Add a packing item" }).fill("Snorkel");
   await page.getByRole("button", { name: "Add item" }).click();
-  await page.getByRole("button", { name: "Route", exact: true }).click();
   await page.getByRole("button", { name: "Notes" }).click();
   await page.getByRole("textbox", { name: "Trip notes" }).fill("Gate B12");
 
   await page.reload();
-  await page.getByRole("button", { name: "Packing" }).click();
+  await page.getByRole("button", { name: "Tools", exact: true }).click();
   await expect(page.getByRole("checkbox", { name: "Power bank" })).toBeChecked();
   await expect(page.getByRole("checkbox", { name: "Snorkel" })).toBeVisible();
   // The sample route crosses France, Switzerland and Italy.
   await expect(
     page.getByRole("checkbox", { name: /Power adapter for type C\/J sockets/ }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Route", exact: true }).click();
   await page.getByRole("button", { name: "Notes" }).click();
   await expect(page.getByRole("textbox", { name: "Trip notes" })).toHaveValue(
     "Gate B12",
@@ -58,7 +56,8 @@ test("a dated shared trip shows its days, views and a calendar file", async ({
   ).toBeVisible();
 
   const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Calendar" }).click();
+  await page.getByRole("button", { name: "Tools", exact: true }).click();
+  await page.getByRole("button", { name: "Add to calendar" }).click();
   const file = await download;
   expect(file.suggestedFilename()).toBe("danube-days.ics");
   const ics = await readFile((await file.path())!, "utf8");
@@ -68,7 +67,7 @@ test("a dated shared trip shows its days, views and a calendar file", async ({
     .context()
     .route("https://www.google.com/**", (r) => r.fulfill({ body: "maps" }));
   const popup = page.waitForEvent("popup");
-  await page.getByRole("button", { name: "Navigation" }).click();
+  await page.getByRole("button", { name: "Open in a maps app" }).click();
   expect((await popup).url()).toContain("google.com/maps/dir/?api=1");
 });
 
@@ -79,7 +78,7 @@ test("My Maps duplicates a trip and round-trips a backup file", async ({ page })
     makeTrip(2, { title: "Alps", cities: makeRouteCities(2) }),
   );
   await page.goto(`/t/${SHARED_ID}`);
-  await page.getByRole("button", { name: "Remix this trip" }).click();
+  await page.getByRole("button", { name: "Make a copy to edit" }).click();
   await expect(page).toHaveURL(/\/new\?remix=/);
 
   await page.goto("/maps");
@@ -111,7 +110,7 @@ test("the editor dates a trip and undoes a title edit", async ({ page }) => {
     makeTrip(2, { title: "Alps", cities: makeRouteCities(2) }),
   );
   await page.goto(`/t/${SHARED_ID}`);
-  await page.getByRole("button", { name: "Remix this trip" }).click();
+  await page.getByRole("button", { name: "Make a copy to edit" }).click();
 
   const title = page.getByLabel("Trip title");
   await title.fill("Alpine Loop");

@@ -102,11 +102,13 @@ status table before starting work. Visual truth: `reference/grand-tour.html`.
   generate 5/h) + `getClientIp`; `security-headers` (CSP etc., used by
   `next.config.ts`).
 - `components/trip`: `trip-experience` (orchestrator: panel + map grid),
-  `trip-panel` (views: route / city / packing / notes; ESC steps back) in
-  `panel-shell` (the floating `.atlas-card`: top-left from `lg`, draggable
-  bottom card below; reports the inset it covers), `panel-head` (eyebrow per variant, title, theme),
-  `panel-actions` (`ExperienceVariant`, primary + labeled secondary
-  tools), `route-overview` (2×2 stats, vertical itinerary), `city-detail`
+  `trip-panel` (Route / Stops / Tools views; ESC steps back) in
+  `panel-shell` (`top-bar`, a sheet resting at three heights per
+  `sheet-snap`, and the action bar on phones; one 440px side card from
+  `lg`; reports the inset it covers), `panel-head` (eyebrow per variant,
+  title, view switch), `panel-actions` (`ExperienceVariant`, the action
+  bar, `StopPager`, `ToolList`), `route-overview` (4-up stats, vertical
+  itinerary), `city-detail`
   - `drawer-sections` (5 tabs incl. budget calculator), `trip-tools`
     (packing, notes). Map: `trip-map` → `map-canvas`
     (`vector-basemap` + `basemap-tweaks` label muting, markers, flyTo,

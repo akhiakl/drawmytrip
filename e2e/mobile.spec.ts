@@ -2,12 +2,12 @@ import { expect, test } from "./fixtures";
 
 test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 
-test.describe("atlas card (mobile sheet)", () => {
+test.describe("trip panel (mobile sheet)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
   });
 
-  test("rests on the title and CTA, opens on the handle, lowers on a map tap", async ({
+  test("rests on the title with actions in the bar, opens on the handle, lowers on a map tap", async ({
     page,
   }) => {
     const handle = page.getByRole("button", { name: /trip details/i });
@@ -18,9 +18,10 @@ test.describe("atlas card (mobile sheet)", () => {
 
     await handle.click();
     await expect(handle).toHaveAttribute("aria-expanded", "true");
-    await expect(page.getByText("The route", { exact: true })).toBeInViewport();
+    await expect(page.getByText("Nights", { exact: true })).toBeInViewport();
 
-    await page.mouse.click(195, 60);
+    // Open map between the top bar and the raised sheet.
+    await page.mouse.click(40, 290);
     await expect(handle).toHaveAttribute("aria-expanded", "false");
   });
 

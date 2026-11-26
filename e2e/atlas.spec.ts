@@ -37,7 +37,7 @@ test.describe("atlas card (desktop)", () => {
   });
 
   test("packing ticks survive a detour to a stop", async ({ page }) => {
-    await page.getByRole("button", { name: "Packing" }).click();
+    await page.getByRole("button", { name: "Tools", exact: true }).click();
     await page.getByRole("checkbox", { name: "Power bank" }).click();
 
     await page.getByRole("button", { name: "Route", exact: true }).click();
@@ -45,9 +45,11 @@ test.describe("atlas card (desktop)", () => {
       .getByRole("list", { name: "Itinerary" })
       .getByRole("button", { name: /Rome/ })
       .click();
-    await page.getByRole("button", { name: "Route", exact: true }).click();
+    await expect(
+      page.getByRole("heading", { level: 2, name: "Rome" }),
+    ).toBeVisible();
 
-    await page.getByRole("button", { name: "Packing" }).click();
+    await page.getByRole("button", { name: "Tools", exact: true }).click();
     await expect(page.getByRole("checkbox", { name: "Power bank" })).toBeChecked();
   });
 
@@ -70,7 +72,7 @@ test.describe("atlas card (desktop)", () => {
     await expect(page).toHaveURL(/\/plan$/);
 
     await page.goto("/");
-    await start.getByRole("link", { name: "Build manually" }).click();
+    await start.getByRole("link", { name: "Build a route" }).click();
     await expect(page).toHaveURL(/\/new$/);
 
     await page.goto("/");
@@ -78,10 +80,11 @@ test.describe("atlas card (desktop)", () => {
     await expect(page).toHaveURL(/\/maps$/);
   });
 
-  test("Customize copies the example into the editor and My maps keeps it", async ({
+  test("Edit this route copies the example into the editor and My maps keeps it", async ({
     page,
   }) => {
-    await page.getByRole("button", { name: "Customize" }).click();
+    await page.getByRole("button", { name: "Tools", exact: true }).click();
+    await page.getByRole("button", { name: "Edit this route" }).click();
     await expect(page).toHaveURL(/\/new\?remix=/);
     await expect(page.getByLabel("Trip title")).toHaveValue("The Grand Tour");
 

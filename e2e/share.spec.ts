@@ -41,7 +41,7 @@ test("manual create → share → open the link → remix", async ({ page }) => 
   await page.goto(`/t/${SHARE_ID}`);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Danube Days");
 
-  await page.getByRole("button", { name: "Remix this trip" }).click();
+  await page.getByRole("button", { name: "Make a copy to edit" }).click();
   await expect(page).toHaveURL(/\/new\?remix=/);
   await expect(page.getByLabel("Trip title")).toHaveValue("Danube Days");
   await expect(page.getByText("2/5 stops")).toBeVisible();

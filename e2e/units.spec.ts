@@ -9,8 +9,8 @@ test("a viewer switches to miles and pounds, and it sticks", async ({ page }) =>
   await page.route("**/api/rates", (route) => route.fulfill({ json: makeRates() }));
   await page.goto("/");
 
-  const route = page.getByText("Total route").locator("..");
-  const budget = page.getByText("Budget / person").locator("..");
+  const route = page.locator("span", { hasText: /^Route$/ }).locator("..");
+  const budget = page.getByText("Per person", { exact: true }).locator("..");
   await expect(route).toContainText("km");
   await expect(budget).toContainText("~€");
 
