@@ -1,12 +1,12 @@
 "use client";
 
-import { ArrowLeft, Compass, Plus, Sparkles } from "lucide-react";
+import { Compass, Plus, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { LogoLink } from "@/components/brand/logo";
+import { PageBar } from "@/components/brand/page-bar";
 import { downloadFile } from "@/components/download-file";
 import { ShareDialog } from "@/components/share/share-dialog";
 import { Button } from "@/components/ui/button";
@@ -23,14 +23,33 @@ import {
   type LocalTripRecord,
   type Trip,
 } from "@/lib/trip";
+import { cn } from "@/lib/utils";
 
 import { ImportTripButton } from "./import-trip-button";
 import { TripCard } from "./trip-card";
 
+/** Start a new map (outline) or plan one with AI (the screen's brass). */
+function MapsActions({ className }: { readonly className?: string }) {
+  const t = useTranslations("Maps");
+  return (
+    <div className={cn("flex gap-2.5", className)}>
+      <Button asChild variant="outline" className="flex-1 lg:flex-none">
+        <Link href="/new">
+          <Plus /> {t("newMap")}
+        </Link>
+      </Button>
+      <Button asChild variant="brass" className="flex-1 lg:flex-none">
+        <Link href="/plan">
+          <Sparkles /> {t("planWithAi")}
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
 export function MapsPage() {
   const mounted = useMounted();
   const t = useTranslations("Maps");
-  const common = useTranslations("Common");
   // Bumped to force a fresh `listLocalTrips()` read after a delete — the
   // store has no subscription mechanism, so this is a manual invalidation.
   const [, forceRefresh] = useState(0);
@@ -76,60 +95,38 @@ export function MapsPage() {
   };
 
   return (
-    <div className="page-container py-8 lg:py-12">
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-line pb-8">
-        <div>
-          <LogoLink className="mb-5 block" />
-          <Link
-            href="/"
-            className="eyebrow inline-flex w-fit items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
-          </Link>
-          <h1 className="mt-3 font-display text-section font-medium tracking-tight">
-            {t("title")}
-          </h1>
+    <div className="flex min-h-dvh flex-col">
+      <PageBar title={t("title")}>
+        <ImportTripButton onImport={handleImport} />
+      </PageBar>
+      <main className="page-container flex flex-1 flex-col gap-6 pt-4 pb-28 lg:pt-8 lg:pb-16">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-ink-soft">{t("device")}</p>
+          {/* Phones keep these in the thumb zone; desktop puts them here. */}
+          <MapsActions className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] lg:static lg:border-0 lg:bg-transparent lg:p-0" />
         </div>
-        <div className="flex gap-2">
-          <ImportTripButton onImport={handleImport} />
-          <Button asChild variant="brass">
-            <Link href="/new">
-              <Plus /> {t("newMap")}
-            </Link>
-          </Button>
-        </div>
-      </header>
 
-      {mounted && records.length === 0 && (
-        <div className="mt-24 flex flex-col items-center gap-5 text-center">
-          <Compass aria-hidden className="size-12 text-brass-text" />
-          <p className="max-w-[40ch] text-lead text-ink-soft">{t("empty")}</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            <Button asChild variant="brass">
-              <Link href="/plan">
-                <Sparkles /> {t("planWithAi")}
-              </Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/new">{t("buildManually")}</Link>
-            </Button>
+        {mounted && records.length === 0 && (
+          <div className="mt-16 flex flex-col items-center gap-5 text-center">
+            <Compass aria-hidden className="size-12 text-brass-text" />
+            <p className="max-w-[40ch] text-lead text-ink-soft">{t("empty")}</p>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-        {records.map((record) => (
-          <TripCard
-            key={record.id}
-            record={record}
-            sharing={sharingId === record.id}
-            onShare={() => void handleShare(record)}
-            onDuplicate={() => handleDuplicate(record)}
-            onExport={() => handleExport(record)}
-            onDelete={() => handleDelete(record.id)}
-          />
-        ))}
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+          {records.map((record) => (
+            <TripCard
+              key={record.id}
+              record={record}
+              sharing={sharingId === record.id}
+              onShare={() => void handleShare(record)}
+              onDuplicate={() => handleDuplicate(record)}
+              onExport={() => handleExport(record)}
+              onDelete={() => handleDelete(record.id)}
+            />
+          ))}
+        </div>
+      </main>
 
       <ShareDialog
         shareId={shareId}

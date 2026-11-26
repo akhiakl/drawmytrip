@@ -3,7 +3,7 @@
     "appName": "DrawMyTrip",
     "appNameLead": "DrawMy",
     "appNameTail": "Trip",
-    "backToAtlas": "Field Atlas",
+    "backHome": "Back to home",
     "offTheMap": "Off the map",
     "loading": "Loading the map…"
   },
@@ -84,9 +84,11 @@
       "action": "Back to home"
     },
     "expired": {
-      "title": "This map has expired",
-      "body": "Shared routes stay live for {days} days after their last visit, and this one's trail has gone cold. You can always draw a new one.",
-      "action": "Create your own"
+      "eyebrow": "Link expired",
+      "title": "This map is off the map",
+      "body": "Shared maps stay live for {days} days after the last visit. Ask the sender to share it again, or draw your own.",
+      "action": "Plan a new map",
+      "home": "Back to home"
     },
     "notOnDevice": {
       "title": "Not on this device",
@@ -281,11 +283,11 @@
     "eyebrow": "Ready to travel",
     "title": "Your map is live",
     "description": "Anyone with this link can view the route. It stays live for {days} days after its last visit. Share again after editing.",
-    "copy": "Copy",
+    "copy": "Copy link",
     "copied": "Copied",
     "copiedToast": "Map shared. Link copied.",
     "copyFailed": "Could not copy. Select and copy the link manually.",
-    "nativeShare": "Share via…",
+    "nativeShare": "Send the link",
     "errors": {
       "tooLarge": "That map is too big to share. Remove a few details and try again.",
       "rateLimited": "Too many requests. Try sharing again shortly.",
@@ -295,10 +297,10 @@
   },
   "Maps": {
     "title": "My maps",
-    "newMap": "New map",
+    "device": "Saved on this device only. Share a map to keep a link.",
+    "newMap": "Start a new map",
     "empty": "No maps yet. Plan one with AI, or draw it stop by stop.",
     "planWithAi": "Plan with AI",
-    "buildManually": "Build manually",
     "imported": "Imported {title}",
     "card": {
       "view": "View",
@@ -319,7 +321,7 @@
       "confirmDelete": "Delete"
     },
     "import": {
-      "button": "Import",
+      "button": "Import a map file",
       "fileLabel": "Map backup file",
       "too_large": "That file is far too big to be a DrawMyTrip map.",
       "not_json": "That file isn't a DrawMyTrip backup. Pick a .json map file.",

@@ -1,11 +1,11 @@
-import { ArrowLeft, ArrowRight, PenLine, Sparkles } from "lucide-react";
+import { ArrowRight, PenLine, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { pageMetadata } from "@/app/page-metadata";
 import { AboutFaq } from "@/components/about/about-faq";
 import { HowItWorks } from "@/components/about/how-it-works";
-import { LogoLink } from "@/components/brand/logo";
+import { PageBar } from "@/components/brand/page-bar";
 import { SiteFooter } from "@/components/legal/site-footer";
 import { RouteSketch } from "@/components/trip/route-sketch";
 import { Button } from "@/components/ui/button";
@@ -76,20 +76,9 @@ function ExampleRoute() {
 
 export default function AboutPage() {
   const t = useTranslations("About");
-  const common = useTranslations("Common");
   return (
     <div className="flex min-h-dvh flex-col">
-      <nav aria-label={common("backToAtlas")} className="page-container">
-        <div className="flex h-16 items-center justify-between">
-          <Link
-            href="/"
-            className="eyebrow inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
-          </Link>
-          <LogoLink />
-        </div>
-      </nav>
+      <PageBar />
       <main className="flex flex-1 flex-col gap-32 pb-36 lg:gap-40">
         <header className="page-container grid items-center gap-12 py-10 lg:min-h-[calc(100dvh-4rem)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16 lg:py-0">
           <div className="flex flex-col gap-6">

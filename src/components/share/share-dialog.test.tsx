@@ -54,7 +54,7 @@ describe("ShareDialog", () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /share via/i }));
+    await userEvent.click(screen.getByRole("button", { name: /send the link/i }));
     expect(share).toHaveBeenCalledWith({
       url: expect.stringContaining("/t/abc12345"),
       title: "Alps",
@@ -65,7 +65,7 @@ describe("ShareDialog", () => {
   it("hides the share sheet button where the browser has none", () => {
     render(<ShareDialog shareId="abc12345" open onOpenChange={onOpenChange} />);
     expect(
-      screen.queryByRole("button", { name: /share via/i }),
+      screen.queryByRole("button", { name: /send the link/i }),
     ).not.toBeInTheDocument();
   });
 

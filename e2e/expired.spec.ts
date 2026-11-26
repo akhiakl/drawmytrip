@@ -5,8 +5,8 @@ test("an expired share link lands on the off-the-map page", async ({ page }) => 
   expect(response?.status()).toBe(404);
 
   await expect(
-    page.getByRole("heading", { name: "This map has expired" }),
+    page.getByRole("heading", { name: "This map is off the map" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Create your own" }).click();
+  await page.getByRole("link", { name: "Plan a new map" }).click();
   await expect(page).toHaveURL(/\/new$/);
 });
