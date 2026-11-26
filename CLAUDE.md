@@ -113,13 +113,17 @@ Skills in `.claude/skills` are part of the rules; load them by task:
 
 Follow exactly; tokens live in `src/app/globals.css`:
 
-- Fonts: Fraunces (display, 400–600, italic accents) + Outfit (UI/body) via
+- Fonts: Fraunces (display, 400–600) + Outfit (UI/body) via
   `next/font/google` → `font-display` / `font-sans` utilities.
 - Palette (light / dark): paper `#F5F1E8`/`#0E1420`, ink `#16233A`/`#EDEAE2`,
   ink-soft `#4A5568`/`#9AA5B5`, brass `#B98A2F`/`#D4A94E`,
   azure `#3E7CB1`/`#6FA8D6`, line `rgba(22,35,58,.12)`/`rgba(237,234,226,.12)`.
   Small brass text/icons use `--brass-text` (light `#8A6420`, dark = brass)
-  for WCAG AA contrast; brass buttons take ink text. Use the Tailwind
+  for WCAG AA contrast and the focus ring; the route, stop dots and
+  selected states use `--brass-strong` (light `#A77A26`, dark = brass);
+  brass buttons take ink text. Brass is the only accent: azure is for the
+  logo's "Trip" and links, headings stay plain. One filled (brass) button
+  per screen, every other button outline. Use the Tailwind
   utilities (`bg-paper`, `text-ink`, `text-brass-text`,
   `border-line`, …) — never hardcode hex values in components.
 - Layout: trip views are a full-bleed map with ONE floating atlas card
@@ -127,10 +131,15 @@ Follow exactly; tokens live in `src/app/globals.css`:
   top-left from `lg`, a draggable floating bottom card below. The map
   carries only zoom / fit-route controls and a legend; never scatter
   other content cards over it.
+- Sizes: tap targets at least 44px, buttons 48px, map stop markers a 48px
+  hit area, inputs 16px text (no iOS zoom), nothing under 13px; reading
+  text in ink, `ink-soft` only for meta. Radii: 12 controls and inputs,
+  16 cards, 24 sheets, full pills for buttons and chips.
 - Surfaces: `.frost` (backdrop-blur 18px, 1px `--line` border, radius
-  14–20px, soft long shadow) for dialogs; small map overlays use solid
-  `bg-card-solid`. Labels: `.eyebrow` (12px, semibold, brass, sentence
-  case, untracked); never tracked capitals for labels, captions or tabs.
+  16px, soft long shadow) for desktop dialogs; phones and small map
+  overlays use solid surfaces (`bg-card-solid`). Labels: `.eyebrow` (13px,
+  medium, brass text, sentence case, untracked); never tracked capitals
+  for labels, captions or tabs.
 - Motion: Framer Motion with `cubic-bezier(.32,.72,.24,1)` (`--ease-atlas`);
   always respect `prefers-reduced-motion`.
 - Map: OpenFreeMap positron vector tiles (MapLibre in Leaflet; open source,
