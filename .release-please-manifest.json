@@ -1,4 +1,4 @@
 {
   "apps/web": "0.10.0",
-  "apps/admin": "0.0.0"
+  "apps/admin": "0.1.0"
 }
