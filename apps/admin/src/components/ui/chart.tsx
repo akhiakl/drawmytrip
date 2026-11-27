@@ -56,6 +56,8 @@ function ChartContainer({
 interface TooltipRow {
   dataKey?: string | number;
   value?: number | string;
+  /** The hovered data point. */
+  payload?: unknown;
 }
 
 /** Recharts clones this element with the hovered point's data. */
