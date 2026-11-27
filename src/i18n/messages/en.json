@@ -348,6 +348,7 @@
       "theRoute": "The route",
       "routeLabel": "Route",
       "back": "Back to route",
+      "poster": "Poster",
       "eyebrow": {
         "demo": "Example route",
         "shared": "Shared route",
