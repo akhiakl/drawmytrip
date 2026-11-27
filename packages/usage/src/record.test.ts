@@ -12,9 +12,9 @@ vi.mock("@upstash/redis", () => ({
   Redis: { fromEnv: vi.fn(() => ({ pipeline: () => pipe })) },
 }));
 
-import { makeDailyUsage } from "../test/fixtures";
 import { USAGE_TTL_SECONDS } from "./metrics";
 import { readUsage, recordUsage, resetUsageClient } from "./record";
+import { makeDailyUsage } from "../test/fixtures";
 
 const NOW = new Date("2026-11-27T10:00:00Z");
 
