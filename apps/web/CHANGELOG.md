@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/akhiakl/drawmytrip/compare/web-v0.12.0...web-v0.13.0) (2026-11-27)
+
+
+### Features
+
+* **admin:** health page that checks every service the site and console use ([#164](https://github.com/akhiakl/drawmytrip/issues/164)) ([cd38e00](https://github.com/akhiakl/drawmytrip/commit/cd38e000761a4a61712d5138d763b6869b31f976))
+
 ## [0.12.0](https://github.com/akhiakl/drawmytrip/compare/web-v0.11.0...web-v0.12.0) (2026-11-27)
 
 
