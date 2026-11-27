@@ -71,7 +71,17 @@ const a11y = {
 };
 
 /** TypeScript packages and libraries. */
-export const base = defineConfig([...nextVitals, ...nextTs, ...common, prettier]);
+export const base = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  {
+    // Libraries have no React install or pages directory to detect.
+    settings: { react: { version: "19" } },
+    rules: { "@next/next/no-html-link-for-pages": "off" },
+  },
+  ...common,
+  prettier,
+]);
 
 /** Next.js apps. */
 export const next = defineConfig([
