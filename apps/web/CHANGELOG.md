@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/akhiakl/drawmytrip/compare/web-v0.11.0...web-v0.12.0) (2026-11-27)
+
+
+### Features
+
+* **admin:** rebuild the admin as a branded dashboard ([#160](https://github.com/akhiakl/drawmytrip/issues/160)) ([a1bc772](https://github.com/akhiakl/drawmytrip/commit/a1bc772596afa4c74105e556ed40ebf020ac838c))
+
 ## [0.11.0](https://github.com/akhiakl/drawmytrip/compare/web-v0.10.0...web-v0.11.0) (2026-11-27)
 
 
