@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/akhiakl/drawmytrip/compare/v0.8.3...v0.9.0) (2026-11-27)
+
+
+### Features
+
+* **design:** mobile-first redesign of trip view, editor and pages ([#138](https://github.com/akhiakl/drawmytrip/issues/138)) ([5529801](https://github.com/akhiakl/drawmytrip/commit/5529801b245017604e8a2c8781eab5a94f835cc8))
+
 ## [0.8.3](https://github.com/akhiakl/drawmytrip/compare/v0.8.2...v0.8.3) (2026-11-22)
 
 
