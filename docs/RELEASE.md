@@ -100,7 +100,7 @@ checked before merging the `1.0.0` release PR.
 - [ ] Branch protection on `main` with all required checks + review
 - [ ] Domain + HTTPS, favicon, metadata/robots sane
 - [ ] `/sitemap.xml`, `/robots.txt` and a page's canonical tag show
-      `https://drawmytrip.akhiakl.in` (production builds default to it;
+      `https://drawmytrip.click` (production builds default to it;
       `NEXT_PUBLIC_SITE_URL` only overrides)
 - [ ] `OPERATOR_NAME` in `src/lib/legal/operator.ts` set to the operator's
       real name (IT Rules 2021 require a named Grievance Officer)
