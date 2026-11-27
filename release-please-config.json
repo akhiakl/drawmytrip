@@ -10,7 +10,8 @@
     },
     "apps/admin": {
       "release-type": "node",
-      "component": "admin"
+      "component": "admin",
+      "release-as": "0.1.0"
     }
   },
   "bump-minor-pre-major": true
