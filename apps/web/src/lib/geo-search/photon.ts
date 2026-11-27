@@ -11,7 +11,7 @@ import {
  * debounce keystrokes and abort stale requests to stay within fair use.
  */
 
-const SEARCH_URL = "https://photon.komoot.io/api/";
+export const SEARCH_URL = "https://photon.komoot.io/api/";
 const MIN_QUERY_LENGTH = 2;
 const RESULT_LIMIT = 8;
 /** Settlement layers only: no streets, POIs or countries. */

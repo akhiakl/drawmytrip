@@ -17,7 +17,8 @@
     "signOut": "Sign out",
     "theme": "Switch theme",
     "overview": "Overview",
-    "more": "Account"
+    "more": "Account",
+    "health": "Health"
   },
   "SignIn": {
     "eyebrow": "Admin console",
@@ -185,5 +186,108 @@
     "viewAudit": "See full log",
     "noActivity": "Nothing recorded yet.",
     "kpis": "Key numbers"
+  },
+  "Health": {
+    "eyebrow": "Live check",
+    "heading": "Health",
+    "checked": "Checked {time}",
+    "recheck": "Check again",
+    "checking": "Checking every service…",
+    "status": {
+      "ok": "Every service is up",
+      "watch": "{count, plural, one {# service is not set up} other {# services are not set up}}",
+      "critical": "{count, plural, one {# service is down} other {# services are down}}"
+    },
+    "statusBody": {
+      "ok": "The site and the console can reach everything they depend on.",
+      "watch": "Everything that is set up answers. Add the missing settings below to finish setup.",
+      "critical": "Start with the rows marked Down. Visitors may see errors until they recover."
+    },
+    "liveChecks": "{count, plural, one {# live check} other {# live checks}}, run on each visit",
+    "site": "Site",
+    "siteHint": "The public site and the services it calls",
+    "console": "Console",
+    "consoleHint": "What this admin needs to sign in and collect usage",
+    "state": {
+      "up": "Up",
+      "down": "Down",
+      "configured": "Set up",
+      "not_configured": "Not set up"
+    },
+    "latency": "{ms} ms",
+    "detail": {
+      "httpStatus": "Answered with error {code}",
+      "timeout": "No answer in time",
+      "modelMissing": "The provider does not offer the configured model",
+      "invalidReply": "The answer could not be read",
+      "unreachable": "Could not connect"
+    },
+    "services": {
+      "site": {
+        "name": "Website",
+        "purpose": "Answers the console's health request",
+        "setup": "Set HEALTH_CHECK_SECRET to the same value on the web and admin projects."
+      },
+      "redis": {
+        "name": "Trip store",
+        "purpose": "Upstash Redis: shared maps and rate limits",
+        "setup": "Connect the Upstash store to the web project."
+      },
+      "ai": {
+        "name": "AI planner",
+        "purpose": "The model provider behind Plan with AI",
+        "setup": "Set AI_BASE_URL and AI_MODEL on the web project."
+      },
+      "geocoding": {
+        "name": "Place search",
+        "purpose": "Photon city search and place checks",
+        "setup": ""
+      },
+      "rates": {
+        "name": "Exchange rates",
+        "purpose": "Live currency rates for budgets",
+        "setup": ""
+      },
+      "map": {
+        "name": "Map tiles",
+        "purpose": "The basemap style",
+        "setup": ""
+      },
+      "logs": {
+        "name": "Server logs",
+        "purpose": "Better Stack log shipping (settings only)",
+        "setup": "Set BETTER_STACK_SOURCE_TOKEN and BETTER_STACK_INGESTING_URL on the web project."
+      },
+      "errors": {
+        "name": "Error tracking",
+        "purpose": "Sentry (settings only)",
+        "setup": "Set NEXT_PUBLIC_SENTRY_DSN on the web project."
+      },
+      "admin_store": {
+        "name": "Console store",
+        "purpose": "Upstash Redis: limits, usage and audit",
+        "setup": "Connect the Upstash store to the admin project."
+      },
+      "vercel_api": {
+        "name": "Vercel usage",
+        "purpose": "Vercel API token for the daily usage job",
+        "setup": "Set VERCEL_API_TOKEN (and VERCEL_TEAM_ID) on the admin project."
+      },
+      "upstash_api": {
+        "name": "Upstash usage",
+        "purpose": "Upstash management API for the daily usage job",
+        "setup": "Set UPSTASH_EMAIL, UPSTASH_API_KEY and UPSTASH_DATABASE_ID on the admin project."
+      },
+      "github_sign_in": {
+        "name": "GitHub sign-in",
+        "purpose": "OAuth app and allowed accounts (settings only)",
+        "setup": "Set the ADMIN_GITHUB_* values and ADMIN_SESSION_SECRET on the admin project."
+      },
+      "cron": {
+        "name": "Daily usage job",
+        "purpose": "Vercel cron secret (settings only)",
+        "setup": "Set CRON_SECRET on the admin project."
+      }
+    }
   }
 }

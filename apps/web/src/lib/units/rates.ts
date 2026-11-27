@@ -4,6 +4,12 @@ import * as z from "zod";
 export const BASE_CURRENCY = "USD";
 
 /**
+ * Frankfurter publishes the ECB reference rates (open source, no key).
+ * `RATES_API_URL` can point at a self-hosted instance with the same shape.
+ */
+export const DEFAULT_RATES_URL = `https://api.frankfurter.dev/v1/latest?base=${BASE_CURRENCY}`;
+
+/**
  * Currencies the picker offers: the ECB reference set (what the rates
  * source publishes daily), plus the US dollar base.
  */

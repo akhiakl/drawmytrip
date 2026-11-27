@@ -106,6 +106,10 @@ Turborepo + pnpm workspace. Paths elsewhere in these docs that start with
 - `packages/runtime-config`: limits schema and Redis store (`cfg:runtime`),
   read by web with a 60 s cache, written by admin.
 - `packages/usage`: daily counters (`usage:{date}`), `recordUsage` never throws.
+- `packages/health`: the service health report schema and probe helpers.
+  Web's `/api/health/services` (bearer `HEALTH_CHECK_SECRET`) probes the
+  store, AI provider, Photon, rates and basemap; the admin Health page shows
+  it next to its own checks (store, Vercel and Upstash APIs, sign-in, cron).
 - `packages/brand`: the route D mark's geometry and icon SVG, so both apps
   draw one logo.
 - `packages/tokens`, `tsconfig`, `eslint-config`: shared design tokens and config.

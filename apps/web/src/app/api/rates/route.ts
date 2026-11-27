@@ -1,13 +1,7 @@
 import * as z from "zod";
 
 import { emit } from "@/lib/logging";
-import { BASE_CURRENCY, type Rates } from "@/lib/units";
-
-/**
- * Frankfurter publishes the ECB reference rates (open source, no key).
- * `RATES_API_URL` can point at a self-hosted instance with the same shape.
- */
-const DEFAULT_RATES_URL = `https://api.frankfurter.dev/v1/latest?base=${BASE_CURRENCY}`;
+import { BASE_CURRENCY, DEFAULT_RATES_URL, type Rates } from "@/lib/units";
 
 /** ECB rates change once per working day. */
 const ONE_DAY = 60 * 60 * 24;

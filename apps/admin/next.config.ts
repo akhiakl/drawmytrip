@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
   // Workspace packages ship TypeScript source.
   transpilePackages: [
     "@drawmytrip/brand",
+    "@drawmytrip/health",
     "@drawmytrip/runtime-config",
     "@drawmytrip/usage",
   ],

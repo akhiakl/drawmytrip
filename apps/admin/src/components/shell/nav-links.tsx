@@ -2,6 +2,7 @@
 
 import {
   ChartColumn,
+  HeartPulse,
   LayoutDashboard,
   ScrollText,
   SlidersHorizontal,
@@ -15,6 +16,7 @@ const ICONS = {
   overview: LayoutDashboard,
   usage: ChartColumn,
   limits: SlidersHorizontal,
+  health: HeartPulse,
   audit: ScrollText,
 } as const;
 
@@ -24,6 +26,7 @@ const HREF: Record<NavId, string> = {
   overview: "/",
   usage: "/usage",
   limits: "/limits",
+  health: "/health",
   audit: "/audit",
 };
 
@@ -31,7 +34,7 @@ const isCurrent = (pathname: string, href: string) =>
   href === "/" ? pathname === "/" : pathname.startsWith(href);
 
 /**
- * The four sections: a vertical list in the desktop sidebar, a bottom tab
+ * The five sections: a vertical list in the desktop sidebar, a bottom tab
  * bar in the thumb zone on phones.
  */
 export function NavLinks({
@@ -47,7 +50,7 @@ export function NavLinks({
   const tabs = variant === "tabs";
   return (
     <nav aria-label={label}>
-      <ul className={tabs ? "grid grid-cols-4" : "flex flex-col gap-1"}>
+      <ul className={tabs ? "grid grid-cols-5" : "flex flex-col gap-1"}>
         {items.map((item) => {
           const Icon = ICONS[item.id];
           const current = isCurrent(pathname, HREF[item.id]);
