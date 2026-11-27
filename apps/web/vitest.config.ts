@@ -18,6 +18,9 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**", "node_modules/**"],
+    // CI also writes a JSON report that the Quality Gate comment reads.
+    reporters: process.env.CI ? ["default", "json"] : ["default"],
+    outputFile: { json: "ci-results/test-results.json" },
     coverage: {
       provider: "v8",
       // Coverage tracks the tested core (lib + API routes); UI components
