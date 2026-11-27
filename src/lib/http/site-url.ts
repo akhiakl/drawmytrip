@@ -1,5 +1,5 @@
 /** Where the product lives in production; used when no env says otherwise. */
-export const PRODUCTION_SITE_URL = "https://drawmytrip.akhiakl.in";
+export const PRODUCTION_SITE_URL = "https://drawmytrip.click";
 
 /**
  * The site's absolute origin, for metadata that must not be relative
