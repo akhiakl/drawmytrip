@@ -8,4 +8,6 @@ export * from "./destination";
 export * from "./ghosts";
 export * from "./handoff";
 export * from "./redraft";
+export * from "./preselect";
 export * from "./schema";
+export * from "./suggest-schema";

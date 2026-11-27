@@ -46,6 +46,14 @@ describe("getRatelimiter", () => {
     );
   });
 
+  it("configures suggest as a 10/hour sliding window", () => {
+    getRatelimiter("suggest");
+    expect(mocks.slidingWindow).toHaveBeenCalledWith(10, "1 h");
+    expect(mocks.RatelimitCtor).toHaveBeenCalledWith(
+      expect.objectContaining({ prefix: "rl:suggest" }),
+    );
+  });
+
   it("caches limiters per name", () => {
     const first = getRatelimiter("trips");
     const again = getRatelimiter("trips");

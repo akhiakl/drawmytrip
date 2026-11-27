@@ -6,3 +6,4 @@
  */
 export type { CitySearchResult, PhotonFeature } from "./schema";
 export { searchCities } from "./photon";
+export { locatePlace, type PlaceCheck } from "./verify";

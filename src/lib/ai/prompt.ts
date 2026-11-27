@@ -60,7 +60,33 @@ export function buildUserPrompt(request: GenerateRequest): string {
     `Destination or region: ${request.destination}`,
     `Trip length: ${request.days} days`,
     `Pace: ${pace}`,
+    ...picksLines(request),
   ].join("\n");
+}
+
+/** What the guest ticked in the picker, as extra prompt lines. */
+function picksLines({ destination, scope, picks }: GenerateRequest): string[] {
+  if (!picks?.length) return [];
+  const names = (kinds: readonly string[]) =>
+    picks
+      .filter((p) => kinds.includes(p.kind))
+      .map((p) => p.name)
+      .join(", ");
+
+  if (scope === "region") {
+    return [
+      `Use exactly these cities, ordered into the best route: ${names(["city"])}.`,
+    ];
+  }
+  const dayTrips = names(["daytrip"]);
+  return [
+    `Base the trip in ${destination}. Use these picked places in that city's must, gems, food and days: ${names(["sight", "gem", "food"])}.`,
+    ...(dayTrips
+      ? [
+          `Add each of these as its own stop with nights 0, right after ${destination}: ${dayTrips}. All nights go to ${destination}.`,
+        ]
+      : []),
+  ];
 }
 
 export function buildRetryPrompt(issues: string): string {
