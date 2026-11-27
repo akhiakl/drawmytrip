@@ -1,7 +1,9 @@
 "use client";
 
+import { ImageDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { Button } from "@/components/ui/button";
 import { useUnits } from "@/components/units/units-provider";
 import { tripStats, type Trip } from "@/lib/trip";
 import { cn } from "@/lib/utils";
@@ -46,18 +48,22 @@ function ViewSwitch({
 
 /**
  * Always-visible top of the sheet (the peek height shows only this): what
- * the map is, the trip at a glance, and the Route / Stops / Tools switch.
+ * the map is, the trip at a glance, the poster (the one keepsake every
+ * viewer can make, so it sits in reach at every sheet height) and the
+ * Route / Stops / Tools switch.
  */
 export function PanelHead({
   trip,
   variant,
   view,
   onViewChange,
+  onPoster,
 }: {
   readonly trip: Trip;
   readonly variant: ExperienceVariant;
   readonly view: PanelView;
   readonly onViewChange: (view: PanelView) => void;
+  readonly onPoster: () => void;
 }) {
   const t = useTranslations("Trip.panel");
   // The landing's own H1 is in its call to action; the example route is a sub-heading.
@@ -67,21 +73,26 @@ export function PanelHead({
 
   return (
     <header className="flex flex-col gap-3 px-4 pt-1 pb-3 lg:px-6 lg:pt-4">
-      <div className="flex min-w-0 flex-col gap-1">
-        <p className="eyebrow">{t(`eyebrow.${variant}`)}</p>
-        <Title
-          title={trip.title}
-          className="truncate font-display text-2xl font-medium tracking-tight lg:text-4xl lg:leading-tight"
-        >
-          {trip.title}
-        </Title>
-        <p className="text-sm text-ink-soft">
-          {t("headline", {
-            nights: stats.nights,
-            cities: stats.cities,
-            distance: distance(stats.totalKm),
-          })}
-        </p>
+      <div className="flex items-start gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <p className="eyebrow">{t(`eyebrow.${variant}`)}</p>
+          <Title
+            title={trip.title}
+            className="truncate font-display text-2xl font-medium tracking-tight lg:text-4xl lg:leading-tight"
+          >
+            {trip.title}
+          </Title>
+          <p className="text-sm text-ink-soft">
+            {t("headline", {
+              nights: stats.nights,
+              cities: stats.cities,
+              distance: distance(stats.totalKm),
+            })}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="shrink-0" onClick={onPoster}>
+          <ImageDown /> {t("poster")}
+        </Button>
       </div>
       <ViewSwitch view={view} onViewChange={onViewChange} />
     </header>

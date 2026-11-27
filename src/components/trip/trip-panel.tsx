@@ -146,6 +146,7 @@ export function TripPanel({
           variant={variant}
           view={view}
           onViewChange={onViewChange}
+          onPoster={onPoster}
         />
       }
       footer={
