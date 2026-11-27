@@ -74,6 +74,7 @@ function FailureBubble({
   );
 }
 
+/** Three questions, then the place picker. */
 const QUESTIONS = 4;
 const SKELETON_CHIPS = [24, 32, 20, 28, 36, 24] as const;
 

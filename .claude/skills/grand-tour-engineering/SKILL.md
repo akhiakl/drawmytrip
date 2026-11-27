@@ -96,7 +96,7 @@ poster is the model case: projection math lives in
   narrow public APIs — exporting something is a commitment.
 - **Dependency inversion** — UI depends on data and callbacks via
   props; only route handlers and server components touch
-  `@/lib/trip/service` / `@/lib/ai/generate`. The service layer stays
+  `@/lib/trip/service` / `@/lib/ai/generate` / `@/lib/ai/suggest`. The service layer stays
   plain functions precisely so another transport can wrap it later
   without a rewrite.
 

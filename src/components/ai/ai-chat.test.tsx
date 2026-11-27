@@ -74,12 +74,12 @@ describe("AiChat", () => {
     expect(screen.queryByLabelText("Number of days")).not.toBeInTheDocument();
   });
 
-  it("shows which of the four questions is open", async () => {
+  it("shows which of the four steps is open", async () => {
     render(<AiChat />);
-    expect(screen.getByText("Question 1 of 4")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 4")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Destination"), "Austria");
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
-    expect(screen.getByText("Question 2 of 4")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 4")).toBeInTheDocument();
   });
 
   it("says up front that the planner is an AI", () => {
@@ -202,7 +202,7 @@ describe("AiChat", () => {
       expect(
         screen.getByText("Pick what you want to see in Toronto."),
       ).toBeInTheDocument();
-      expect(screen.getByText("Question 4 of 4")).toBeInTheDocument();
+      expect(screen.getByText("Step 4 of 4")).toBeInTheDocument();
     });
 
     it("sends the picks and scope when the guest builds", async () => {

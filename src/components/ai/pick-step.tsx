@@ -140,21 +140,29 @@ export function PickStep({
         </p>
       )}
 
-      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center gap-2 border-t border-line bg-card-solid px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pt-0 sm:pb-0">
-        <p aria-live="polite" className="mr-auto text-sm text-ink-soft">
+      <div className="sticky bottom-0 -mx-4 flex flex-col gap-2 border-t border-line bg-card-solid px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:flex-row sm:items-center sm:border-0 sm:bg-transparent sm:px-0 sm:pt-0 sm:pb-0">
+        <p aria-live="polite" className="text-sm text-ink-soft sm:mr-auto">
           {t("pickCounter", { count: selected.size, max })}
         </p>
-        <Button type="button" variant="outline" onClick={onSurprise}>
-          {t("surprise")}
-        </Button>
-        <Button
-          type="button"
-          variant="brass"
-          disabled={selected.size === 0}
-          onClick={build}
-        >
-          {t("build")}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="flex-1 sm:flex-none"
+            onClick={onSurprise}
+          >
+            {t("surprise")}
+          </Button>
+          <Button
+            type="button"
+            variant="brass"
+            className="flex-1 sm:flex-none"
+            disabled={selected.size === 0}
+            onClick={build}
+          >
+            {t("build")}
+          </Button>
+        </div>
       </div>
 
       <UpsellModal open={upsellOpen} onOpenChange={setUpsellOpen} />

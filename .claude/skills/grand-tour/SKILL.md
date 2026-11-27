@@ -29,11 +29,14 @@ status table before starting work. Visual truth: `reference/grand-tour.html`.
 
 1. `GUEST_MAX_CITIES = 5` — server-side Zod gate in `POST /api/trips`
    (403 `{ error: 'city_limit', limit: 5 }`), editor counter + upsell
-   modal, AI prompt constraint with `suggestedExtra` ghost stops.
+   modal, AI prompt constraint with `suggestedExtra` ghost stops. Trips
+   may have 1 city (`MIN_CITIES`). `POST /api/suggest` returns ranked
+   places (`scope` region or city); the chat picker sends `scope` and
+   `picks` to `/api/generate`.
 2. All external data through Zod (`@/lib/trip` schemas). 50KB payload cap
    (`MAX_TRIP_PAYLOAD_BYTES`).
-3. Server code only behind the two server entries (`@/lib/trip/service`,
-   `@/lib/ai/generate`); UI receives data via props, never touches
+3. Server code only behind the three server entries (`@/lib/trip/service`,
+   `@/lib/ai/generate`, `@/lib/ai/suggest`); UI receives data via props, never touches
    Redis/fetch directly.
 4. Default trip title "Grand Tour" (`DEFAULT_TRIP_TITLE`); custom titles
    max 80 chars.
