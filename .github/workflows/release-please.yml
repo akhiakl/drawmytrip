@@ -1,6 +1,6 @@
 # Maintains a rolling "release PR" from Conventional Commits on main.
-# Merging that PR bumps the version, updates CHANGELOG.md, tags vX.Y.Z
-# and publishes a GitHub Release — which is the ONLY deploy trigger
+# Merging a PR bumps that app's version, updates its CHANGELOG.md, tags
+# web-vX.Y.Z or admin-vX.Y.Z and publishes a GitHub Release
 # (see .github/workflows/deploy.yml and docs/RELEASE.md).
 name: Release
 
