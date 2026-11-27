@@ -2,7 +2,8 @@
 # from pushes to main (Vercel's Ignored Build Step skips those). The Vercel
 # CLI deploy in the shared workflow is not subject to that skip. See
 # docs/RELEASE.md for the policy and the MVP checklist gating v1.0.0.
-# Without VERCEL_TOKEN it logs and exits.
+# Without VERCEL_TOKEN it logs and exits. Each app is its own Vercel project
+# whose Root Directory points at apps/web or apps/admin.
 name: Deploy
 
 on:
@@ -13,11 +14,23 @@ permissions:
   contents: read
 
 jobs:
-  production:
+  web:
     uses: akhiakl/ci-workflows/.github/workflows/deploy-vercel.yml@v1.4.0
     with:
       org-id: team_limfPNcBoq9EgLcZU3PIRK8J
       project-id: prj_s5JbG1NXUZmlPut6nTqrpW4aJE1W
       node-version: "22"
       smoke-url: https://drawmytrip.vercel.app
+    secrets: inherit
+
+  # The admin app is its own Vercel project (Root Directory apps/admin).
+  # Skipped until the repo variable VERCEL_ADMIN_PROJECT_ID is set.
+  admin:
+    if: vars.VERCEL_ADMIN_PROJECT_ID != ''
+    uses: akhiakl/ci-workflows/.github/workflows/deploy-vercel.yml@v1.4.0
+    with:
+      org-id: team_limfPNcBoq9EgLcZU3PIRK8J
+      project-id: ${{ vars.VERCEL_ADMIN_PROJECT_ID }}
+      node-version: "22"
+      smoke-url: https://drawmytrip-admin.vercel.app/api/health
     secrets: inherit

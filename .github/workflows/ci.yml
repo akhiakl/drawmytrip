@@ -69,17 +69,44 @@ jobs:
         continue-on-error: true
         with:
           name: test
-          run: pnpm test:coverage --reporter=default --reporter=json --outputFile.json=ci-results/test-results.json
+          run: pnpm test:coverage
 
-      - name: Report coverage
+      - name: Report coverage (web)
         if: always() && github.event_name == 'pull_request'
         uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: web
+          working-directory: apps/web
+
+      - name: Report coverage (admin)
+        if: always() && github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: admin
+          working-directory: apps/admin
+
+      - name: Report coverage (runtime-config)
+        if: always() && github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: runtime-config
+          working-directory: packages/runtime-config
+
+      - name: Report coverage (usage)
+        if: always() && github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: usage
+          working-directory: packages/usage
 
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ci-results-test
-          path: ci-results/
+          path: |
+            ci-results/
+            apps/*/ci-results/
+            packages/*/ci-results/
           if-no-files-found: warn
       - if: steps.test.outcome == 'failure'
         run: exit 1
@@ -118,27 +145,36 @@ jobs:
       - uses: akhiakl/ci-workflows/next-cache@v1.4.0
 
       - run: pnpm build
-      # Starts the fake Upstash server and `next start`; API routes, map
-      # tiles and the geocoder are mocked at the edge inside each test.
-      # Includes axe (WCAG 2.1 AA) and no-sideways-scroll checks.
+      # Each app starts its own fake Upstash server and `next start`; API
+      # routes, map tiles and the geocoder are mocked at the edge inside each
+      # test. Includes axe (WCAG 2.1 AA) and no-sideways-scroll checks.
       - uses: akhiakl/ci-workflows@v1.4.0
-        id: e2e
+        id: e2e-web
         continue-on-error: true
         env:
-          PLAYWRIGHT_JSON_OUTPUT_FILE: ci-results/playwright-results.json
-          PLAYWRIGHT_JSON_OUTPUT_NAME: ci-results/playwright-results.json
+          PLAYWRIGHT_JSON_OUTPUT_FILE: ${{ github.workspace }}/ci-results/playwright-web.json
+          PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ github.workspace }}/ci-results/playwright-web.json
         with:
-          name: e2e
-          run: pnpm test:e2e --reporter=github,html,json
+          name: e2e-web
+          run: pnpm --filter @drawmytrip/web test:e2e --reporter=github,html,json
+      - uses: akhiakl/ci-workflows@v1.4.0
+        id: e2e-admin
+        continue-on-error: true
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_FILE: ${{ github.workspace }}/ci-results/playwright-admin.json
+          PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ github.workspace }}/ci-results/playwright-admin.json
+        with:
+          name: e2e-admin
+          run: pnpm --filter @drawmytrip/admin test:e2e --reporter=github,html,json
 
       - name: Upload Playwright report
-        if: steps.e2e.outcome == 'failure'
+        if: steps.e2e-web.outcome == 'failure' || steps.e2e-admin.outcome == 'failure'
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: |
-            playwright-report/
-            test-results/
+            apps/*/playwright-report/
+            apps/*/test-results/
           retention-days: 7
       - uses: actions/upload-artifact@v7
         if: always()
@@ -146,7 +182,7 @@ jobs:
           name: ci-results-e2e
           path: ci-results/
           if-no-files-found: warn
-      - if: steps.e2e.outcome == 'failure'
+      - if: steps.e2e-web.outcome == 'failure' || steps.e2e-admin.outcome == 'failure'
         run: exit 1
 
   quality-gate:

@@ -1,3 +1,7 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
 allowBuilds:
   "@parcel/watcher": false
   "@sentry/cli": true
@@ -6,3 +10,5 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - lint-staged@17.1.0
+publicHoistPattern:
+  - "@types/*"

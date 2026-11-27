@@ -1,0 +1,31 @@
+{
+  "name": "@drawmytrip/runtime-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./store": "./src/store.ts",
+    "./fixtures": "./test/fixtures.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.41.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@drawmytrip/eslint-config": "workspace:*",
+    "@drawmytrip/tsconfig": "workspace:*",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^9.39.5",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

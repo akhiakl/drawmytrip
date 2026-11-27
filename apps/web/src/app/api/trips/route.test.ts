@@ -1,0 +1,174 @@
+import { makeRuntimeConfig } from "@drawmytrip/runtime-config/fixtures";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { GUEST_MAX_CITIES } from "@/lib/trip";
+import { makeTrip } from "@/test/fixtures/trip";
+
+const mocks = vi.hoisted(() => ({
+  limit: vi.fn(),
+  getRatelimiter: vi.fn(),
+  saveTrip: vi.fn(),
+  emit: vi.fn(),
+  getRuntimeConfig: vi.fn(),
+  recordUsage: vi.fn(),
+}));
+
+vi.mock("next/server", () => ({ after: (run: () => void) => run() }));
+
+vi.mock("@drawmytrip/runtime-config/store", () => ({
+  getRuntimeConfig: mocks.getRuntimeConfig,
+}));
+
+vi.mock("@drawmytrip/usage/record", () => ({
+  recordUsage: mocks.recordUsage,
+  readUsage: vi.fn(),
+}));
+
+vi.mock("@/lib/logging", () => ({
+  emit: mocks.emit,
+  errorFields: (error: Error) => ({ errorName: error.name }),
+}));
+
+vi.mock("@/lib/http", () => ({
+  getRatelimiter: (...args: unknown[]) => {
+    mocks.getRatelimiter(...args);
+    return { limit: mocks.limit };
+  },
+  getClientIp: () => "203.0.113.9",
+}));
+
+vi.mock("@/lib/trip/service", () => ({
+  saveTrip: mocks.saveTrip,
+}));
+
+import { POST } from "./route";
+
+const post = (body: unknown) =>
+  POST(
+    new Request("http://localhost/api/trips", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: typeof body === "string" ? body : JSON.stringify(body),
+    }),
+  );
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mocks.limit.mockResolvedValue({ success: true });
+  mocks.getRuntimeConfig.mockResolvedValue(makeRuntimeConfig());
+  mocks.saveTrip.mockResolvedValue("abc12345");
+});
+
+describe("POST /api/trips", () => {
+  it("saves a valid trip and returns its id", async () => {
+    const res = await post(makeTrip());
+    expect(res.status).toBe(201);
+    expect(await res.json()).toEqual({ id: "abc12345" });
+    expect(mocks.saveTrip).toHaveBeenCalledOnce();
+  });
+
+  it("logs a shared trip without its id or contents", async () => {
+    await post(makeTrip());
+    expect(mocks.emit).toHaveBeenCalledWith("info", "trip shared", {
+      route: "/api/trips",
+    });
+  });
+
+  it("logs a rate-limited request without the caller's address", async () => {
+    mocks.limit.mockResolvedValue({ success: false });
+    await post(makeTrip());
+    expect(mocks.emit).toHaveBeenCalledWith("warn", "request refused", {
+      route: "/api/trips",
+      status: 429,
+      reason: "rate_limited",
+    });
+  });
+
+  it("logs an invalid trip by reason only", async () => {
+    await post({ ...makeTrip(), title: "" });
+    expect(mocks.emit).toHaveBeenCalledWith("warn", "request refused", {
+      route: "/api/trips",
+      status: 400,
+      reason: "invalid_trip",
+    });
+  });
+
+  it("returns 429 when the rate limit is exhausted", async () => {
+    mocks.limit.mockResolvedValue({ success: false });
+    const res = await post(makeTrip());
+    expect(res.status).toBe(429);
+    expect(mocks.saveTrip).not.toHaveBeenCalled();
+  });
+
+  it("returns the city_limit contract for over-limit trips", async () => {
+    const res = await post(makeTrip(GUEST_MAX_CITIES + 1));
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({
+      error: "city_limit",
+      limit: GUEST_MAX_CITIES,
+    });
+    expect(mocks.saveTrip).not.toHaveBeenCalled();
+  });
+
+  it("returns 413 for payloads over the 50KB cap", async () => {
+    const bloated = makeTrip(2, { title: "x".repeat(80) });
+    const oversized = {
+      ...bloated,
+      cities: bloated.cities.map((c) => ({ ...c, why: "y".repeat(30000) })),
+    };
+    const res = await post(oversized);
+    expect(res.status).toBe(413);
+  });
+
+  it("returns 400 for malformed JSON", async () => {
+    const res = await post("{not json");
+    expect(res.status).toBe(400);
+    expect(await res.json()).toMatchObject({ error: "invalid_json" });
+  });
+
+  it("returns 400 with issue paths for invalid trips", async () => {
+    const res = await post({ ...makeTrip(), title: "" });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("invalid_trip");
+    expect(body.issues[0].path).toBe("title");
+  });
+
+  it("returns 500 when persistence fails", async () => {
+    mocks.saveTrip.mockRejectedValue(new Error("redis down"));
+    const res = await post(makeTrip());
+    expect(res.status).toBe(500);
+    expect(await res.json()).toEqual({ error: "save_failed" });
+  });
+
+  it("logs a failed save without the trip or the store's message", async () => {
+    mocks.saveTrip.mockRejectedValue(new Error("redis down"));
+    await post(makeTrip());
+    expect(mocks.emit).toHaveBeenCalledWith("error", "save failed", {
+      route: "/api/trips",
+      status: 500,
+      errorName: "Error",
+    });
+  });
+
+  describe("runtime limits and usage counters", () => {
+    it("uses the share budget from the runtime config", async () => {
+      mocks.getRuntimeConfig.mockResolvedValue(
+        makeRuntimeConfig({ guest: { sharesPerHour: 25 } }),
+      );
+      await post(makeTrip());
+      expect(mocks.getRatelimiter).toHaveBeenCalledWith("trips", 25);
+    });
+
+    it("counts a created share", async () => {
+      await post(makeTrip());
+      expect(mocks.recordUsage).toHaveBeenCalledWith({ trips_shared: 1 });
+    });
+
+    it("counts a refused share", async () => {
+      await post("{nope");
+      expect(mocks.recordUsage).toHaveBeenCalledWith({ trips_refused: 1 });
+      expect(mocks.recordUsage).not.toHaveBeenCalledWith({ trips_shared: 1 });
+    });
+  });
+});

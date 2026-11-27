@@ -88,7 +88,27 @@ import alias:
   `http` depends on neither
 - unit tests live beside the code and travel with the folder
 
-Do NOT create the workspace until a second consumer actually exists.
+The workspace now exists because the admin app is a second consumer. Only
+code that both apps need lives in `packages/` (see Monorepo below); web-only
+domains stay in `apps/web/src/lib`.
+
+## Monorepo
+
+Turborepo + pnpm workspace. Paths elsewhere in these docs that start with
+`src/`, `e2e/` or `public/` are relative to `apps/web/`.
+
+- `apps/web`: the public site (`drawmytrip.click`).
+- `apps/admin`: operator console (own Vercel project, GitHub sign-in with an
+  `ADMIN_GITHUB_IDS` allowlist). Usage charts, free-tier forecasts, runtime
+  limits, audit log. A daily cron hits `/api/collect` (Vercel and Upstash
+  usage snapshots). Verify the Vercel billing and Upstash stats field names
+  against real responses (`collect/*.ts` carry `verify` notes).
+- `packages/runtime-config`: limits schema and Redis store (`cfg:runtime`),
+  read by web with a 60 s cache, written by admin.
+- `packages/usage`: daily counters (`usage:{date}`), `recordUsage` never throws.
+- `packages/tokens`, `tsconfig`, `eslint-config`: shared design tokens and config.
+
+Both apps release together (one release-please train, root version).
 
 ## Testing conventions
 

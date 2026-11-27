@@ -1,0 +1,234 @@
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * DrawMyTrip — "field atlas" design tokens.
+ * Brand palette (paper / ink / brass / azure) drives every shadcn token
+ * so components inherit the aesthetic without per-component overrides.
+ * Visual reference: reference/grand-tour.html
+ */
+:root {
+  --paper: #f5f1e8;
+  --ink: #16233a;
+  --ink-soft: #4a5568;
+  --brass: #b98a2f;
+  /* Brass for small text and icons on paper: the fill brass is 2.8:1. */
+  --brass-text: #8a6420;
+  /* Brass for marks that must read on paper and the map (route, stop dots,
+     selected states): 3.4:1, where the fill brass is 2.8:1. */
+  --brass-strong: #a77a26;
+  --azure: #3e7cb1;
+  /* Small azure text: the plain azure is under 4.5:1 on paper. */
+  --azure-text: #2f6697;
+  --line: rgba(22, 35, 58, 0.12);
+  --card-solid: #ffffff;
+  /* Solid sheet and bars over the map on phones (no blur over WebGL). */
+  --sheet: #fbf9f4;
+  --shadow-sheet: 0 -12px 40px -16px rgba(22, 35, 58, 0.3);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: rgba(255, 255, 255, 0.72);
+  --card-foreground: var(--ink);
+  --popover: rgba(252, 250, 244, 0.92);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: rgba(22, 35, 58, 0.06);
+  --secondary-foreground: var(--ink);
+  --muted: rgba(22, 35, 58, 0.05);
+  --muted-foreground: var(--ink-soft);
+  --accent: rgba(185, 138, 47, 0.1);
+  --accent-foreground: var(--ink);
+  --destructive: #a83a32;
+  --destructive-foreground: #fdf9f2;
+  --border: var(--line);
+  /* Field edges: a 3:1 boundary against the surface (WCAG 1.4.11). */
+  --input: color-mix(in srgb, var(--ink-soft) 65%, var(--paper));
+  /* Focus ring: brass text passes 3:1 on paper; the fill brass does not. */
+  --ring: var(--brass-text);
+
+  /* One radius family: controls and inputs, cards, sheets. Buttons and
+     chips are full pills (rounded-full). */
+  --radius: 1rem;
+  --radius-control: 12px;
+  --radius-card: 16px;
+  --radius-sheet: 24px;
+  --shadow-soft: 0 20px 60px -20px rgba(22, 35, 58, 0.25);
+  --ease-atlas: cubic-bezier(0.32, 0.72, 0.24, 1);
+  --map-filter: saturate(0.55) contrast(1.02) brightness(1.02);
+  --page-gutter: 1rem;
+  /* Desktop side panel: a native 440px card, not a stretched phone. */
+  --card-w: 440px;
+  --shadow-marker-dot: 0 4px 10px rgba(0, 0, 0, 0.25);
+  --shadow-marker-lbl: 0 2px 8px rgba(22, 35, 58, 0.12);
+}
+
+.dark {
+  --paper: #0e1420;
+  --ink: #edeae2;
+  --ink-soft: #9aa5b5;
+  --brass: #d4a94e;
+  --brass-text: var(--brass);
+  --brass-strong: var(--brass);
+  --azure: #6fa8d6;
+  --azure-text: var(--azure);
+  --line: rgba(237, 234, 226, 0.12);
+  --card-solid: #161f30;
+  --sheet: #131b2a;
+  --shadow-sheet: 0 -12px 40px -16px rgba(0, 0, 0, 0.6);
+
+  --card: rgba(20, 28, 44, 0.72);
+  --popover: rgba(21, 29, 45, 0.94);
+  --primary: var(--ink);
+  --primary-foreground: #0e1420;
+  --secondary: rgba(237, 234, 226, 0.07);
+  --muted: rgba(237, 234, 226, 0.06);
+  --accent: rgba(212, 169, 78, 0.12);
+  --destructive: #d06157;
+  --destructive-foreground: #0e1420;
+  --shadow-soft: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+  --map-filter: invert(1) hue-rotate(190deg) saturate(0.5) brightness(0.9)
+    contrast(0.95);
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-brass: var(--brass);
+  --color-brass-text: var(--brass-text);
+  --color-brass-strong: var(--brass-strong);
+  --color-azure: var(--azure);
+  --color-azure-text: var(--azure-text);
+  --color-line: var(--line);
+  --color-card-solid: var(--card-solid);
+  --color-sheet: var(--sheet);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* Nothing smaller than 13px: the smallest step is a label, not a caption. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.125rem;
+
+  --radius-sm: 8px;
+  --radius-md: var(--radius-control);
+  --radius-lg: var(--radius-control);
+  --radius-xl: var(--radius-card);
+  --radius-2xl: var(--radius-card);
+  --radius-3xl: var(--radius-sheet);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-sheet: var(--shadow-sheet);
+
+  --ease-atlas: var(--ease-atlas);
+
+  /* Page type scale (scrolling pages): sizes at 1440, fluid below. */
+  --text-display: clamp(3rem, 2rem + 3.6vw, 5.25rem);
+  --text-display--line-height: 1.02;
+  --text-section: clamp(2.25rem, 1.5rem + 2vw, 3.25rem);
+  --text-section--line-height: 1.08;
+  --text-title: clamp(1.25rem, 1rem + 0.6vw, 1.5625rem);
+  --text-title--line-height: 1.2;
+  --text-lead: clamp(1.125rem, 1rem + 0.35vw, 1.3125rem);
+  --text-lead--line-height: 1.5;
+}
+
+/* One centred, capped container for the scrolling pages: the gutters grow
+   past 1440, the measure does not. */
+@utility page-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  padding-inline: var(--page-gutter);
+}
+
+/* A row that scrolls sideways fades at its end, so more is implied. */
+@utility fade-end {
+  mask-image: linear-gradient(90deg, #000 85%, transparent);
+}
+
+@media (width >= 40rem) {
+  :root {
+    --page-gutter: 2rem;
+  }
+}
+
+@media (width >= 64rem) {
+  :root {
+    --page-gutter: 4rem;
+  }
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  transition:
+    background 0.4s,
+    color 0.4s;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: var(--line);
+}
+
+input[type="range"] {
+  accent-color: var(--brass);
+}
+
+@layer components {
+  /* Frosted card — the house surface for rails, chips, panels. */
+  .frost {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--card);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Eyebrow label — small brass wayfinding caption, sentence case. */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--brass-text);
+  }
+}

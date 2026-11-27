@@ -4,6 +4,12 @@ DrawMyTrip is a guest-first service for creating beautiful, interactive travel
 route maps — populated by AI chat or manually — shared via short links
 (`/t/{id}`). No accounts, no user DB in Phase 1.
 
+## Monorepo
+
+Turborepo: `apps/web` (the site), `apps/admin` (operator console),
+`packages/*` (shared). Paths below like `src/…` are inside `apps/web/`. See
+`docs/ARCHITECTURE.md` → Monorepo.
+
 ## Commands
 
 - `pnpm dev` — dev server (Turbopack)
