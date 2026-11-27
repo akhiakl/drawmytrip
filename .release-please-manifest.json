@@ -1,5 +1,5 @@
 {
-  "apps/web": "0.10.0",
+  "apps/web": "0.11.0",
   "apps/admin": "0.0.0",
   "packages/runtime-config": "0.0.0",
   "packages/usage": "0.0.0",
