@@ -1,0 +1,127 @@
+{
+  "Common": {
+    "appName": "DrawMyTrip",
+    "admin": "Admin",
+    "title": "DrawMyTrip admin",
+    "notFound": "Nothing here."
+  },
+  "Nav": {
+    "label": "Admin sections",
+    "usage": "Usage",
+    "limits": "Limits",
+    "audit": "Audit",
+    "signOut": "Sign out",
+    "theme": "Switch theme"
+  },
+  "SignIn": {
+    "eyebrow": "Operator access",
+    "heading": "Sign in to the admin",
+    "body": "Only allowlisted GitHub accounts get in.",
+    "button": "Sign in with GitHub",
+    "error": "GitHub sign-in failed. Try again."
+  },
+  "Usage": {
+    "heading": "Usage",
+    "range": "Range",
+    "range7": "7 days",
+    "range30": "30 days",
+    "range90": "90 days",
+    "collected": "Provider usage collected {time}",
+    "neverCollected": "Provider usage not collected yet. The daily job runs at 04:00 UTC.",
+    "headroom": "Free-tier headroom this month",
+    "projected": "{pct}% projected",
+    "daysLeft": "{days, plural, one {# day} other {# days}} to the limit",
+    "over": "Over the free limit",
+    "notConnected": "Not connected",
+    "openDashboard": "Open usage page",
+    "status": {
+      "ok": "On track",
+      "watch": "Watch",
+      "critical": "Plan an upgrade",
+      "unknown": "No data"
+    }
+  },
+  "Meters": {
+    "vercel_transfer": "Vercel data transfer",
+    "vercel_cpu": "Vercel function CPU",
+    "vercel_events": "Vercel analytics events",
+    "upstash_commands": "Upstash commands",
+    "upstash_storage": "Upstash storage",
+    "llm_requests_day": "LLM requests per day"
+  },
+  "Units": {
+    "gb": "{value} GB",
+    "hours": "{value} h",
+    "events": "{value} events",
+    "commands": "{value} commands",
+    "mb": "{value} MB",
+    "requests": "{value} requests"
+  },
+  "Kpis": {
+    "ai_generations": "AI plans",
+    "tokens": "LLM tokens",
+    "cost_usd": "LLM cost",
+    "trips_shared": "Shares",
+    "map_views": "Map views",
+    "provider_429": "LLM limits hit",
+    "delta": "{sign}{pct}% vs previous {days} days",
+    "noPrevious": "No earlier data"
+  },
+  "Charts": {
+    "monthTitle": "{meter}: month to date",
+    "actual": "Used",
+    "projectedLine": "Projected",
+    "limit": "Free limit",
+    "tokensTitle": "LLM tokens per day",
+    "input": "Input",
+    "output": "Output",
+    "cost": "Cost",
+    "appTitle": "App usage per day",
+    "mapViews": "Map views",
+    "shares": "Shares",
+    "aiPlans": "AI plans",
+    "refusalsTitle": "Refused requests per day",
+    "ourLimit": "Our rate limit",
+    "provider429": "LLM provider limit",
+    "other": "Other refusals",
+    "empty": "No data for this range yet."
+  },
+  "Limits": {
+    "heading": "Limits",
+    "guest": "Guest limits",
+    "aiPerHour": "AI plans per visitor per hour",
+    "sharesPerHour": "Shares per visitor per hour",
+    "ai": "AI",
+    "aiEnabled": "AI planner on",
+    "dailyCap": "Daily AI plan cap (0 = no cap)",
+    "inputPrice": "Input price per million tokens (USD)",
+    "outputPrice": "Output price per million tokens (USD)",
+    "freeTier": "Free-tier limits",
+    "vercelTransferGb": "Vercel data transfer per month (GB)",
+    "vercelCpuHours": "Vercel function CPU per month (hours)",
+    "vercelAnalyticsEvents": "Vercel analytics events per month",
+    "upstashCommands": "Upstash commands per month",
+    "upstashStorageMb": "Upstash storage (MB)",
+    "llmRequestsPerDay": "LLM requests per day (0 = read from provider)",
+    "save": "Save changes",
+    "saved": "Limits saved",
+    "invalid": "Check the highlighted fields.",
+    "fieldError": "Enter a number in the allowed range.",
+    "error": "Could not save. Try again.",
+    "propagation": "Changes reach every server within a minute."
+  },
+  "Audit": {
+    "heading": "Audit log",
+    "when": "When",
+    "who": "Who",
+    "action": "Action",
+    "detail": "Detail",
+    "empty": "Nothing recorded yet.",
+    "actions": {
+      "sign_in": "Signed in",
+      "sign_in_denied": "Sign-in refused",
+      "config_saved": "Limits changed",
+      "usage_collected": "Usage collected"
+    }
+  }
+}

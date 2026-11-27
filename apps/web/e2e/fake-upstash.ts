@@ -1,7 +1,8 @@
 /**
  * In-memory stand-in for the Upstash Redis REST API, so the server-rendered
  * share page (`/t/{id}`) reads snapshots without a real database. Speaks
- * only the commands the trip service sends (SET/SETEX/GETEX/INCR/EXPIRE).
+ * only the commands the apps send (SET/SETEX/GETEX/INCR/EXPIRE, the usage
+ * hashes HINCRBY/HSET/HGETALL and the audit list LPUSH/LTRIM/LRANGE).
  * String replies are base64 only when the client asks for it with the
  * `Upstash-Encoding: base64` header (older clients); newer ones read raw.
  *
@@ -11,6 +12,8 @@ import { createServer } from "node:http";
 
 const PORT = Number(process.env.FAKE_UPSTASH_PORT ?? 8079);
 const store = new Map<string, string>();
+const hashes = new Map<string, Map<string, string>>();
+const lists = new Map<string, string[]>();
 
 function run(
   [command, key, ...args]: string[],
@@ -34,7 +37,43 @@ function run(
       return next;
     }
     case "EXPIRE":
-      return store.has(key) ? 1 : 0;
+      return store.has(key) || hashes.has(key) || lists.has(key) ? 1 : 0;
+    case "HINCRBY": {
+      const hash = hashes.get(key) ?? new Map<string, string>();
+      const next = Number(hash.get(args[0]) ?? 0) + Number(args[1]);
+      hash.set(args[0], String(next));
+      hashes.set(key, hash);
+      return next;
+    }
+    case "HSET": {
+      const hash = hashes.get(key) ?? new Map<string, string>();
+      for (let i = 0; i < args.length; i += 2) hash.set(args[i], args[i + 1]);
+      hashes.set(key, hash);
+      return args.length / 2;
+    }
+    case "HGETALL": {
+      const hash = hashes.get(key);
+      return hash ? [...hash].flat().map(encode) : [];
+    }
+    case "LPUSH": {
+      const list = lists.get(key) ?? [];
+      lists.set(key, [...args.toReversed(), ...list]);
+      return lists.get(key)!.length;
+    }
+    case "LTRIM": {
+      lists.set(
+        key,
+        (lists.get(key) ?? []).slice(Number(args[0]), Number(args[1]) + 1),
+      );
+      return encode("OK");
+    }
+    case "LRANGE": {
+      const end = Number(args[1]);
+      const list = lists.get(key) ?? [];
+      return list
+        .slice(Number(args[0]), end === -1 ? undefined : end + 1)
+        .map(encode);
+    }
     default:
       throw new Error(`fake-upstash: unsupported command ${command}`);
   }
