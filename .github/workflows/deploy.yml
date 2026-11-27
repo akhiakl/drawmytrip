@@ -4,6 +4,9 @@
 # docs/RELEASE.md for the policy and the MVP checklist gating v1.0.0.
 # Without VERCEL_TOKEN it logs and exits. Each app is its own Vercel project
 # whose Root Directory points at apps/web or apps/admin.
+# Release-please makes one tag per app (web-vX.Y.Z, admin-vX.Y.Z); each job
+# runs only for its own tag, so an app deploys only when it (or a shared
+# package it uses) changed. Shared packages are never released alone.
 name: Deploy
 
 on:
@@ -15,6 +18,7 @@ permissions:
 
 jobs:
   web:
+    if: startsWith(github.event.release.tag_name, 'web-v')
     uses: akhiakl/ci-workflows/.github/workflows/deploy-vercel.yml@v1.4.0
     with:
       org-id: team_limfPNcBoq9EgLcZU3PIRK8J
@@ -25,6 +29,7 @@ jobs:
 
   # The admin app is its own Vercel project (Root Directory apps/admin).
   admin:
+    if: startsWith(github.event.release.tag_name, 'admin-v')
     uses: akhiakl/ci-workflows/.github/workflows/deploy-vercel.yml@v1.4.0
     with:
       org-id: team_limfPNcBoq9EgLcZU3PIRK8J

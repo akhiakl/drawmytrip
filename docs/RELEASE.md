@@ -6,9 +6,15 @@ Releases are driven by Conventional Commits via
 [release-please](https://github.com/googleapis/release-please-action):
 
 - `fix:` → patch, `feat:` → minor, `feat!:` / `BREAKING CHANGE:` → major.
-- Every merge to `main` updates a rolling **release PR** (version bump +
-  `CHANGELOG.md`). Merging that PR creates the `vX.Y.Z` tag and a GitHub
-  Release. Nothing else creates tags.
+- Every merge to `main` updates one rolling **release PR per app**
+  (`apps/web` and `apps/admin`: version bump + that app's `CHANGELOG.md`).
+  Merging one creates its `web-vX.Y.Z` or `admin-vX.Y.Z` tag and GitHub
+  Release, which deploys only that app. Nothing else creates tags.
+- An app is released only when its own files or a shared `packages/*`
+  dependency changed (release-please `node-workspace` bumps dependents).
+  Shared packages get no tags or releases of their own.
+- Versions before the split were `vX.Y.Z` (last `v0.10.0`, now `web-v0.10.0`
+  in the manifest); admin starts at `0.1.0`.
 - Pre-launch we stay on `0.x` minors per completed build-order step.
 - **`v1.0.0` is reserved for the MVP** — it may only be cut when every
   box in the checklist below is checked.
@@ -22,7 +28,7 @@ trigger workflows).
 
 - **Production never deploys from `main` pushes.** The only production
   trigger is a _published GitHub Release_: `.github/workflows/deploy.yml`
-  fires on `release: published` and deploys with the Vercel CLI using the
+  fires on `release: published` and deploys the app named by the tag with the Vercel CLI using the
   `VERCEL_TOKEN` secret (until it is set, releases are tags only).
 - Vercel's Ignored Build Step (Project → Settings → Git) skips
   production builds of `main` (Hobby has no deployment policy), so the
