@@ -10,8 +10,12 @@
   }
 }
 
-@utility enter {
-  @media (prefers-reduced-motion: no-preference) {
-    animation: admin-enter 320ms var(--ease-atlas) both;
+.enter {
+  animation: admin-enter 320ms var(--ease-atlas) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none;
   }
 }
