@@ -5,7 +5,11 @@ import { track } from "@vercel/analytics";
  * (including shared map opens at /t/{id}) are counted automatically.
  */
 export type AnalyticsEvent =
-  "ai_route_generated" | "share_created" | "upsell_shown" | "affiliate_click";
+  | "ai_route_generated"
+  | "ai_suggestions_shown"
+  | "share_created"
+  | "upsell_shown"
+  | "affiliate_click";
 
 // TODO(analytics): custom events need a Vercel Pro plan; on Hobby these
 // calls are dropped and only page views are recorded.
