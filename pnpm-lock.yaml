@@ -14,6 +14,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^21.2.4
         version: 21.2.4
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -7542,7 +7545,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.2.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.10(@opentelemetry/api@1.10.0)(@types/node@26.6.11)(@vitest/coverage-v8@4.1.10)(jsdom@31.0.1)(vite@8.1.5(@types/node@26.6.11)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))
+      vitest: 4.1.10(@opentelemetry/api@1.10.0)(@types/node@26.6.6)(@vitest/coverage-v8@4.1.10)(jsdom@31.0.1)(vite@8.1.5(@types/node@26.6.6)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.1))
 
   '@vitest/expect@4.1.10':
     dependencies:
