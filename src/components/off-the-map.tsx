@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
+import { PageBar } from "@/components/brand/page-bar";
 import { Button } from "@/components/ui/button";
 
 type Action =
@@ -14,11 +15,14 @@ type Action =
  * forward, plus an optional way back.
  */
 export function OffTheMap({
+  eyebrow,
   title,
   children,
   action,
   secondary,
 }: {
+  /** What happened, above the title; "Off the map" by default. */
+  readonly eyebrow?: string;
   readonly title: string;
   readonly children: ReactNode;
   readonly action: Action;
@@ -26,31 +30,34 @@ export function OffTheMap({
 }) {
   const t = useTranslations("Common");
   return (
-    <main className="grid min-h-dvh place-items-center px-6 text-center">
-      <div className="flex flex-col items-center gap-3">
-        <Compass aria-hidden className="size-10 text-muted-foreground" />
-        <p className="eyebrow">{t("offTheMap")}</p>
-        <h1 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
-          {title}
-        </h1>
-        <p className="max-w-sm text-muted-foreground">{children}</p>
-        <div className="mt-2 flex flex-wrap justify-center gap-2">
-          {"href" in action ? (
-            <Button asChild variant="brass">
-              <Link href={action.href}>{action.label}</Link>
-            </Button>
-          ) : (
-            <Button type="button" variant="brass" onClick={action.onClick}>
-              {action.label}
-            </Button>
-          )}
-          {secondary && (
-            <Button asChild variant="outline">
-              <Link href={secondary.href}>{secondary.label}</Link>
-            </Button>
-          )}
+    <div className="flex min-h-dvh flex-col">
+      <PageBar />
+      <main className="grid flex-1 place-items-center px-6 pb-16 text-center">
+        <div className="flex flex-col items-center gap-3">
+          <Compass aria-hidden className="size-10 text-muted-foreground" />
+          <p className="eyebrow">{eyebrow ?? t("offTheMap")}</p>
+          <h1 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+            {title}
+          </h1>
+          <p className="max-w-sm text-muted-foreground">{children}</p>
+          <div className="mt-2 flex flex-wrap justify-center gap-2">
+            {"href" in action ? (
+              <Button asChild variant="brass">
+                <Link href={action.href}>{action.label}</Link>
+              </Button>
+            ) : (
+              <Button type="button" variant="brass" onClick={action.onClick}>
+                {action.label}
+              </Button>
+            )}
+            {secondary && (
+              <Button asChild variant="outline">
+                <Link href={secondary.href}>{secondary.label}</Link>
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

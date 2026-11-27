@@ -3,7 +3,7 @@
     "appName": "DrawMyTrip",
     "appNameLead": "DrawMy",
     "appNameTail": "Trip",
-    "backToAtlas": "Field Atlas",
+    "backHome": "Back to home",
     "offTheMap": "Off the map",
     "loading": "Loading the map…"
   },
@@ -53,11 +53,10 @@
     }
   },
   "Plan": {
-    "title": "Plan with <em>AI</em>",
+    "title": "Plan with AI",
     "lede": "Answer three questions and get a draft route. You can edit everything afterwards."
   },
   "Landing": {
-    "group": "Start your own route",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",
     "heading": "Draw your travel route on an interactive map",
@@ -85,9 +84,11 @@
       "action": "Back to home"
     },
     "expired": {
-      "title": "This map has expired",
-      "body": "Shared routes stay live for {days} days after their last visit, and this one's trail has gone cold. You can always draw a new one.",
-      "action": "Create your own"
+      "eyebrow": "Link expired",
+      "title": "This map is off the map",
+      "body": "Shared maps stay live for {days} days after the last visit. Ask the sender to share it again, or draw your own.",
+      "action": "Plan a new map",
+      "home": "Back to home"
     },
     "notOnDevice": {
       "title": "Not on this device",
@@ -125,6 +126,9 @@
     "next": "Next",
     "daysLabel": "Number of days",
     "daysUnit": "days",
+    "dayChips": "Common trip lengths",
+    "dayChip": "{days, select, 14 {2 weeks} 21 {3 weeks} other {{days} days}}",
+    "progress": "Question {step} of {total}",
     "paceLabel": "Pace",
     "askDestination": "Where do you want to go? A country, a region or a few cities all work.",
     "askDays": "How many days do you have, from 2 to 30?",
@@ -151,8 +155,7 @@
     "undoHint": "Undo (Ctrl+Z)",
     "redo": "Redo",
     "redoHint": "Redo (Ctrl+Shift+Z)",
-    "myMaps": "My Maps",
-    "share": "Share",
+    "share": "Share map",
     "shareStale": "Edited since you shared it. Share again to update the link.",
     "fixBeforeShare": "A few fields need fixing before this map can be shared.",
     "redrafted": "Route redrafted. Undo brings the previous one back.",
@@ -165,14 +168,17 @@
     },
     "stops": {
       "heading": "Stops",
-      "counter": "{count}/{max} stops",
+      "counter": "{count} of {max} free stops",
       "searchNext": "Search for the next stop.",
-      "addBlank": "Or add a blank stop",
+      "addBlank": "Add a blank stop and type it in",
       "newStopName": "New stop",
       "limit": "Guest maps top out at {max} stops.",
       "seeUnlocks": "See what unlocks",
       "moved": "{name} moved to stop {position} of {count}.",
-      "removed": "Removed {name}"
+      "removed": "Removed {name}",
+      "add": "Add stop",
+      "addTitle": "Add a stop",
+      "position": "Stop {number} of {max}"
     },
     "search": {
       "placeholder": "Search for a city…",
@@ -190,7 +196,11 @@
       "moveDown": "Move {name} down",
       "collapse": "Collapse details",
       "expand": "Edit all details",
-      "remove": "Remove {name}"
+      "remove": "Remove {name}",
+      "more": "More for {name}",
+      "nightsIn": "Nights in {name}",
+      "fewerNights": "Fewer nights in {name}",
+      "moreNights": "More nights in {name}"
     },
     "details": {
       "latitude": "Latitude",
@@ -225,7 +235,9 @@
       "duration": "Duration",
       "durationPlaceholder": "~2h 30m",
       "crowFlies": "{distance} as the crow flies",
-      "useEstimate": "Use estimate ({estimate} by {mode})"
+      "useEstimate": "Use estimate ({estimate} by {mode})",
+      "change": "Change",
+      "done": "Done"
     },
     "redraft": {
       "eyebrow": "Redraft with AI",
@@ -238,7 +250,10 @@
       "rateLimited": "Too many requests. Wait a minute and try again.",
       "failed": "The redraft failed. Your route is unchanged. Try again."
     },
-    "previewEmpty": "Add a stop to see it appear on the map."
+    "previewEmpty": "Add a stop to see it appear on the map.",
+    "backToMaps": "Back to my maps",
+    "sheetLabel": "Stops",
+    "mapLabel": "Route preview"
   },
   "Theme": {
     "toLight": "Switch to light theme",
@@ -271,11 +286,16 @@
     "eyebrow": "Ready to travel",
     "title": "Your map is live",
     "description": "Anyone with this link can view the route. It stays live for {days} days after its last visit. Share again after editing.",
-    "copy": "Copy",
+    "copy": "Copy link",
     "copied": "Copied",
     "copiedToast": "Map shared. Link copied.",
     "copyFailed": "Could not copy. Select and copy the link manually.",
-    "nativeShare": "Share via…",
+    "nativeShare": "Send the link",
+    "more": "More ways to share",
+    "poster": "Make a poster",
+    "posterHint": "An image of your route to post",
+    "calendar": "Add to calendar",
+    "calendarHint": "Every stop as a calendar event",
     "errors": {
       "tooLarge": "That map is too big to share. Remove a few details and try again.",
       "rateLimited": "Too many requests. Try sharing again shortly.",
@@ -284,11 +304,11 @@
     }
   },
   "Maps": {
-    "title": "My <em>Maps</em>",
-    "newMap": "New map",
+    "title": "My maps",
+    "device": "Saved on this device only. Share a map to keep a link.",
+    "newMap": "Start a new map",
     "empty": "No maps yet. Plan one with AI, or draw it stop by stop.",
     "planWithAi": "Plan with AI",
-    "buildManually": "Build manually",
     "imported": "Imported {title}",
     "card": {
       "view": "View",
@@ -309,7 +329,7 @@
       "confirmDelete": "Delete"
     },
     "import": {
-      "button": "Import",
+      "button": "Import a map file",
       "fileLabel": "Map backup file",
       "too_large": "That file is far too big to be a DrawMyTrip map.",
       "not_json": "That file isn't a DrawMyTrip backup. Pick a .json map file.",
@@ -325,42 +345,51 @@
       "label": "Trip details",
       "expandSheet": "Expand trip details",
       "collapseSheet": "Collapse trip details",
-      "expandCard": "Expand trip card",
-      "collapseCard": "Collapse trip card",
-      "expandHint": "Expand",
-      "collapseHint": "Collapse",
       "theRoute": "The route",
       "routeLabel": "Route",
-      "back": "Route",
+      "back": "Back to route",
       "eyebrow": {
         "demo": "Example route",
         "shared": "Shared route",
         "own": "Your map"
       },
-      "headline": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {distance}"
+      "headline": "{nights, plural, one {# night} other {# nights}} · {cities, plural, one {# city} other {# cities}} · {distance}",
+      "views": {
+        "label": "Trip views",
+        "route": "Route",
+        "stops": "Stops",
+        "tools": "Tools"
+      }
     },
     "actions": {
-      "remix": "Remix this trip",
-      "createOwn": "Create your own",
-      "edit": "Edit",
-      "share": "Share",
+      "remix": "Make a copy to edit",
+      "createOwn": "Start a new map",
+      "edit": "Edit map",
+      "share": "Share map",
       "sharing": "Sharing…",
-      "editRoute": "Edit this route",
       "tools": "Trip tools",
-      "customize": "Customize",
+      "customize": "Edit this route",
       "myMaps": "My maps",
       "packing": "Packing",
       "notes": "Notes",
-      "poster": "Poster",
-      "calendar": "Calendar",
-      "navigate": "Navigation"
+      "poster": "Make a poster",
+      "calendar": "Add to calendar",
+      "navigate": "Open in a maps app",
+      "startOwn": "Start your own route",
+      "buildRoute": "Build a route",
+      "planWithAi": "Plan with AI",
+      "stopPager": "Stops",
+      "prevStop": "Previous stop: {city}",
+      "nextStop": "Next stop: {city}",
+      "first": "First stop",
+      "last": "Last stop"
     },
     "stats": {
       "nights": "Nights",
       "cities": "Cities",
-      "inCountries": "in {count, plural, one {# country} other {# countries}}",
-      "totalRoute": "Total route",
-      "budget": "Budget / person"
+      "totalRoute": "Route",
+      "budget": "Per person",
+      "from": "{amount}+"
     },
     "itinerary": {
       "label": "Itinerary",
@@ -444,6 +473,8 @@
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fitRoute": "Fit the whole route",
+      "showCredits": "Show map credits",
+      "hideCredits": "Hide map credits",
       "marker": "{name}, stop {number}",
       "ghostMarker": "{name}, locked suggestion",
       "basemapDown": "The basemap is out of reach. Your route is still here.",
@@ -540,7 +571,7 @@
     }
   },
   "About": {
-    "title": "Draw your trip as a <em>shareable map</em>",
+    "title": "Draw your trip as a shareable map",
     "lede": "DrawMyTrip turns a trip idea into an interactive route map: cities, nights, trains and flights, drawn by AI or by hand. Free, and no account needed.",
     "planWithAi": "Plan with AI",
     "buildManually": "Build manually",

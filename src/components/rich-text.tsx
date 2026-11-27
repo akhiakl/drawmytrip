@@ -4,14 +4,9 @@ import type { ReactNode } from "react";
 /**
  * Tag renderers for next-intl `t.rich` messages, defined once at module
  * level so components pass them by reference instead of defining inline
- * render functions (e.g. `t.rich("title", { em: accent })`).
+ * render functions (e.g. `t.rich("body", { b: highlight })`).
  */
 const linkClass = "underline underline-offset-2 hover:text-ink";
-
-/** `<em>`: the brand's italic azure accent word. */
-export const accent = (chunks: ReactNode) => (
-  <em className="text-azure italic">{chunks}</em>
-);
 
 /** `<strong>`: emphasis in ink on soft text. */
 export const emphasis = (chunks: ReactNode) => (

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGenerateTrip, type GeneratedDraft } from "@/hooks/use-generate-trip";
 import { writeAiHandoff, type GenerateRequest } from "@/lib/ai";
+import { cn } from "@/lib/utils";
 
 import { ChatBubble } from "./chat-bubble";
 import { DaysStep, DestinationStep, VibeStep } from "./chat-steps";
@@ -64,6 +65,31 @@ function FailureBubble({
   );
 }
 
+const QUESTIONS = 3;
+
+/** Three short bars, filled up to the open question. */
+function ChatProgress({ step }: { readonly step: number }) {
+  const t = useTranslations("Chat");
+  return (
+    <div className="flex items-center gap-3">
+      <div aria-hidden className="flex gap-1.5">
+        {Array.from({ length: QUESTIONS }, (_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "h-1 w-7 rounded-full bg-line",
+              i < step && "bg-brass-strong",
+            )}
+          />
+        ))}
+      </div>
+      <p className="text-sm text-ink-soft">
+        {t("progress", { step, total: QUESTIONS })}
+      </p>
+    </div>
+  );
+}
+
 /**
  * Guided three-question chat (destination → days → pace) that makes ONE
  * call to /api/generate, then lands the draft in the editor with the
@@ -103,9 +129,12 @@ export function AiChat({
   };
 
   const { destination, days, vibe } = answers;
+  // Questions are answered in order, so the answers so far give the step.
+  const step = [destination, days].filter(Boolean).length + 1;
 
   return (
     <div className="flex flex-col gap-4">
+      <ChatProgress step={step} />
       <AiNotice />
       <div aria-live="polite" className="flex flex-col gap-3">
         <ChatBubble from="atlas">{t("askDestination")}</ChatBubble>

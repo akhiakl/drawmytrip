@@ -1,9 +1,9 @@
 import { expect, test } from "./fixtures";
 
-test("switching theme doesn't move the atlas card", async ({ page }) => {
+test("switching theme doesn't move the trip panel", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
   await page.goto("/");
-  const card = page.locator(".atlas-card");
+  const card = page.getByRole("region", { name: "Trip details" });
   await expect(card).toBeVisible();
   const before = await card.boundingBox();
 

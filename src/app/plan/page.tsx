@@ -1,11 +1,8 @@
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { pageMetadata } from "@/app/page-metadata";
 import { AiChat } from "@/components/ai/ai-chat";
-import { LogoLink } from "@/components/brand/logo";
-import { accent } from "@/components/rich-text";
+import { PageBar } from "@/components/brand/page-bar";
 import { destinationFromParam } from "@/lib/ai";
 
 export const generateMetadata = () => pageMetadata("plan");
@@ -17,30 +14,12 @@ export default async function PlanPage({
 }) {
   const { destination } = await searchParams;
   const t = await getTranslations("Plan");
-  const common = await getTranslations("Common");
   return (
     <div className="flex min-h-dvh flex-col">
-      <nav aria-label={common("backToAtlas")} className="page-container">
-        <div className="flex h-16 items-center justify-between">
-          <Link
-            href="/"
-            className="eyebrow inline-flex items-center gap-1.5 rounded-sm text-muted-foreground transition-colors outline-none hover:text-brass-text focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ArrowLeft aria-hidden className="size-3.5" /> {common("backToAtlas")}
-          </Link>
-          <LogoLink />
-        </div>
-      </nav>
-      <main className="page-container grid flex-1 content-start gap-10 py-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-16">
-        <header className="flex flex-col gap-4 lg:sticky lg:top-16 lg:self-start">
-          <h1 className="font-display text-section font-medium tracking-tight text-balance text-ink">
-            {t.rich("title", { em: accent })}
-          </h1>
-          <p className="max-w-[40ch] text-lead text-ink-soft">{t("lede")}</p>
-        </header>
-        <div className="min-w-0">
-          <AiChat initialDestination={destinationFromParam(destination)} />
-        </div>
+      <PageBar title={t("title")} />
+      <main className="page-container flex max-w-2xl flex-1 flex-col gap-6 py-6 lg:py-12">
+        <p className="text-ink-soft">{t("lede")}</p>
+        <AiChat initialDestination={destinationFromParam(destination)} />
       </main>
     </div>
   );

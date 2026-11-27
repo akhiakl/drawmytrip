@@ -36,4 +36,18 @@ describe("OffTheMap", () => {
       "/",
     );
   });
+
+  it("names what happened above the title", () => {
+    render(
+      <OffTheMap
+        eyebrow="Link expired"
+        title="Gone"
+        action={{ href: "/new", label: "Plan a new map" }}
+      >
+        Body copy
+      </OffTheMap>,
+    );
+    expect(screen.getByText("Link expired")).toBeInTheDocument();
+    expect(screen.queryByText("Off the map")).not.toBeInTheDocument();
+  });
 });

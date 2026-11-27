@@ -13,12 +13,9 @@ import { startCityQuery } from "@/lib/trip";
  */
 export function DestinationStart({
   destination,
-  primary,
   onClear,
 }: {
   readonly destination: CitySearchResult;
-  /** False when another action (Continue) already holds the brass slot. */
-  readonly primary: boolean;
   readonly onClear: () => void;
 }) {
   const t = useTranslations("Landing");
@@ -28,7 +25,7 @@ export function DestinationStart({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2 rounded-xl border border-line px-3 py-2 text-sm text-ink">
+      <div className="flex min-h-12 items-center justify-between gap-2 rounded-lg border border-line bg-card-solid pl-3.5 text-base text-ink">
         <span className="truncate">
           {destination.flag} {place}
         </span>
@@ -36,14 +33,14 @@ export function DestinationStart({
           type="button"
           onClick={onClear}
           aria-label={t("clearDestination")}
-          className="rounded-full p-1 text-muted-foreground outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring"
+          className="grid size-11 shrink-0 place-items-center rounded-full text-muted-foreground outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-ring"
         >
           <X className="size-4" />
         </button>
       </div>
       <fieldset className="flex gap-2">
         <legend className="sr-only">{t("startTo", { place })}</legend>
-        <Button asChild variant={primary ? "brass" : "outline"} className="flex-1">
+        <Button asChild variant="outline" className="flex-1">
           <Link href={planHref(place)}>
             <Sparkles /> {t("planWithAi")}
           </Link>

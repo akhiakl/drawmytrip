@@ -1,176 +1,207 @@
 "use client";
 
-import {
-  animate,
-  m,
-  useDragControls,
-  useMotionValue,
-  useReducedMotion,
-  type PanInfo,
-} from "framer-motion";
+import { m, useDragControls, type PanInfo } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { DESKTOP_QUERY, useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 
 import type { MapInsets } from "./fit-padding";
+import { nextSnap, snapHeights, visibleHeight, type SheetSnap } from "./sheet-snap";
 
-/** Mobile card floats this far above the bottom edge (`bottom-3`). */
-const CARD_GAP = 12;
+/** Where the handle sends a tap: peek opens to half, anything else lowers. */
+const TAP_NEXT: Record<SheetSnap, SheetSnap> = {
+  peek: "half",
+  half: "peek",
+  full: "half",
+};
 
-export const EASE_ATLAS = [0.32, 0.72, 0.24, 1] as const;
-/** Drag distance (px) or flick speed (px/s) that commits a snap. */
-const SNAP_DISTANCE = 48;
-const SNAP_VELOCITY = 400;
+type Size = {
+  viewport: number;
+  sheet: number;
+  head: number;
+  bar: number;
+  topBar: number;
+  right: number;
+};
 
 /**
- * The trip panel's frame: one frosted "atlas card" floating over the
- * full-bleed map, top-left from `lg` up and along the bottom below it. The sheet rests showing just `head` and expands (handle click,
- * drag, or flick) to reveal `children`; `onInsetsChange` reports how much
- * of the screen it covers in either state, so the map aims above it.
- * On desktop the card is a fluid-width column (`--card-w`) that can
- * `collapse` to its head; the reported inset follows its measured edges.
+ * The trip panel's frame. Phones: a floating top bar, a sheet over the
+ * map that rests at three heights (peek shows the head, half, full) and a
+ * fixed action bar in the thumb zone. Desktop (`lg`): the same three
+ * parts stacked in one 440px side card. `onInsetsChange` reports the map
+ * area covered, so fits and focus pans stay clear of it.
  */
 export function PanelShell({
   label,
+  topBar,
   head,
+  footer,
   bodyId,
-  expanded,
-  onExpandedChange,
-  collapsed,
+  snap,
+  onSnapChange,
   onInsetsChange,
   children,
 }: {
   readonly label: string;
+  readonly topBar: ReactNode;
   readonly head: ReactNode;
-  /** Lets the head's collapse toggle point `aria-controls` at the body. */
+  readonly footer: ReactNode;
   readonly bodyId: string;
-  readonly expanded: boolean;
-  readonly onExpandedChange: (expanded: boolean) => void;
-  /** Desktop only: the card is folded down to its head. */
-  readonly collapsed: boolean;
+  readonly snap: SheetSnap;
+  readonly onSnapChange: (snap: SheetSnap) => void;
   readonly onInsetsChange: (insets: MapInsets) => void;
   readonly children: ReactNode;
 }) {
   const t = useTranslations("Trip.panel");
   const isDesktop = useMediaQuery(DESKTOP_QUERY);
-  const reducedMotion = useReducedMotion();
   const dragControls = useDragControls();
-  const sheetRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const topBarRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const dragged = useRef(false);
-  const [size, setSize] = useState({ sheet: 0, peek: 0, right: 0, headBottom: 0 });
-  const collapsedY = Math.max(0, size.sheet - size.peek);
-  const y = useMotionValue(0);
-  const target = expanded ? 0 : collapsedY;
-
-  const settle = (to: number) =>
-    animate(
-      y,
-      to,
-      reducedMotion ? { duration: 0 } : { duration: 0.45, ease: EASE_ATLAS },
-    );
-
-  useEffect(() => {
-    const animation = settle(target);
-    return () => animation.stop();
-    // `settle` only closes over stable refs and the motion preference.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target, reducedMotion]);
-
+  // No slide until the first measure, so the sheet doesn't animate in.
+  const [ready, setReady] = useState(false);
+  const [size, setSize] = useState<Size>({
+    viewport: 0,
+    sheet: 0,
+    head: 0,
+    bar: 0,
+    topBar: 0,
+    right: 0,
+  });
+  const heights = snapHeights({
+    viewport: size.viewport,
+    sheet: size.sheet,
+    peek: size.head + size.bar,
+  });
+  const offset = heights.full - heights[snap];
   useLayoutEffect(() => {
-    const sheet = sheetRef.current;
-    const headEl = headRef.current;
-    if (!sheet || !headEl) return;
-    const observer = new ResizeObserver(() =>
-      setSize({
-        sheet: sheet.offsetHeight,
-        peek: headEl.offsetTop + headEl.offsetHeight,
-        // Desktop edges, in viewport px (the map fills the viewport).
-        right: Math.round(sheet.getBoundingClientRect().right),
-        headBottom: Math.round(headEl.getBoundingClientRect().bottom),
-      }),
+    const parts = [cardRef, topBarRef, sheetRef, headRef, barRef].map(
+      (r) => r.current,
     );
-    observer.observe(sheet);
-    observer.observe(headEl);
-    return () => observer.disconnect();
+    const [card, top, sheet, headEl, bar] = parts;
+    if (!card || !top || !sheet || !headEl || !bar) return;
+    const measure = () =>
+      setSize({
+        viewport: window.innerHeight,
+        sheet: sheet.offsetHeight,
+        head: headEl.offsetTop + headEl.offsetHeight,
+        bar: bar.offsetHeight,
+        topBar: Math.round(top.getBoundingClientRect().bottom),
+        // Desktop: the card's right edge, in viewport px.
+        right: Math.round(card.getBoundingClientRect().right),
+      });
+    measure();
+    const frame = requestAnimationFrame(() => setReady(true));
+    const observer = new ResizeObserver(measure);
+    for (const el of [card, top, sheet, headEl, bar]) observer.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
-  // Collapsed, the card covers only a strip as tall as its head: measured
-  // from the head (not the animating body) so the map re-fits once.
-  const { sheet, peek, right, headBottom } = size;
+  const shown = visibleHeight(snap, heights);
   useEffect(() => {
-    if (!isDesktop) onInsetsChange({ bottom: CARD_GAP + (expanded ? sheet : peek) });
-    else if (collapsed) onInsetsChange({ top: headBottom });
-    else onInsetsChange({ left: right });
-  }, [
-    isDesktop,
-    expanded,
-    collapsed,
-    sheet,
-    peek,
-    right,
-    headBottom,
-    onInsetsChange,
-  ]);
+    if (isDesktop) onInsetsChange({ left: size.right });
+    else onInsetsChange({ top: size.topBar, bottom: shown });
+  }, [isDesktop, size.right, size.topBar, shown, onInsetsChange]);
 
-  const onDragEnd = (_: unknown, { offset, velocity }: PanInfo) => {
-    const up = offset.y < -SNAP_DISTANCE || velocity.y < -SNAP_VELOCITY;
-    const down = offset.y > SNAP_DISTANCE || velocity.y > SNAP_VELOCITY;
-    let next = expanded;
-    if (up) next = true;
-    else if (down) next = false;
-    // An unchanged snap won't re-run the effect, so settle back by hand.
-    if (next === expanded) settle(target);
-    else onExpandedChange(next);
+  const onDragEnd = (_: unknown, { offset: drag, velocity }: PanInfo) => {
+    // The drag springs back to its origin while the resting position
+    // (a plain CSS transform below) slides to the new snap.
+    const next = nextSnap(snap, drag.y, velocity.y, heights);
+    if (next !== snap) onSnapChange(next);
   };
 
   return (
-    <m.section
-      ref={sheetRef}
-      aria-label={label}
-      drag={isDesktop ? false : "y"}
-      dragListener={false}
-      dragControls={dragControls}
-      dragConstraints={{ top: 0, bottom: collapsedY }}
-      dragElastic={0.08}
-      dragMomentum={false}
-      onDragStart={() => (dragged.current = true)}
-      onDragEnd={onDragEnd}
-      style={{ y }}
-      className="atlas-card fixed inset-x-3 bottom-3 z-40 flex h-[74dvh] flex-col lg:inset-x-auto lg:top-5 lg:bottom-auto lg:left-5 lg:h-auto lg:max-h-[calc(100dvh-2.5rem)] lg:w-(--card-w) lg:transform-none!"
+    // Phones: no box of its own, so the bars can be fixed to the screen.
+    <div
+      ref={cardRef}
+      className="contents lg:fixed lg:top-4 lg:bottom-4 lg:left-4 lg:z-40 lg:flex lg:w-(--card-w) lg:flex-col lg:overflow-hidden lg:rounded-3xl lg:border lg:border-line lg:bg-sheet lg:shadow-soft"
     >
-      <button
-        type="button"
-        aria-expanded={expanded}
-        aria-label={expanded ? t("collapseSheet") : t("expandSheet")}
-        onPointerDown={(event) => dragControls.start(event)}
-        onClick={() => {
-          if (dragged.current) {
-            dragged.current = false;
-            return;
-          }
-          onExpandedChange(!expanded);
-        }}
-        className="flex w-full shrink-0 touch-none justify-center pt-2.5 pb-1 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset lg:hidden"
+      <div
+        ref={topBarRef}
+        className="fixed inset-x-3 top-3 z-50 lg:static lg:shrink-0"
       >
-        <span aria-hidden className="h-1 w-10 rounded-full bg-ink-soft/40" />
-      </button>
-      <div ref={headRef} className="shrink-0">
-        {head}
+        {topBar}
       </div>
-      <m.div
-        id={bodyId}
-        inert={isDesktop ? collapsed : !expanded}
-        initial={false}
-        animate={{ height: isDesktop && collapsed ? 0 : "auto" }}
-        transition={
-          reducedMotion ? { duration: 0 } : { duration: 0.4, ease: EASE_ATLAS }
-        }
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain lg:flex-initial"
+      {/* Resting height is a CSS transform (it works before the lazy
+          motion features load, and reduced motion drops its transition);
+          the motion layer inside only carries a drag. */}
+      <div
+        ref={sheetRef}
+        style={isDesktop ? undefined : { transform: `translateY(${offset}px)` }}
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-40 h-[calc(100dvh-5rem)] lg:static lg:h-auto lg:min-h-0 lg:flex-1 lg:transform-none!",
+          ready && "transition-transform duration-300 ease-atlas",
+        )}
       >
-        {children}
-      </m.div>
-    </m.section>
+        <m.section
+          aria-label={label}
+          drag={isDesktop ? false : "y"}
+          dragListener={false}
+          dragControls={dragControls}
+          dragConstraints={{
+            top: -offset,
+            bottom: heights.full - heights.peek - offset,
+          }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          dragSnapToOrigin
+          onDragStart={() => (dragged.current = true)}
+          onDragEnd={onDragEnd}
+          className="flex h-full flex-col rounded-t-3xl border-t border-line bg-sheet shadow-sheet lg:rounded-none lg:border-0 lg:bg-transparent lg:shadow-none lg:transform-none!"
+        >
+          <div
+            ref={headRef}
+            className="shrink-0 touch-pan-x lg:touch-auto"
+            onPointerDown={(event) => {
+              if (!isDesktop) dragControls.start(event);
+            }}
+          >
+            <button
+              type="button"
+              aria-expanded={snap !== "peek"}
+              aria-controls={bodyId}
+              aria-label={snap === "peek" ? t("expandSheet") : t("collapseSheet")}
+              onClick={() => {
+                if (dragged.current) {
+                  dragged.current = false;
+                  return;
+                }
+                onSnapChange(TAP_NEXT[snap]);
+              }}
+              className="flex h-6 w-full touch-none items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset lg:hidden"
+            >
+              <span aria-hidden className="h-1.5 w-10 rounded-full bg-ink-soft/35" />
+            </button>
+            {head}
+          </div>
+          <div
+            id={bodyId}
+            inert={!isDesktop && snap === "peek"}
+            // The sheet slides down rather than shrinking, so pad the part
+            // below the screen and the action bar to keep every row reachable.
+            style={isDesktop ? undefined : { paddingBottom: offset + size.bar + 16 }}
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain lg:pb-6"
+          >
+            {children}
+          </div>
+        </m.section>
+      </div>
+      <div
+        ref={barRef}
+        className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-sheet px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:static lg:shrink-0 lg:px-6 lg:pt-4 lg:pb-5"
+      >
+        {footer}
+      </div>
+    </div>
   );
 }

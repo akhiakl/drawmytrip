@@ -54,7 +54,7 @@ describe("ShareDialog", () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /share via/i }));
+    await userEvent.click(screen.getByRole("button", { name: /send the link/i }));
     expect(share).toHaveBeenCalledWith({
       url: expect.stringContaining("/t/abc12345"),
       title: "Alps",
@@ -65,13 +65,49 @@ describe("ShareDialog", () => {
   it("hides the share sheet button where the browser has none", () => {
     render(<ShareDialog shareId="abc12345" open onOpenChange={onOpenChange} />);
     expect(
-      screen.queryByRole("button", { name: /share via/i }),
+      screen.queryByRole("button", { name: /send the link/i }),
     ).not.toBeInTheDocument();
   });
 
   it("puts the terms next to the link being shared", () => {
     render(<ShareDialog shareId="abc12345" open onOpenChange={onOpenChange} />);
     expect(screen.getByText(/By sharing this link you agree/)).toBeVisible();
+  });
+
+  it("hands off to the poster, closing itself first", async () => {
+    const onPoster = vi.fn();
+    render(
+      <ShareDialog
+        shareId="abc"
+        open
+        onOpenChange={onOpenChange}
+        onPoster={onPoster}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: /make a poster/i }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(onPoster).toHaveBeenCalledOnce();
+  });
+
+  it("offers the calendar only when the trip has dates", async () => {
+    const onCalendar = vi.fn();
+    const { rerender } = render(
+      <ShareDialog shareId="abc" open onOpenChange={onOpenChange} />,
+    );
+    expect(
+      screen.queryByRole("button", { name: /add to calendar/i }),
+    ).not.toBeInTheDocument();
+
+    rerender(
+      <ShareDialog
+        shareId="abc"
+        open
+        onOpenChange={onOpenChange}
+        onCalendar={onCalendar}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: /add to calendar/i }));
+    expect(onCalendar).toHaveBeenCalledOnce();
   });
 
   it("renders nothing when closed", () => {

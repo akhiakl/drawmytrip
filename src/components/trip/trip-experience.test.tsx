@@ -82,11 +82,12 @@ const routeTrip = (overrides: Partial<Trip> = {}) =>
   makeTrip(3, { cities: makeRouteCities(3), ...overrides });
 
 describe("TripExperience", () => {
-  it("demo mode: labels the example and forks a fresh copy on Customize", async () => {
+  it("demo mode: labels the example and forks a fresh copy from Tools", async () => {
     render(<TripExperience trip={routeTrip({ createdAt: 1000 })} actions="demo" />);
 
     expect(screen.getByText("Example route")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /customize/i }));
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
+    await userEvent.click(screen.getByRole("button", { name: "Edit this route" }));
 
     const [savedTrip, savedId] = mocks.saveLocalTrip.mock.calls[0];
     expect(savedId).toBeUndefined();
@@ -94,12 +95,18 @@ describe("TripExperience", () => {
     expect(mocks.push).toHaveBeenCalledWith("/new?remix=newid123");
   });
 
-  it("demo mode: a landing CTA replaces the primary actions", () => {
-    render(
-      <TripExperience trip={routeTrip()} cta={<a href="/plan">Plan with AI</a>} />,
+  it("demo mode: the action bar starts a route, the landing intro sits above it", () => {
+    render(<TripExperience trip={routeTrip()} cta={<p>Landing intro</p>} />);
+    const bar = screen.getByRole("group", { name: "Start your own route" });
+    expect(within(bar).getByRole("link", { name: "Plan with AI" })).toHaveAttribute(
+      "href",
+      "/plan",
     );
-    expect(screen.getByRole("link", { name: "Plan with AI" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /edit this route/i })).toBeNull();
+    expect(within(bar).getByRole("link", { name: "Build a route" })).toHaveAttribute(
+      "href",
+      "/new",
+    );
+    expect(screen.getByText("Landing intro")).toBeInTheDocument();
   });
 
   it("own mode: edit updates the same local record in place", async () => {
@@ -111,7 +118,7 @@ describe("TripExperience", () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole("button", { name: /^edit$/i }));
+    await userEvent.click(screen.getByRole("button", { name: "Edit map" }));
 
     const [savedTrip, savedId] = mocks.saveLocalTrip.mock.calls[0];
     expect(savedId).toBe("existing1");
@@ -122,7 +129,7 @@ describe("TripExperience", () => {
     const trip = routeTrip();
     render(<TripExperience trip={trip} actions="own" localId="existing1" />);
 
-    await userEvent.click(screen.getByRole("button", { name: /^share$/i }));
+    await userEvent.click(screen.getByRole("button", { name: "Share map" }));
     expect(mocks.share).toHaveBeenCalledWith(trip, "existing1");
   });
 
@@ -152,8 +159,9 @@ describe("TripExperience", () => {
     const { unmount } = render(
       <TripExperience trip={routeTrip()} actions="shared" />,
     );
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
     expect(
-      screen.queryByRole("button", { name: "Calendar" }),
+      screen.queryByRole("button", { name: "Add to calendar" }),
     ).not.toBeInTheDocument();
     unmount();
 
@@ -163,7 +171,8 @@ describe("TripExperience", () => {
         actions="shared"
       />,
     );
-    await userEvent.click(screen.getByRole("button", { name: "Calendar" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
+    await userEvent.click(screen.getByRole("button", { name: "Add to calendar" }));
     expect(createObjectURL).toHaveBeenCalledOnce();
     expect(click).toHaveBeenCalledOnce();
     click.mockRestore();
@@ -173,7 +182,10 @@ describe("TripExperience", () => {
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
 
     render(<TripExperience trip={routeTrip()} actions="shared" />);
-    await userEvent.click(screen.getByRole("button", { name: "Navigation" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
+    await userEvent.click(
+      screen.getByRole("button", { name: "Open in a maps app" }),
+    );
     expect(open).toHaveBeenCalledWith(
       expect.stringContaining("https://www.google.com/maps/dir/?api=1"),
       "_blank",
@@ -185,7 +197,9 @@ describe("TripExperience", () => {
   it("shared mode: remix also forks a fresh copy (no localId)", async () => {
     render(<TripExperience trip={routeTrip()} actions="shared" />);
 
-    await userEvent.click(screen.getByRole("button", { name: /remix this trip/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: "Make a copy to edit" }),
+    );
     expect(mocks.saveLocalTrip.mock.calls[0][1]).toBeUndefined();
   });
 
@@ -234,12 +248,15 @@ describe("TripExperience", () => {
   it("packing keeps its ticks across a detour to a stop", async () => {
     render(<TripExperience trip={routeTrip()} actions="shared" />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Packing" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
+    expect(screen.getByRole("button", { name: "Packing" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await userEvent.click(screen.getByRole("checkbox", { name: "Power bank" }));
     await userEvent.click(screen.getByRole("button", { name: "map marker" }));
-    await userEvent.click(screen.getByRole("button", { name: "Route" }));
 
-    await userEvent.click(screen.getByRole("button", { name: "Packing" }));
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
     expect(screen.getByRole("checkbox", { name: "Power bank" })).toBeChecked();
   });
 
@@ -274,33 +291,42 @@ describe("TripExperience", () => {
     expect(row(/Stop 3/)).not.toHaveAttribute("data-hovered");
   });
 
-  it("collapses the desktop card to its head and expands it again", async () => {
+  it("the Stops view pages through stops from the action bar", async () => {
     render(<TripExperience trip={routeTrip()} actions="shared" />);
-    const itinerary = screen.getByRole("list", { name: "Itinerary" });
+
+    await userEvent.click(screen.getByRole("button", { name: "Stops" }));
+    expect(
+      await screen.findByRole("heading", { level: 2, name: "Vienna" }),
+    ).toBeInTheDocument();
+    const pager = screen.getByRole("navigation", { name: "Stops" });
+    expect(within(pager).getByRole("button", { name: "First stop" })).toBeDisabled();
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Collapse trip card" }),
+      within(pager).getByRole("button", { name: "Next stop: Stop 2" }),
     );
-    const toggle = screen.getByRole("button", { name: "Expand trip card" });
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-    expect(itinerary.closest("[inert]")).not.toBeNull();
-
-    await userEvent.click(toggle);
     expect(
-      screen.getByRole("button", { name: "Collapse trip card" }),
-    ).toHaveAttribute("aria-expanded", "true");
-    expect(itinerary.closest("[inert]")).toBeNull();
+      await screen.findByRole("heading", { level: 2, name: "Stop 2" }),
+    ).toBeInTheDocument();
   });
 
-  it("a stop picked on the map unfolds a collapsed card", async () => {
+  it("switching views raises a lowered sheet to show them", async () => {
     render(<TripExperience trip={routeTrip()} actions="shared" />);
+    const handle = () => screen.getByRole("button", { name: /trip details/i });
+    expect(handle()).toHaveAttribute("aria-expanded", "false");
 
-    await userEvent.click(
-      screen.getByRole("button", { name: "Collapse trip card" }),
+    await userEvent.click(screen.getByRole("button", { name: "Tools" }));
+    expect(handle()).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Tools" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
     );
-    await userEvent.click(screen.getByRole("button", { name: "map marker" }));
-    expect(
-      screen.getByRole("button", { name: "Collapse trip card" }),
-    ).toHaveAttribute("aria-expanded", "true");
+
+    await userEvent.keyboard("{Escape}");
+    expect(screen.getByRole("button", { name: "Route" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await userEvent.keyboard("{Escape}");
+    expect(handle()).toHaveAttribute("aria-expanded", "false");
   });
 });

@@ -39,21 +39,10 @@ describe("LandingCta", () => {
     ).toBeVisible();
   });
 
-  it("offers both ways to start a route, grouped for screen readers", () => {
+  it("asks first-time visitors where they want to go", () => {
     render(<LandingCta />);
 
-    const group = screen.getByRole("group", { name: /start your own route/i });
-    expect(group).toContainElement(
-      screen.getByRole("link", { name: /plan with ai/i }),
-    );
-    expect(screen.getByRole("link", { name: /plan with ai/i })).toHaveAttribute(
-      "href",
-      "/plan",
-    );
-    expect(screen.getByRole("link", { name: /build manually/i })).toHaveAttribute(
-      "href",
-      "/new",
-    );
+    expect(screen.getByRole("button", { name: "Where to?" })).toBeVisible();
     expect(screen.queryByText("Welcome back")).not.toBeInTheDocument();
   });
 
@@ -83,9 +72,7 @@ describe("LandingCta", () => {
     expect(manual.getAttribute("href")).toMatch(/^\/new\?city=Kyoto&country=Japan/);
 
     await user.click(screen.getByRole("button", { name: "Clear destination" }));
-    expect(
-      screen.getByRole("group", { name: /start your own route/i }),
-    ).toBeVisible();
+    expect(screen.getByRole("button", { name: "Where to?" })).toBeVisible();
   });
 
   it("leads returning visitors with their latest map", () => {
@@ -98,9 +85,9 @@ describe("LandingCta", () => {
     expect(
       screen.getByRole("link", { name: /continue alpine loop/i }),
     ).toHaveAttribute("href", `/maps/${latest}`);
-    // Continue takes the brass slot; starting fresh steps down a tier.
-    expect(screen.getByRole("link", { name: /plan with ai/i })).not.toHaveClass(
-      "bg-brass",
-    );
+    // The action bar holds the one brass button on the page.
+    expect(
+      screen.getByRole("link", { name: /continue alpine loop/i }),
+    ).not.toHaveClass("bg-brass");
   });
 });

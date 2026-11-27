@@ -56,9 +56,10 @@ export function MapFocus({
     // MapContainer only applies `style` on mount, so set the insets the
     // overlays (legend, attribution) offset by on the live container.
     const container = map.getContainer();
+    container.style.setProperty("--map-inset-top", `${top}px`);
     container.style.setProperty("--map-inset-bottom", `${bottom}px`);
     container.style.setProperty("--map-inset-left", `${left}px`);
-  }, [map, bottom, left]);
+  }, [map, top, bottom, left]);
 
   useEffect(() => {
     const focus = () => {

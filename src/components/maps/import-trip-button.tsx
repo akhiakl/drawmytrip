@@ -39,8 +39,14 @@ export function ImportTripButton({
           if (file) void read(file);
         }}
       />
-      <Button type="button" variant="outline" onClick={() => input.current?.click()}>
-        <FileUp /> {t("button")}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label={t("button")}
+        onClick={() => input.current?.click()}
+      >
+        <FileUp />
       </Button>
     </>
   );

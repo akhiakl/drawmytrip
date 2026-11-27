@@ -8,22 +8,6 @@ import { cn } from "@/lib/utils";
 /** How long the splash holds before lifting; the route draws right after. */
 export const INTRO_HOLD_MS = 1900;
 
-/** Renders a title with the second word in italic azure — the brand mark. */
-export function TitleWithAccent({ title }: { readonly title: string }) {
-  const words = title.split(" ");
-  if (words.length < 2) return <>{title}</>;
-  return (
-    <>
-      {words.map((word, i) => (
-        <span key={`${word}-${i}`}>
-          {i > 0 ? " " : ""}
-          {i === 1 ? <em className="text-azure italic">{word}</em> : word}
-        </span>
-      ))}
-    </>
-  );
-}
-
 export function IntroSplash({
   title,
   eyebrow,
@@ -52,7 +36,7 @@ export function IntroSplash({
         <Logo className="mb-5 text-2xl" />
         <p className="eyebrow">{eyebrow}</p>
         <p className="font-display text-5xl font-normal tracking-tight sm:text-7xl">
-          <TitleWithAccent title={title} />
+          {title}
         </p>
         <p className="text-[15px] text-muted-foreground">{route}</p>
       </div>

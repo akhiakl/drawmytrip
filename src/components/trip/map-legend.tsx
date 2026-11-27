@@ -44,11 +44,12 @@ export function MapLegend({
   const modes = [...new Set(legs.map((leg) => leg.mode))];
 
   return (
-    <MapOverlay className="bottom-[calc(var(--map-inset-bottom,0px)+12px)] left-[calc(var(--map-inset-left,0px)+12px)]">
+    // Phones: under the fit button, clear of the sheet and attribution.
+    <MapOverlay className="top-[calc(var(--map-inset-top,0px)+68px)] right-3 flex flex-col-reverse items-end lg:top-auto lg:right-auto lg:bottom-[calc(var(--map-inset-bottom,0px)+12px)] lg:left-[calc(var(--map-inset-left,0px)+12px)] lg:flex-col lg:items-start">
       {open && (
         <div
           id={id}
-          className="mb-2 w-48 rounded-xl border border-line bg-card-solid p-3 text-xs text-ink shadow-soft"
+          className="mt-2 w-52 rounded-xl border border-line bg-card-solid p-3 text-sm text-ink shadow-soft lg:mt-0 lg:mb-2"
         >
           <p className="eyebrow mb-2">{t("title")}</p>
           <ul className="space-y-1.5">
@@ -78,7 +79,7 @@ export function MapLegend({
         aria-expanded={open}
         aria-controls={open ? id : undefined}
         onClick={() => setOpen((value) => !value)}
-        className="flex items-center gap-1.5 rounded-full border border-line bg-card-solid px-3 py-1.5 text-xs font-medium text-ink shadow-soft outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-3.5"
+        className="flex h-11 items-center gap-1.5 rounded-full border border-line bg-card-solid px-3.5 text-sm font-medium text-ink shadow-soft outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-4"
       >
         {open ? <X /> : <Info />}
         {t("title")}
