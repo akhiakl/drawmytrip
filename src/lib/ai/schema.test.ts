@@ -6,6 +6,13 @@ import { makeLeg } from "@/test/fixtures/trip";
 
 import { AiTripSchema, GenerateRequestSchema, clampToGuestLimit } from "./schema";
 
+describe("AiTripSchema single city", () => {
+  it("accepts one city and no legs, rejects none", () => {
+    expect(AiTripSchema.safeParse(makeAiTrip(1)).success).toBe(true);
+    expect(AiTripSchema.safeParse(makeAiTrip(0)).success).toBe(false);
+  });
+});
+
 describe("GenerateRequestSchema", () => {
   it("accepts the guided chat's three answers", () => {
     expect(GenerateRequestSchema.safeParse(makeGenerateRequest()).success).toBe(

@@ -18,6 +18,15 @@ describe("tripMapsUrl", () => {
     expect(url.searchParams.get("waypoints")).toBe("47.8,13");
   });
 
+  it("links to the place itself for a one-stop trip", () => {
+    const url = new URL(
+      tripMapsUrl(makeTrip(1, { cities: [city(43.6532, -79.3832)] })),
+    );
+    expect(url.origin + url.pathname).toBe("https://www.google.com/maps/search/");
+    expect(url.searchParams.get("api")).toBe("1");
+    expect(url.searchParams.get("query")).toBe("43.6532,-79.3832");
+  });
+
   it("omits waypoints for a two-stop trip", () => {
     const trip = makeTrip(2, { cities: [city(1, 2), city(3, 4)] });
     expect(new URL(tripMapsUrl(trip)).searchParams.has("waypoints")).toBe(false);

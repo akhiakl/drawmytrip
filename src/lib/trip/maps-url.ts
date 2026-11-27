@@ -10,6 +10,10 @@ const MAX_WAYPOINTS = 9;
 export function tripMapsUrl(trip: Trip): string {
   const at = (c: Trip["cities"][number]) => `${c.ll[0]},${c.ll[1]}`;
   const { cities } = trip;
+  if (cities.length === 1) {
+    const query = at(cities[0]);
+    return `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query })}`;
+  }
   const params = new URLSearchParams({
     api: "1",
     origin: at(cities[0]),

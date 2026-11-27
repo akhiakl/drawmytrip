@@ -201,9 +201,9 @@ describe("updateCityAt / updateLegAt / updateTitle", () => {
 });
 
 describe("isShareable", () => {
-  it("requires at least 2 cities; field problems are left to draftIssues", () => {
+  it("requires at least 1 city; field problems are left to draftIssues", () => {
     expect(isShareable(createBlankDraft())).toBe(false);
-    expect(isShareable(draftFromTrip(makeTrip(1)))).toBe(false);
+    expect(isShareable(draftFromTrip(makeTrip(1)))).toBe(true);
     expect(isShareable(draftFromTrip(makeTrip(2)))).toBe(true);
     expect(isShareable(updateTitle(draftFromTrip(makeTrip(2)), "   "))).toBe(true);
   });
@@ -221,7 +221,15 @@ describe("draftToTrip", () => {
 
   it("returns null while the draft doesn't meet the schema yet", () => {
     expect(draftToTrip(createBlankDraft(), Date.now())).toBeNull();
-    expect(draftToTrip(draftFromTrip(makeTrip(1)), Date.now())).toBeNull();
+    expect(
+      draftToTrip(updateTitle(draftFromTrip(makeTrip(1)), ""), Date.now()),
+    ).toBeNull();
+  });
+
+  it("stamps a single-city draft into a valid trip with no legs", () => {
+    const trip = draftToTrip(draftFromTrip(makeTrip(1)), Date.now());
+    expect(trip?.cities).toHaveLength(1);
+    expect(trip?.legs).toEqual([]);
   });
 });
 

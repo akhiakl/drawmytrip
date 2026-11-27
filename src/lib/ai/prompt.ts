@@ -37,7 +37,7 @@ export function buildSystemPrompt(): string {
     "Respond with ONE JSON object only, with no markdown and no commentary, matching exactly this shape:",
     TRIP_JSON_SHAPE,
     "Hard rules:",
-    `- At most ${GUEST_MAX_CITIES} cities. If the request implies more, pick the best ${GUEST_MAX_CITIES} and put the remaining city names in suggestedExtra (empty array otherwise).`,
+    `- Between 1 and ${GUEST_MAX_CITIES} cities. A request for a single city may stay one city. If the request implies more than ${GUEST_MAX_CITIES}, pick the best ${GUEST_MAX_CITIES} and put the remaining city names in suggestedExtra (empty array otherwise).`,
     "- Order cities in a realistic geographic route with minimal backtracking.",
     "- Use real coordinates as [latitude, longitude] with 4 decimal places.",
     "- legs.length must equal cities.length - 1; each leg connects consecutive cities with a realistic mode and duration.",

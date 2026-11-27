@@ -2,6 +2,7 @@ import { suggestLeg } from "./leg-estimate";
 import {
   DEFAULT_TRIP_TITLE,
   GUEST_MAX_CITIES,
+  MIN_CITIES,
   TripSchema,
   type City,
   type Leg,
@@ -186,11 +187,11 @@ export function updateStartDate(draft: DraftTrip, startDate: string): DraftTrip 
 }
 
 /**
- * Cities ≥ 2 is the only gate that disables Share — field-level problems
+ * Having at least {@link MIN_CITIES} city is the only gate that disables Share — field-level problems
  * are reported by {@link draftIssues} so the editor can point at them.
  */
 export function isShareable(draft: DraftTrip): boolean {
-  return draft.cities.length >= 2;
+  return draft.cities.length >= MIN_CITIES;
 }
 
 /** Why a field is invalid, as a message key the editor translates. */

@@ -8,7 +8,7 @@ describe("buildSystemPrompt", () => {
   const prompt = buildSystemPrompt();
 
   it("states the guest city ceiling and suggestedExtra overflow rule", () => {
-    expect(prompt).toContain(`At most ${GUEST_MAX_CITIES} cities`);
+    expect(prompt).toContain(`Between 1 and ${GUEST_MAX_CITIES} cities`);
     expect(prompt).toContain("suggestedExtra");
   });
 
