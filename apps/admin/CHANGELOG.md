@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/akhiakl/drawmytrip/compare/admin-v0.1.0...admin-v0.2.0) (2026-11-27)
+
+
+### Features
+
+* **admin:** health page that checks every service the site and console use ([#164](https://github.com/akhiakl/drawmytrip/issues/164)) ([cd38e00](https://github.com/akhiakl/drawmytrip/commit/cd38e000761a4a61712d5138d763b6869b31f976))
+* **admin:** rebuild the admin as a branded dashboard ([#160](https://github.com/akhiakl/drawmytrip/issues/160)) ([a1bc772](https://github.com/akhiakl/drawmytrip/commit/a1bc772596afa4c74105e556ed40ebf020ac838c))
+
 ## [0.1.0](https://github.com/akhiakl/drawmytrip/compare/admin-v0.1.0...admin-v0.1.0) (2026-11-27)
 
 
