@@ -3,7 +3,6 @@
   "include-component-in-tag": true,
   "separate-pull-requests": true,
   "last-release-sha": "72d245d0d0d819e36c73c86c85ea4568bce7075f",
-  "plugins": ["node-workspace"],
   "packages": {
     "apps/web": {
       "release-type": "node",
@@ -12,21 +11,7 @@
     "apps/admin": {
       "release-type": "node",
       "component": "admin"
-    },
-    "packages/runtime-config": {
-      "release-type": "node",
-      "component": "runtime-config",
-      "skip-github-release": true
-    },
-    "packages/usage": {
-      "release-type": "node",
-      "component": "usage",
-      "skip-github-release": true
-    },
-    "packages/tokens": {
-      "release-type": "node",
-      "component": "tokens",
-      "skip-github-release": true
     }
-  }
+  },
+  "bump-minor-pre-major": true
 }

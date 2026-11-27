@@ -10,8 +10,10 @@ Releases are driven by Conventional Commits via
   (`apps/web` and `apps/admin`: version bump + that app's `CHANGELOG.md`).
   Merging one creates its `web-vX.Y.Z` or `admin-vX.Y.Z` tag and GitHub
   Release, which deploys only that app. Nothing else creates tags.
-- An app is released only when its own files or a shared `packages/*`
-  dependency changed (release-please `node-workspace` bumps dependents).
+- release-please attributes a commit to an app by the files it touches
+  under `apps/<app>/`. Changes to `packages/*` alone release nothing: when
+  a shared change must ship, include a small `apps/<app>/` change in the
+  same PR (or a `Release-As`-free follow-up `fix:` touching the app).
   Shared packages get no tags or releases of their own.
 - Versions before the split were `vX.Y.Z` (last `v0.10.0`, now `web-v0.10.0`
   in the manifest); admin starts at `0.1.0`.
