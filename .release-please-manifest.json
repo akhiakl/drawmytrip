@@ -3,5 +3,5 @@
   "apps/admin": "0.0.0",
   "packages/runtime-config": "0.0.0",
   "packages/usage": "0.0.0",
-  "packages/tokens": "0.0.0"
+  "packages/tokens": "1.0.0"
 }
