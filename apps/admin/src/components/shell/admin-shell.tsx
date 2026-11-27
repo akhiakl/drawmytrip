@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 import { NavLinks, type NavId } from "./nav-links";
 
-const SECTIONS: NavId[] = ["overview", "usage", "limits", "audit"];
+const SECTIONS: NavId[] = ["overview", "usage", "limits", "health", "audit"];
 
 /**
  * Phones: a solid top bar, the page, and a fixed tab bar in the thumb zone.

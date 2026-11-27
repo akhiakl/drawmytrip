@@ -20,6 +20,8 @@ function run(
   encode: (value: string) => string,
 ): unknown {
   switch (command.toUpperCase()) {
+    case "PING":
+      return encode("PONG");
     case "SET":
       store.set(key, args[0]);
       return encode("OK");

@@ -92,6 +92,13 @@ jobs:
           name: runtime-config
           working-directory: packages/runtime-config
 
+      - name: Report coverage (health)
+        if: always() && github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          name: health
+          working-directory: packages/health
+
       - name: Report coverage (usage)
         if: always() && github.event_name == 'pull_request'
         uses: davelosert/vitest-coverage-report-action@v2

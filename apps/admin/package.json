@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@drawmytrip/brand": "workspace:*",
+    "@drawmytrip/health": "workspace:*",
     "@drawmytrip/runtime-config": "workspace:*",
     "@drawmytrip/usage": "workspace:*",
     "@upstash/ratelimit": "^2.2.1",

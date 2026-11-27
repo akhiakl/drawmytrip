@@ -86,6 +86,28 @@ test.describe("signed in", () => {
     await expect(page.getByText("Check the highlighted fields.")).toBeVisible();
   });
 
+  test("health lists the site and console services with setup hints", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("link", { name: "Health" }).first().click();
+    await expect(
+      page.getByRole("heading", { name: "Health", level: 1 }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Site" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Console" })).toBeVisible();
+    // No shared secret in e2e: the site row asks for it.
+    await expect(page.getByText(/Set HEALTH_CHECK_SECRET/)).toBeVisible();
+    await expect(
+      page
+        .getByRole("listitem")
+        .filter({ hasText: "Console store" })
+        .getByText("Up", { exact: true }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Check again" }).click();
+    await expect(page.getByRole("button", { name: "Check again" })).toBeVisible();
+  });
+
   test("sign out returns to sign-in", async ({ page }) => {
     await page.goto("/usage");
     await page.getByRole("button", { name: "Sign out" }).click();
@@ -94,7 +116,7 @@ test.describe("signed in", () => {
     await expect(page).toHaveURL(/\/sign-in$/);
   });
 
-  for (const path of ["/", "/usage", "/limits", "/audit"]) {
+  for (const path of ["/", "/usage", "/limits", "/health", "/audit"]) {
     for (const colorScheme of ["light", "dark"] as const) {
       test(`${path} has no axe violations or sideways scroll (${colorScheme})`, async ({
         page,
