@@ -302,10 +302,25 @@ input[type="range"] {
   bottom: var(--map-inset-bottom, 0px);
 }
 
-.atlas-map .leaflet-control-attribution {
+.atlas-map.leaflet-container .leaflet-control-attribution {
   background: color-mix(in srgb, var(--paper) 78%, transparent);
   color: var(--ink-soft);
   font-size: 13px;
+}
+
+/* Phones fold the credits behind the "i" button (MapAttribution). */
+@media (width < 64rem) {
+  .atlas-map .leaflet-control-attribution:not(.is-open) {
+    display: none;
+  }
+
+  .atlas-map.leaflet-container .leaflet-control-attribution {
+    max-width: calc(100vw - 4.5rem);
+    margin: 0 0.5rem 0.5rem 0;
+    padding: 4px 8px;
+    border-radius: var(--radius-control);
+    background: var(--card-solid);
+  }
 }
 
 .atlas-map .leaflet-control-attribution a {

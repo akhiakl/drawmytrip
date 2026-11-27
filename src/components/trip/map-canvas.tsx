@@ -13,6 +13,7 @@ import { escapeHtml } from "@/lib/utils";
 
 import type { MapInsets } from "./fit-padding";
 import { GhostMarkers } from "./ghost-markers";
+import { MapAttribution } from "./map-attribution";
 import { MapControls } from "./map-controls";
 import { MapDeclutter } from "./map-declutter";
 import { MapFocus, MarkerFocusPan } from "./map-focus";
@@ -151,6 +152,7 @@ export default function MapCanvas({
       {onBackgroundClick && <BackgroundClick onClick={onBackgroundClick} />}
       <MapControls bounds={bounds} insets={insets} />
       <MapLegend legs={trip.legs} hasGhosts={ghosts.length > 0} />
+      <MapAttribution />
     </MapContainer>
   );
 }

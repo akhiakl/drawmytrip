@@ -473,6 +473,8 @@
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fitRoute": "Fit the whole route",
+      "showCredits": "Show map credits",
+      "hideCredits": "Hide map credits",
       "marker": "{name}, stop {number}",
       "ghostMarker": "{name}, locked suggestion",
       "basemapDown": "The basemap is out of reach. Your route is still here.",
