@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ResponsiveContainer } from "recharts";
 
+import { formatDay } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /** Series label and colour; the colour becomes `--color-{key}` inside the chart. */
@@ -80,7 +81,9 @@ function ChartTooltipContent({
   const note = extra?.(payload);
   return (
     <div className="rounded-xl border border-line bg-card-solid px-3 py-2 text-[13px] shadow-soft">
-      <p className="mb-1 font-medium text-ink">{label}</p>
+      <p className="mb-1 font-medium text-ink">
+        {typeof label === "string" ? formatDay(label) : label}
+      </p>
       {payload.map((row) => {
         const key = String(row.dataKey);
         const series = config[key];
@@ -105,4 +108,22 @@ function ChartTooltipContent({
   );
 }
 
-export { ChartContainer, ChartTooltipContent, useChart };
+/** The series key: a dot in each series' colour and its label. */
+function ChartLegend({ config }: Readonly<{ config: ChartConfig }>) {
+  return (
+    <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-ink-soft">
+      {Object.entries(config).map(([key, { label, color }]) => (
+        <li key={key} className="flex items-center gap-1.5">
+          <span
+            aria-hidden
+            className="size-2.5 rounded-full"
+            style={{ background: color }}
+          />
+          {label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export { ChartContainer, ChartLegend, ChartTooltipContent, useChart };

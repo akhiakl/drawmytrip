@@ -33,5 +33,6 @@ export async function saveConfigAction(
   }
   revalidatePath("/limits");
   revalidatePath("/usage");
+  revalidatePath("/");
   return { status: "saved" };
 }

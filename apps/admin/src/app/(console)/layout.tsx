@@ -1,4 +1,4 @@
-import { AdminShell } from "@/components/admin-shell";
+import { AdminShell } from "@/components/shell/admin-shell";
 import { requireAdmin } from "@/lib/require-admin";
 
 export default async function ConsoleLayout({

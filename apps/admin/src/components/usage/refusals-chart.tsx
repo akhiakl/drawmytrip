@@ -26,6 +26,8 @@ export function RefusalsChart({ days }: Readonly<{ days: DayPoint[] }>) {
   );
   return (
     <ChartCard
+      description={t("refusalsBody")}
+      legend={config}
       title={t("refusalsTitle")}
       summary={formatCompact(total)}
       empty={total === 0}

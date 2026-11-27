@@ -22,6 +22,8 @@ export function TokensChart({ days }: Readonly<{ days: DayPoint[] }>) {
   const total = days.reduce((n, d) => n + d.promptTokens + d.completionTokens, 0);
   return (
     <ChartCard
+      description={t("tokensBody")}
+      legend={config}
       title={t("tokensTitle")}
       summary={formatCompact(total)}
       empty={total === 0}

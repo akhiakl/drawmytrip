@@ -1,7 +1,8 @@
 import { getRuntimeConfig } from "@drawmytrip/runtime-config/store";
 import { getTranslations } from "next-intl/server";
 
-import { LimitsForm } from "@/components/limits-form";
+import { LimitsForm } from "@/components/limits/limits-form";
+import { PageHeader } from "@/components/shell/page-header";
 
 export default async function LimitsPage() {
   const [t, config] = await Promise.all([
@@ -10,7 +11,7 @@ export default async function LimitsPage() {
   ]);
   return (
     <>
-      <h1 className="font-display text-3xl text-ink">{t("heading")}</h1>
+      <PageHeader eyebrow={t("eyebrow")} title={t("heading")} />
       <LimitsForm config={config} />
     </>
   );

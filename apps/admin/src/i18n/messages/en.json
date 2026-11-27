@@ -3,7 +3,11 @@
     "appName": "DrawMyTrip",
     "admin": "Admin",
     "title": "DrawMyTrip admin",
-    "notFound": "Nothing here."
+    "appNameLead": "DrawMy",
+    "appNameTail": "Trip",
+    "notFoundHeading": "Page not found",
+    "notFoundBody": "The address does not match any admin page.",
+    "backToOverview": "Back to overview"
   },
   "Nav": {
     "label": "Admin sections",
@@ -11,14 +15,17 @@
     "limits": "Limits",
     "audit": "Audit",
     "signOut": "Sign out",
-    "theme": "Switch theme"
+    "theme": "Switch theme",
+    "overview": "Overview",
+    "more": "Account"
   },
   "SignIn": {
-    "eyebrow": "Operator access",
+    "eyebrow": "Admin console",
     "heading": "Sign in to the admin",
-    "body": "Only allowlisted GitHub accounts get in.",
+    "body": "Usage, limits and the audit log for drawmytrip.click. Only allowlisted GitHub accounts get in.",
     "button": "Sign in with GitHub",
-    "error": "GitHub sign-in failed. Try again."
+    "error": "GitHub sign-in failed. Try again.",
+    "foot": "Sign-in uses GitHub. Nothing else is stored."
   },
   "Usage": {
     "heading": "Usage",
@@ -32,14 +39,17 @@
     "projected": "{pct}% projected",
     "daysLeft": "{days, plural, one {# day} other {# days}} to the limit",
     "over": "Over the free limit",
-    "notConnected": "Not connected",
-    "openDashboard": "Open usage page",
     "status": {
       "ok": "On track",
       "watch": "Watch",
       "critical": "Plan an upgrade",
       "unknown": "No data"
-    }
+    },
+    "eyebrow": "Traffic, AI and free tiers",
+    "notConnectedTitle": "Not connected yet",
+    "notConnectedBody": "These meters fill in once the daily job can read the provider.",
+    "charts": "Trends",
+    "used": "{used} of {limit}"
   },
   "Meters": {
     "vercel_transfer": "Vercel data transfer",
@@ -64,8 +74,10 @@
     "trips_shared": "Shares",
     "map_views": "Map views",
     "provider_429": "LLM limits hit",
-    "delta": "{sign}{pct}% vs previous {days} days",
-    "noPrevious": "No earlier data"
+    "noPrevious": "No earlier data",
+    "up": "Up {pct}% vs previous {days} days",
+    "down": "Down {pct}% vs previous {days} days",
+    "same": "Same as previous {days} days"
   },
   "Charts": {
     "monthTitle": "{meter}: month to date",
@@ -84,7 +96,12 @@
     "ourLimit": "Our rate limit",
     "provider429": "LLM provider limit",
     "other": "Other refusals",
-    "empty": "No data for this range yet."
+    "empty": "No data for this range yet.",
+    "appBody": "Each series on its own scale, so small ones stay readable.",
+    "tokensBody": "Stacked input and output tokens. Hover a day for its cost.",
+    "refusalsBody": "Requests turned away, by reason.",
+    "monthBody": "Month to date against the free limit, with the projected finish.",
+    "total": "{value} total"
   },
   "Limits": {
     "heading": "Limits",
@@ -93,22 +110,40 @@
     "sharesPerHour": "Shares per visitor per hour",
     "ai": "AI",
     "aiEnabled": "AI planner on",
-    "dailyCap": "Daily AI plan cap (0 = no cap)",
-    "inputPrice": "Input price per million tokens (USD)",
-    "outputPrice": "Output price per million tokens (USD)",
+    "dailyCap": "Daily AI plan cap",
+    "inputPrice": "Input price per million tokens",
+    "outputPrice": "Output price per million tokens",
     "freeTier": "Free-tier limits",
-    "vercelTransferGb": "Vercel data transfer per month (GB)",
-    "vercelCpuHours": "Vercel function CPU per month (hours)",
+    "vercelTransferGb": "Vercel data transfer per month",
+    "vercelCpuHours": "Vercel function CPU per month",
     "vercelAnalyticsEvents": "Vercel analytics events per month",
     "upstashCommands": "Upstash commands per month",
-    "upstashStorageMb": "Upstash storage (MB)",
-    "llmRequestsPerDay": "LLM requests per day (0 = read from provider)",
+    "upstashStorageMb": "Upstash storage",
+    "llmRequestsPerDay": "LLM requests per day",
     "save": "Save changes",
     "saved": "Limits saved",
     "invalid": "Check the highlighted fields.",
     "fieldError": "Enter a number in the allowed range.",
     "error": "Could not save. Try again.",
-    "propagation": "Changes reach every server within a minute."
+    "propagation": "Changes reach every server within a minute.",
+    "eyebrow": "Runtime settings",
+    "guestBody": "How often one visitor can use the expensive features.",
+    "aiBody": "Switch the planner off, cap it per day, and price its tokens for cost charts.",
+    "freeTierBody": "Your plan's free allowances. Forecasts and headroom are measured against these.",
+    "dailyCapHint": "0 means no cap.",
+    "llmRequestsPerDayHint": "0 reads the limit from the provider.",
+    "aiEnabledHint": "When off, the planner tells visitors it is paused.",
+    "unit": {
+      "perHour": "/ hour",
+      "perDay": "/ day",
+      "usd": "USD",
+      "gb": "GB",
+      "hours": "h",
+      "mb": "MB",
+      "events": "events",
+      "commands": "commands",
+      "requests": "requests"
+    }
   },
   "Audit": {
     "heading": "Audit log",
@@ -122,6 +157,33 @@
       "sign_in_denied": "Sign-in refused",
       "config_saved": "Limits changed",
       "usage_collected": "Usage collected"
-    }
+    },
+    "eyebrow": "Who changed what",
+    "cron": "Daily job",
+    "github": "GitHub {id}",
+    "entries": "{count, plural, one {# entry} other {# entries}}"
+  },
+  "Overview": {
+    "heading": "Overview",
+    "eyebrow": "Last 30 days",
+    "status": {
+      "ok": "Everything is on track",
+      "watch": "Keep an eye on {meter}",
+      "critical": "Plan an upgrade for {meter}",
+      "unknown": "No provider usage yet"
+    },
+    "statusBody": {
+      "ok": "Every connected service should stay inside its free tier this month.",
+      "watch": "It is projected to pass 70% of its free limit this month.",
+      "critical": "It is projected to pass 90% of its free limit this month.",
+      "unknown": "Connect Vercel and Upstash so forecasts can run. The daily job runs at 04:00 UTC."
+    },
+    "connected": "{connected} of {total} meters connected",
+    "headroom": "Headroom",
+    "viewUsage": "See all usage",
+    "activity": "Recent activity",
+    "viewAudit": "See full log",
+    "noActivity": "Nothing recorded yet.",
+    "kpis": "Key numbers"
   }
 }

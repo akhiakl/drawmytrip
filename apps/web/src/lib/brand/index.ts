@@ -1,6 +1,6 @@
 /**
- * Brand domain — public API. The mark's geometry and the icon SVG;
- * isomorphic and pure, so client, canvas and image routes share one drawing.
+ * Brand domain — public API. The mark's geometry and the icon SVG live in
+ * `@drawmytrip/brand` (shared with the admin); the ICO wrapper is web-only.
  */
+export * from "@drawmytrip/brand";
 export * from "./ico";
-export * from "./mark";

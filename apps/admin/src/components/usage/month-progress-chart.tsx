@@ -33,6 +33,8 @@ export function MonthProgressChart({ series }: Readonly<{ series: MonthSeries }>
   return (
     <ChartCard
       title={title}
+      description={t("Charts.monthBody")}
+      legend={config}
       summary={`${t("Charts.actual")}: ${formatCompact(last?.actual ?? 0)}, ${t("Charts.limit")}: ${formatCompact(series.limit)}`}
       empty={series.points.length === 0}
       emptyLabel={t("Charts.empty")}

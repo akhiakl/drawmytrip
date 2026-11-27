@@ -5,7 +5,7 @@ export default async function SignInPage({
 }: Readonly<{ searchParams: Promise<{ error?: string }> }>) {
   const { error } = await searchParams;
   return (
-    <main className="grid min-h-dvh place-items-center p-4">
+    <main className="enter grid min-h-dvh place-items-center p-4">
       <SignInCard failed={error === "1"} />
     </main>
   );
