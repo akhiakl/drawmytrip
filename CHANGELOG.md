@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/akhiakl/drawmytrip/compare/v0.9.0...v0.10.0) (2026-11-27)
+
+
+### Features
+
+* put the poster in the trip sheet's head ([#142](https://github.com/akhiakl/drawmytrip/issues/142)) ([682eeed](https://github.com/akhiakl/drawmytrip/commit/682eeed177306a2be4e8beddd2b4b3924dd0842d))
+
 ## [0.9.0](https://github.com/akhiakl/drawmytrip/compare/v0.8.3...v0.9.0) (2026-11-27)
 
 
