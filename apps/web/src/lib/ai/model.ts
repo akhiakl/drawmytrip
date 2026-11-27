@@ -21,6 +21,52 @@ export class GenerationError extends Error {
 
 const DEFAULT_TEMPERATURE = 0.6;
 
+/** What one HTTP response from the model endpoint cost; feeds the admin's usage charts. */
+export interface ModelCallMeter {
+  status: number;
+  promptTokens: number;
+  completionTokens: number;
+  /** `x-ratelimit-limit-requests`: the provider's daily request limit. */
+  rpdLimit?: number;
+  /** `x-ratelimit-remaining-requests`: requests left today. */
+  rpdRemaining?: number;
+}
+
+export type OnModelCall = (meter: ModelCallMeter) => void;
+
+function headerInt(response: Response, name: string): number | undefined {
+  const raw = response.headers.get(name);
+  if (raw === null || !/^\d+$/.test(raw.trim())) return undefined;
+  return Number(raw);
+}
+
+function tokenCount(value: unknown): number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0
+    ? Math.floor(value)
+    : 0;
+}
+
+/** Reports one response; a throwing callback must never break the call. */
+function report(
+  onModelCall: OnModelCall | undefined,
+  response: Response,
+  usage?: { prompt_tokens?: unknown; completion_tokens?: unknown },
+): void {
+  if (!onModelCall) return;
+  const meter: ModelCallMeter = {
+    status: response.status,
+    promptTokens: tokenCount(usage?.prompt_tokens),
+    completionTokens: tokenCount(usage?.completion_tokens),
+    rpdLimit: headerInt(response, "x-ratelimit-limit-requests"),
+    rpdRemaining: headerInt(response, "x-ratelimit-remaining-requests"),
+  };
+  try {
+    onModelCall(meter);
+  } catch {
+    // Metering is best effort.
+  }
+}
+
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
   content: string;
@@ -59,6 +105,7 @@ export async function callModel(
   config: ModelConfig,
   attempt: number,
   temperature = DEFAULT_TEMPERATURE,
+  onModelCall?: OnModelCall,
 ): Promise<string> {
   return await Sentry.startSpan(
     {
@@ -66,7 +113,7 @@ export async function callModel(
       op: "gen_ai.chat",
       attributes: { "ai.attempt": attempt },
     },
-    () => requestCompletion(messages, config, temperature),
+    () => requestCompletion(messages, config, temperature, onModelCall),
   );
 }
 
@@ -74,6 +121,7 @@ async function requestCompletion(
   messages: ChatMessage[],
   config: ModelConfig,
   temperature: number,
+  onModelCall?: OnModelCall,
 ): Promise<string> {
   const startedAt = Date.now();
   const fail = (
@@ -116,6 +164,7 @@ async function requestCompletion(
   }
 
   if (!response.ok) {
+    report(onModelCall, response);
     throw fail("http_status", response.status, undefined, await errorCode(response));
   }
 
@@ -123,8 +172,15 @@ async function requestCompletion(
   try {
     data = await response.json();
   } catch (error) {
+    report(onModelCall, response);
     throw fail("body_not_json", response.status, error);
   }
+  report(
+    onModelCall,
+    response,
+    (data as { usage?: { prompt_tokens?: unknown; completion_tokens?: unknown } })
+      .usage,
+  );
   const content = (data as { choices?: { message?: { content?: unknown } }[] })
     .choices?.[0]?.message?.content;
 

@@ -1,4 +1,5 @@
 import type { AiTrip, GenerateRequest } from "@/lib/ai";
+import type { ModelCallMeter } from "@/lib/ai/generate";
 
 import { makeCity, makeLeg, makeRouteCities, makeTrip } from "./trip";
 
@@ -36,4 +37,14 @@ export const makeGeneratedDraft = (
     cities: makeRouteCities(cityCount),
   }),
   suggestedExtra,
+});
+
+/** One metered HTTP response from the model endpoint. */
+export const makeModelCallMeter = (
+  overrides: Partial<ModelCallMeter> = {},
+): ModelCallMeter => ({
+  status: 200,
+  promptTokens: 120,
+  completionTokens: 80,
+  ...overrides,
 });

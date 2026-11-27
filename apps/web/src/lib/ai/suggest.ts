@@ -12,6 +12,7 @@ import {
   GenerationError,
   modelConfig,
   type ChatMessage,
+  type OnModelCall,
 } from "./model";
 import { buildRetryPrompt } from "./prompt";
 import { buildSuggestSystemPrompt, buildSuggestUserPrompt } from "./suggest-prompt";
@@ -157,7 +158,10 @@ async function checkPlaces(
  * destination. Traced as one span whose attributes are a fixed allowlist
  * (never the destination).
  */
-export async function suggestPlaces(request: SuggestRequest): Promise<Suggestions> {
+export async function suggestPlaces(
+  request: SuggestRequest,
+  options: { onModelCall?: OnModelCall } = {},
+): Promise<Suggestions> {
   const config = modelConfig();
   if (!config) throw new GenerationError("unavailable");
 
@@ -179,7 +183,13 @@ export async function suggestPlaces(request: SuggestRequest): Promise<Suggestion
 
       let attempts = 0;
       const call = (messages: ChatMessage[]) =>
-        callModel(messages, config, ++attempts, SUGGEST_TEMPERATURE);
+        callModel(
+          messages,
+          config,
+          ++attempts,
+          SUGGEST_TEMPERATURE,
+          options.onModelCall,
+        );
       const drafted = await draft(request, call);
       const { suggestions, checked } = await checkPlaces(drafted);
 

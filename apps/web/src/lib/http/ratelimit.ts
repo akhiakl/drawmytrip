@@ -12,21 +12,27 @@ const LIMITS = {
 
 export type RatelimitName = keyof typeof LIMITS;
 
-const limiters = new Map<RatelimitName, Ratelimit>();
+const limiters = new Map<string, Ratelimit>();
 
-/** Lazily built so importing this module never requires env at build time. */
-export function getRatelimiter(name: RatelimitName): Ratelimit {
-  const existing = limiters.get(name);
+/**
+ * Lazily built so importing this module never requires env at build time.
+ * `requests` replaces the default budget (the admin edits it at runtime);
+ * each budget gets its own cached limiter.
+ */
+export function getRatelimiter(name: RatelimitName, requests?: number): Ratelimit {
+  const budget = requests ?? LIMITS[name].requests;
+  const cacheKey = `${name}:${budget}`;
+  const existing = limiters.get(cacheKey);
   if (existing) return existing;
 
-  const { requests, window } = LIMITS[name];
+  const { window } = LIMITS[name];
   const limiter = new Ratelimit({
     redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(requests, window),
+    limiter: Ratelimit.slidingWindow(budget, window),
     prefix: `rl:${name}`,
     analytics: false,
   });
-  limiters.set(name, limiter);
+  limiters.set(cacheKey, limiter);
   return limiter;
 }
 

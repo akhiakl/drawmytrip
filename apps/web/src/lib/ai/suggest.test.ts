@@ -116,6 +116,18 @@ describe("suggestPlaces", () => {
     expect(modelCalls()[0][1].body).toContain('"temperature":0.4');
   });
 
+  it("reports the model call to the metering callback, none on a cache hit", async () => {
+    const onModelCall = vi.fn();
+    route({ model: () => modelResponse(JSON.stringify(toronto)) });
+    await suggestPlaces(request, { onModelCall });
+    expect(onModelCall).toHaveBeenCalledOnce();
+
+    onModelCall.mockClear();
+    redisMock.get.mockResolvedValue(toronto);
+    await suggestPlaces(request, { onModelCall });
+    expect(onModelCall).not.toHaveBeenCalled();
+  });
+
   it("drops a place Photon can't find but keeps a city it misses", async () => {
     const mixed = makeSuggestions("city", {
       candidates: [

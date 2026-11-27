@@ -1,5 +1,9 @@
+import { getRuntimeConfig } from "@drawmytrip/runtime-config/store";
+import { after } from "next/server";
+
 import { getClientIp, getRatelimiter } from "@/lib/http";
 import { emit, errorFields } from "@/lib/logging";
+import { recordUsage } from "@/lib/metering";
 import { GUEST_MAX_CITIES, MAX_TRIP_PAYLOAD_BYTES, TripSchema } from "@/lib/trip";
 import { saveTrip } from "@/lib/trip/service";
 
@@ -8,11 +12,16 @@ const ROUTE = "/api/trips";
 // Logs the reason only: never the caller's address, the trip or its issues.
 const refuse = (status: number, reason: string, body?: object) => {
   emit("warn", "request refused", { route: ROUTE, status, reason });
+  after(() => recordUsage({ trips_refused: 1 }));
   return Response.json(body ?? { error: reason }, { status });
 };
 
 export async function POST(request: Request) {
-  const { success } = await getRatelimiter("trips").limit(getClientIp(request));
+  const config = await getRuntimeConfig();
+  const { success } = await getRatelimiter(
+    "trips",
+    config.guest.sharesPerHour,
+  ).limit(getClientIp(request));
   if (!success) return refuse(429, "rate_limited");
 
   const raw = await request.text();
@@ -51,6 +60,7 @@ export async function POST(request: Request) {
   try {
     const id = await saveTrip(parsed.data);
     emit("info", "trip shared", { route: ROUTE });
+    after(() => recordUsage({ trips_shared: 1 }));
     return Response.json({ id }, { status: 201 });
   } catch (error) {
     emit("error", "save failed", {

@@ -11,11 +11,16 @@ import {
   GenerationError,
   modelConfig,
   type ChatMessage,
+  type OnModelCall,
 } from "./model";
 import { buildRetryPrompt, buildSystemPrompt, buildUserPrompt } from "./prompt";
 import { AiTripSchema, clampToGuestLimit, type GenerateRequest } from "./schema";
 
-export { GenerationError, type GenerationFailure } from "./model";
+export {
+  GenerationError,
+  type GenerationFailure,
+  type ModelCallMeter,
+} from "./model";
 
 export interface GeneratedTrip {
   trip: Trip;
@@ -58,6 +63,7 @@ function tryParse(content: string): { trip: GeneratedTrip } | { issues: string }
  */
 export async function generateTrip(
   request: GenerateRequest,
+  options: { onModelCall?: OnModelCall } = {},
 ): Promise<GeneratedTrip> {
   const config = modelConfig();
   if (!config) throw new GenerationError("unavailable");
@@ -71,7 +77,7 @@ export async function generateTrip(
     async (span) => {
       let attempts = 0;
       const call = (messages: ChatMessage[]) =>
-        callModel(messages, config, ++attempts);
+        callModel(messages, config, ++attempts, undefined, options.onModelCall);
       try {
         const result = await draftWithRetry(request, call);
         span.setAttribute("ai.outcome", "ok");

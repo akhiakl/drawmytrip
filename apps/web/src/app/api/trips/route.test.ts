@@ -1,3 +1,4 @@
+import { makeRuntimeConfig } from "@drawmytrip/runtime-config/fixtures";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GUEST_MAX_CITIES } from "@/lib/trip";
@@ -5,8 +6,22 @@ import { makeTrip } from "@/test/fixtures/trip";
 
 const mocks = vi.hoisted(() => ({
   limit: vi.fn(),
+  getRatelimiter: vi.fn(),
   saveTrip: vi.fn(),
   emit: vi.fn(),
+  getRuntimeConfig: vi.fn(),
+  recordUsage: vi.fn(),
+}));
+
+vi.mock("next/server", () => ({ after: (run: () => void) => run() }));
+
+vi.mock("@drawmytrip/runtime-config/store", () => ({
+  getRuntimeConfig: mocks.getRuntimeConfig,
+}));
+
+vi.mock("@drawmytrip/usage/record", () => ({
+  recordUsage: mocks.recordUsage,
+  readUsage: vi.fn(),
 }));
 
 vi.mock("@/lib/logging", () => ({
@@ -15,7 +30,10 @@ vi.mock("@/lib/logging", () => ({
 }));
 
 vi.mock("@/lib/http", () => ({
-  getRatelimiter: () => ({ limit: mocks.limit }),
+  getRatelimiter: (...args: unknown[]) => {
+    mocks.getRatelimiter(...args);
+    return { limit: mocks.limit };
+  },
   getClientIp: () => "203.0.113.9",
 }));
 
@@ -37,6 +55,7 @@ const post = (body: unknown) =>
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.limit.mockResolvedValue({ success: true });
+  mocks.getRuntimeConfig.mockResolvedValue(makeRuntimeConfig());
   mocks.saveTrip.mockResolvedValue("abc12345");
 });
 
@@ -129,6 +148,27 @@ describe("POST /api/trips", () => {
       route: "/api/trips",
       status: 500,
       errorName: "Error",
+    });
+  });
+
+  describe("runtime limits and usage counters", () => {
+    it("uses the share budget from the runtime config", async () => {
+      mocks.getRuntimeConfig.mockResolvedValue(
+        makeRuntimeConfig({ guest: { sharesPerHour: 25 } }),
+      );
+      await post(makeTrip());
+      expect(mocks.getRatelimiter).toHaveBeenCalledWith("trips", 25);
+    });
+
+    it("counts a created share", async () => {
+      await post(makeTrip());
+      expect(mocks.recordUsage).toHaveBeenCalledWith({ trips_shared: 1 });
+    });
+
+    it("counts a refused share", async () => {
+      await post("{nope");
+      expect(mocks.recordUsage).toHaveBeenCalledWith({ trips_refused: 1 });
+      expect(mocks.recordUsage).not.toHaveBeenCalledWith({ trips_shared: 1 });
     });
   });
 });

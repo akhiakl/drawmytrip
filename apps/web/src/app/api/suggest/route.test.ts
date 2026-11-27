@@ -1,12 +1,27 @@
+import { makeRuntimeConfig } from "@drawmytrip/runtime-config/fixtures";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GenerationError } from "@/lib/ai/generate";
+import { makeModelCallMeter } from "@/test/fixtures/ai";
 import { makeSuggestions } from "@/test/fixtures/suggest";
 
 const mocks = vi.hoisted(() => ({
   limit: vi.fn(),
   suggestPlaces: vi.fn(),
   emit: vi.fn(),
+  getRuntimeConfig: vi.fn(),
+  recordUsage: vi.fn(),
+}));
+
+vi.mock("next/server", () => ({ after: (run: () => void) => run() }));
+
+vi.mock("@drawmytrip/runtime-config/store", () => ({
+  getRuntimeConfig: mocks.getRuntimeConfig,
+}));
+
+vi.mock("@drawmytrip/usage/record", () => ({
+  recordUsage: mocks.recordUsage,
+  readUsage: vi.fn(),
 }));
 
 vi.mock("@/lib/logging", () => ({
@@ -35,6 +50,7 @@ const post = (body: unknown) =>
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.limit.mockResolvedValue({ success: true });
+  mocks.getRuntimeConfig.mockResolvedValue(makeRuntimeConfig());
   mocks.suggestPlaces.mockResolvedValue(makeSuggestions("city"));
 });
 
@@ -43,7 +59,10 @@ describe("POST /api/suggest", () => {
     const res = await post({ destination: "Toronto" });
     expect(res.status).toBe(200);
     expect((await res.json()).scope).toBe("city");
-    expect(mocks.suggestPlaces).toHaveBeenCalledWith({ destination: "Toronto" });
+    expect(mocks.suggestPlaces).toHaveBeenCalledWith(
+      { destination: "Toronto" },
+      { onModelCall: expect.any(Function) },
+    );
   });
 
   it("returns 429 when the suggest budget is exhausted", async () => {
@@ -88,6 +107,50 @@ describe("POST /api/suggest", () => {
       route: "/api/suggest",
       status: 429,
       reason: "rate_limited",
+    });
+  });
+
+  describe("runtime limits and usage counters", () => {
+    it("refuses with the unavailable contract while AI is off", async () => {
+      mocks.getRuntimeConfig.mockResolvedValue(
+        makeRuntimeConfig({ ai: { enabled: false } }),
+      );
+      const res = await post({ destination: "Toronto" });
+      expect(res.status).toBe(503);
+      expect(await res.json()).toEqual({ error: "suggestions_unavailable" });
+      expect(mocks.suggestPlaces).not.toHaveBeenCalled();
+      expect(mocks.recordUsage).toHaveBeenCalledWith({ ai_refused_disabled: 1 });
+    });
+
+    it("records the model calls and tokens of a request", async () => {
+      mocks.suggestPlaces.mockImplementation(async (_request, options) => {
+        options.onModelCall(
+          makeModelCallMeter({ promptTokens: 300, completionTokens: 150 }),
+        );
+        return makeSuggestions("city");
+      });
+      await post({ destination: "Toronto" });
+      expect(mocks.recordUsage).toHaveBeenCalledWith(
+        {
+          ai_model_calls: 1,
+          ai_prompt_tokens: 300,
+          ai_completion_tokens: 150,
+          ai_provider_429: 0,
+        },
+        {},
+      );
+    });
+
+    it("still records the calls made before a failure", async () => {
+      mocks.suggestPlaces.mockImplementation(async (_request, options) => {
+        options.onModelCall(makeModelCallMeter({ status: 429 }));
+        throw new GenerationError("upstream", 429);
+      });
+      await post({ destination: "Toronto" });
+      expect(mocks.recordUsage).toHaveBeenCalledWith(
+        expect.objectContaining({ ai_model_calls: 1, ai_provider_429: 1 }),
+        {},
+      );
     });
   });
 });

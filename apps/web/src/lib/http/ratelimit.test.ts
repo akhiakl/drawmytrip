@@ -54,6 +54,20 @@ describe("getRatelimiter", () => {
     );
   });
 
+  it("uses an override budget in place of the default", () => {
+    getRatelimiter("generate", 8);
+    expect(mocks.slidingWindow).toHaveBeenCalledWith(8, "1 h");
+    expect(mocks.RatelimitCtor).toHaveBeenCalledWith(
+      expect.objectContaining({ prefix: "rl:generate" }),
+    );
+  });
+
+  it("builds a new limiter when the budget changes and reuses it after", () => {
+    const eleven = getRatelimiter("suggest", 11);
+    expect(getRatelimiter("suggest", 12)).not.toBe(eleven);
+    expect(getRatelimiter("suggest", 11)).toBe(eleven);
+  });
+
   it("caches limiters per name", () => {
     const first = getRatelimiter("trips");
     const again = getRatelimiter("trips");

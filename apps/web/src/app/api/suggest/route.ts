@@ -1,8 +1,12 @@
+import { getRuntimeConfig } from "@drawmytrip/runtime-config/store";
+import { after } from "next/server";
+
 import { SuggestRequestSchema } from "@/lib/ai";
-import { GenerationError } from "@/lib/ai/generate";
+import { GenerationError, type ModelCallMeter } from "@/lib/ai/generate";
 import { suggestPlaces } from "@/lib/ai/suggest";
 import { getClientIp, getRatelimiter } from "@/lib/http";
 import { emit, errorFields } from "@/lib/logging";
+import { recordUsage, summarizeModelCalls } from "@/lib/metering";
 
 const FAILURE_RESPONSES = {
   unavailable: { status: 503, error: "suggestions_unavailable" },
@@ -11,12 +15,18 @@ const FAILURE_RESPONSES = {
 } as const;
 
 // Logs the reason only: never the caller's address or the destination.
-const refuse = (status: number, reason: string) => {
+const refuse = (status: number, reason: string, error = reason) => {
   emit("warn", "request refused", { route: "/api/suggest", status, reason });
-  return Response.json({ error: reason }, { status });
+  return Response.json({ error }, { status });
 };
 
 export async function POST(request: Request) {
+  const config = await getRuntimeConfig();
+  if (!config.ai.enabled) {
+    after(() => recordUsage({ ai_refused_disabled: 1 }));
+    return refuse(503, "ai_disabled", "suggestions_unavailable");
+  }
+
   const { success } = await getRatelimiter("suggest").limit(getClientIp(request));
   if (!success) return refuse(429, "rate_limited");
 
@@ -30,9 +40,20 @@ export async function POST(request: Request) {
   const parsed = SuggestRequestSchema.safeParse(body);
   if (!parsed.success) return refuse(400, "invalid_request");
 
+  const calls: ModelCallMeter[] = [];
+  const countUsage = () => {
+    const { counters, gauges } = summarizeModelCalls(calls);
+    after(() => recordUsage(counters, gauges));
+  };
+
   try {
-    return Response.json(await suggestPlaces(parsed.data));
+    const suggestions = await suggestPlaces(parsed.data, {
+      onModelCall: (meter) => calls.push(meter),
+    });
+    countUsage();
+    return Response.json(suggestions);
   } catch (error) {
+    countUsage();
     if (error instanceof GenerationError) {
       const { status, error: code } = FAILURE_RESPONSES[error.reason];
       emit("error", "suggestions failed", {

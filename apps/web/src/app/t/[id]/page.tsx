@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { cache } from "react";
 
 import { TripExperience } from "@/components/trip/trip-experience";
 import { shareMetadata } from "@/lib/http";
 import { emit } from "@/lib/logging";
+import { recordUsage } from "@/lib/metering";
 import { tripStats } from "@/lib/trip";
 import { getTrip, incrViews } from "@/lib/trip/service";
 
@@ -58,6 +60,7 @@ export default async function SharedTripPage({
   }
 
   const views = await incrViews(id);
+  after(() => recordUsage({ map_views: 1 }));
   emit("info", "trip viewed", { route: "/t/[id]" });
 
   return <TripExperience trip={trip} actions="shared" shareId={id} views={views} />;

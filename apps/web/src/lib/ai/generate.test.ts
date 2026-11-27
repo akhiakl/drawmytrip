@@ -167,6 +167,20 @@ describe("generateTrip", () => {
     expect((error as GenerationError).upstreamStatus).toBe(429);
   });
 
+  describe("metering", () => {
+    it("passes the model-call callback through, once per HTTP response", async () => {
+      fetchMock
+        .mockResolvedValueOnce(modelResponse("not json {"))
+        .mockResolvedValueOnce(modelResponse(JSON.stringify(validAiOutput)));
+      const onModelCall = vi.fn();
+      await generateTrip(request, { onModelCall });
+      expect(onModelCall).toHaveBeenCalledTimes(2);
+      expect(onModelCall).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 200 }),
+      );
+    });
+  });
+
   describe("tracing", () => {
     // Prompts, destinations and model output are guest content: never span data.
     const ALLOWED = [

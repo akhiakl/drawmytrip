@@ -9,6 +9,14 @@ const mocks = vi.hoisted(() => ({
     throw new Error("NEXT_NOT_FOUND");
   }),
   emit: vi.fn(),
+  recordUsage: vi.fn(),
+}));
+
+vi.mock("next/server", () => ({ after: (run: () => void) => run() }));
+
+vi.mock("@drawmytrip/usage/record", () => ({
+  recordUsage: mocks.recordUsage,
+  readUsage: vi.fn(),
 }));
 
 vi.mock("@/lib/logging", () => ({ emit: mocks.emit }));
@@ -43,6 +51,7 @@ describe("SharedTripPage", () => {
     expect(element.props.shareId).toBe("abc12345");
     expect(element.props.views).toBe(7);
     expect(mocks.incrViews).toHaveBeenCalledWith("abc12345");
+    expect(mocks.recordUsage).toHaveBeenCalledWith({ map_views: 1 });
   });
 
   it("logs a view without the trip id", async () => {
