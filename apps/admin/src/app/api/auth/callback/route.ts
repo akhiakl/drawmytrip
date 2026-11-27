@@ -59,7 +59,7 @@ export async function GET(request: Request) {
     return toSignIn(url.origin);
   }
   await appendAudit({ at, actor: String(githubId), action: "sign_in" });
-  const response = NextResponse.redirect(new URL("/usage", url.origin));
+  const response = NextResponse.redirect(new URL("/", url.origin));
   response.cookies.set(
     SESSION_COOKIE,
     await createSessionToken(githubId),

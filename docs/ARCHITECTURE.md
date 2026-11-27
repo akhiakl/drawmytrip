@@ -106,6 +106,8 @@ Turborepo + pnpm workspace. Paths elsewhere in these docs that start with
 - `packages/runtime-config`: limits schema and Redis store (`cfg:runtime`),
   read by web with a 60 s cache, written by admin.
 - `packages/usage`: daily counters (`usage:{date}`), `recordUsage` never throws.
+- `packages/brand`: the route D mark's geometry and icon SVG, so both apps
+  draw one logo.
 - `packages/tokens`, `tsconfig`, `eslint-config`: shared design tokens and config.
 
 Both apps release together (one release-please train, root version).

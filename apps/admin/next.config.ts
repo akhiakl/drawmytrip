@@ -18,7 +18,11 @@ const csp = [
 
 const nextConfig: NextConfig = {
   // Workspace packages ship TypeScript source.
-  transpilePackages: ["@drawmytrip/runtime-config", "@drawmytrip/usage"],
+  transpilePackages: [
+    "@drawmytrip/brand",
+    "@drawmytrip/runtime-config",
+    "@drawmytrip/usage",
+  ],
   async headers() {
     return [
       {

@@ -45,7 +45,7 @@ afterEach(() => vi.unstubAllEnvs());
 describe("GET /api/auth/callback", () => {
   it("signs in an allowlisted account", async () => {
     const res = await get();
-    expect(res.headers.get("location")).toBe("https://admin.test/usage");
+    expect(res.headers.get("location")).toBe("https://admin.test/");
     expect(res.headers.get("set-cookie")).toContain("dmt_admin=");
     expect(mocks.audit).toHaveBeenCalledWith(
       expect.objectContaining({ actor: "31401662", action: "sign_in" }),

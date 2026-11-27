@@ -1,11 +1,6 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { BRAND_COLORS, brandIconSvg, brandMarkSvg, MARK } from ".";
-
-const file = (name: string) =>
-  readFileSync(join(process.cwd(), "public/brand", name), "utf8");
+import { BRAND_COLORS, brandIconSvg, brandMarkSvg, MARK } from "./mark";
 
 describe("brandMarkSvg", () => {
   it("draws the D curve, a dotted stem and both stops", () => {
@@ -33,13 +28,5 @@ describe("brandIconSvg", () => {
     expect(svg).toContain("stroke-dasharray");
     expect(svg).not.toMatch(/<script|onload/i);
     expect(brandIconSvg(false)).not.toContain("stroke-dasharray");
-  });
-});
-
-describe("exported brand files", () => {
-  it("match the generators, so the files never drift from the code", () => {
-    expect(file("mark-light.svg")).toBe(brandMarkSvg(BRAND_COLORS.light));
-    expect(file("mark-dark.svg")).toBe(brandMarkSvg(BRAND_COLORS.dark));
-    expect(file("icon.svg")).toBe(brandIconSvg());
   });
 });

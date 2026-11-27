@@ -36,6 +36,20 @@ plain.describe("signed out", () => {
 });
 
 test.describe("signed in", () => {
+  test("overview leads with status, KPIs and recent activity", async ({ page }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", { name: "Overview", level: 1 }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Key numbers" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Recent activity" }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "DrawMyTrip Admin" })).toBeVisible();
+    await page.getByRole("link", { name: "See all usage" }).click();
+    await expect(page).toHaveURL(/\/usage$/);
+  });
+
   test("usage shows headroom meters, KPIs and charts", async ({ page }) => {
     await page.goto("/usage");
     await expect(
@@ -80,7 +94,7 @@ test.describe("signed in", () => {
     await expect(page).toHaveURL(/\/sign-in$/);
   });
 
-  for (const path of ["/usage", "/limits", "/audit"]) {
+  for (const path of ["/", "/usage", "/limits", "/audit"]) {
     for (const colorScheme of ["light", "dark"] as const) {
       test(`${path} has no axe violations or sideways scroll (${colorScheme})`, async ({
         page,

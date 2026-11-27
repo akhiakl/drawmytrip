@@ -1,3 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@drawmytrip/tokens/tokens.css";
+
+/* The page settles in once on load; nothing moves on scroll. */
+@keyframes admin-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@utility enter {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: admin-enter 320ms var(--ease-atlas) both;
+  }
+}

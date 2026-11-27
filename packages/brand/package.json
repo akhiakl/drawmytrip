@@ -1,0 +1,23 @@
+{
+  "name": "@drawmytrip/brand",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@drawmytrip/eslint-config": "workspace:*",
+    "@drawmytrip/tsconfig": "workspace:*",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^9.39.5",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}
