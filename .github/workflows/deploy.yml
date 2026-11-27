@@ -24,13 +24,11 @@ jobs:
     secrets: inherit
 
   # The admin app is its own Vercel project (Root Directory apps/admin).
-  # Skipped until the repo variable VERCEL_ADMIN_PROJECT_ID is set.
   admin:
-    if: vars.VERCEL_ADMIN_PROJECT_ID != ''
     uses: akhiakl/ci-workflows/.github/workflows/deploy-vercel.yml@v1.4.0
     with:
       org-id: team_limfPNcBoq9EgLcZU3PIRK8J
-      project-id: ${{ vars.VERCEL_ADMIN_PROJECT_ID }}
+      project-id: prj_xIiYiOh1CIbbzTm4JwFLoFVCOBwB
       node-version: "22"
       smoke-url: https://drawmytrip-admin.vercel.app/api/health
     secrets: inherit
