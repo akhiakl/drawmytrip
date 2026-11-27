@@ -69,7 +69,12 @@ const eslintConfig = defineConfig([
         {
           patterns: [
             {
-              group: ["@/lib/*/*", "!@/lib/trip/service", "!@/lib/ai/generate"],
+              group: [
+                "@/lib/*/*",
+                "!@/lib/trip/service",
+                "!@/lib/ai/generate",
+                "!@/lib/ai/suggest",
+              ],
               message:
                 "Import via the domain's public API (e.g. @/lib/trip). Deep imports are limited to documented server entry points.",
             },

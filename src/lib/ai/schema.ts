@@ -1,14 +1,19 @@
 import * as z from "zod";
 
-import { CitySchema, GUEST_MAX_CITIES, LegSchema } from "@/lib/trip";
+import { CitySchema, GUEST_MAX_CITIES, LegSchema, MIN_CITIES } from "@/lib/trip";
 
-/** The guided chat's three answers — the only input the generator takes. */
+import { MAX_PICKS, PickSchema, SCOPES } from "./suggest-schema";
+
+/** The guided chat's answers — the only input the generator takes. */
 export const VIBES = ["relaxed", "balanced", "packed"] as const;
 
 export const GenerateRequestSchema = z.object({
   destination: z.string().min(2).max(120),
   days: z.number().int().min(2).max(30),
   vibe: z.enum(VIBES),
+  /** From the place picker; absent for "Surprise me" and older handoffs. */
+  scope: z.enum(SCOPES).optional(),
+  picks: z.array(PickSchema).max(MAX_PICKS).optional(),
 });
 
 export type GenerateRequest = z.infer<typeof GenerateRequestSchema>;
@@ -23,7 +28,7 @@ const MAX_EXTRA_NAME = 60;
 export const AiTripSchema = z
   .object({
     title: z.string().min(1).max(80),
-    cities: z.array(CitySchema).min(2).max(GUEST_MAX_CITIES),
+    cities: z.array(CitySchema).min(MIN_CITIES).max(GUEST_MAX_CITIES),
     legs: z.array(LegSchema),
     suggestedExtra: z
       .array(z.string().max(MAX_EXTRA_NAME))

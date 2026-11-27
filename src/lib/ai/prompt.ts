@@ -37,7 +37,7 @@ export function buildSystemPrompt(): string {
     "Respond with ONE JSON object only, with no markdown and no commentary, matching exactly this shape:",
     TRIP_JSON_SHAPE,
     "Hard rules:",
-    `- At most ${GUEST_MAX_CITIES} cities. If the request implies more, pick the best ${GUEST_MAX_CITIES} and put the remaining city names in suggestedExtra (empty array otherwise).`,
+    `- Between 1 and ${GUEST_MAX_CITIES} cities. A request for a single city may stay one city. If the request implies more than ${GUEST_MAX_CITIES}, pick the best ${GUEST_MAX_CITIES} and put the remaining city names in suggestedExtra (empty array otherwise).`,
     "- Order cities in a realistic geographic route with minimal backtracking.",
     "- Use real coordinates as [latitude, longitude] with 4 decimal places.",
     "- legs.length must equal cities.length - 1; each leg connects consecutive cities with a realistic mode and duration.",
@@ -60,7 +60,33 @@ export function buildUserPrompt(request: GenerateRequest): string {
     `Destination or region: ${request.destination}`,
     `Trip length: ${request.days} days`,
     `Pace: ${pace}`,
+    ...picksLines(request),
   ].join("\n");
+}
+
+/** What the guest ticked in the picker, as extra prompt lines. */
+function picksLines({ destination, scope, picks }: GenerateRequest): string[] {
+  if (!picks?.length) return [];
+  const names = (kinds: readonly string[]) =>
+    picks
+      .filter((p) => kinds.includes(p.kind))
+      .map((p) => p.name)
+      .join(", ");
+
+  if (scope === "region") {
+    return [
+      `Use exactly these cities, ordered into the best route: ${names(["city"])}.`,
+    ];
+  }
+  const dayTrips = names(["daytrip"]);
+  return [
+    `Base the trip in ${destination}. Use these picked places in that city's must, gems, food and days: ${names(["sight", "gem", "food"])}.`,
+    ...(dayTrips
+      ? [
+          `Add each of these as its own stop with nights 0, right after ${destination}: ${dayTrips}. All nights go to ${destination}.`,
+        ]
+      : []),
+  ];
 }
 
 export function buildRetryPrompt(issues: string): string {

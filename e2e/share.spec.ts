@@ -43,3 +43,30 @@ test("manual create → share → open the link → remix", async ({ page }) => 
   await expect(page.getByLabel("Trip title")).toHaveValue("Danube Days");
   await expect(page.getByText("2 of 5 free stops")).toBeVisible();
 });
+
+test("a one-city trip can be shared and opened", async ({ page }) => {
+  await page.route("https://photon.komoot.io/**", (route) =>
+    route.fulfill({
+      json: makePhotonResponse([
+        makePhotonFeature({ name: "Vienna", state: "Vienna" }, PLACES.Vienna),
+      ]),
+    }),
+  );
+  await page.route("**/api/trips", async (route) => {
+    await seedSharedTrip(SHARE_ID, route.request().postDataJSON() as Trip);
+    await route.fulfill({ status: 201, json: { id: SHARE_ID } });
+  });
+
+  await page.goto("/new");
+  await page.getByLabel("Trip title").fill("Just Vienna");
+  await addCityStop(page, "Vienna");
+  await expect(page.getByText("1 of 5 free stops")).toBeVisible();
+
+  await page.getByRole("button", { name: "Share map" }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Your map is live" }).getByRole("textbox"),
+  ).toHaveValue(new RegExp(`/t/${SHARE_ID}$`));
+
+  await page.goto(`/t/${SHARE_ID}`);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Just Vienna");
+});

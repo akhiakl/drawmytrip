@@ -51,7 +51,7 @@ const PROCESSORS = [
   ],
   [
     "Photon by komoot",
-    "Answers city searches. Your browser sends the text you type.",
+    "Answers city searches and checks places the AI planner suggests. Your browser sends the text you type. Our server sends the destination and suggested place names, never anything about you.",
     "Under komoot's own policy",
   ],
   [

@@ -56,7 +56,7 @@ describe("saveTrip", () => {
   });
 
   it("rejects invalid trips before touching redis", async () => {
-    const invalid = makeTrip(1); // below the two-city minimum
+    const invalid = makeTrip(0); // below the one-city minimum
     await expect(saveTrip(invalid)).rejects.toThrow();
     expect(redisMock.setex).not.toHaveBeenCalled();
   });

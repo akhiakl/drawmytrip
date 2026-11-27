@@ -65,7 +65,7 @@ src/
 - Domains are consumed through their `index.ts` public API
   (`@/lib/trip`, `@/lib/ai`, `@/lib/http`, `@/lib/units`, …). Deep imports are rejected by
   `no-restricted-imports`, except the documented server entry points
-  `@/lib/trip/service` and `@/lib/ai/generate`.
+  `@/lib/trip/service`, `@/lib/ai/generate` and `@/lib/ai/suggest`.
 - Public APIs stay isomorphic; anything touching secrets/IO carries
   `import "server-only"` so the bundler fails the build if it ever leaks
   toward the client.

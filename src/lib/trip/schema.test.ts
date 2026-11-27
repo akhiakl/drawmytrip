@@ -7,6 +7,7 @@ import {
   GUEST_MAX_CITIES,
   LegSchema,
   MAX_DAILY_BUDGET_USD,
+  MIN_CITIES,
   TripSchema,
 } from "./schema";
 
@@ -95,8 +96,20 @@ describe("TripSchema", () => {
     expect(TripSchema.safeParse(makeTrip(GUEST_MAX_CITIES + 1)).success).toBe(false);
   });
 
-  it("rejects trips with fewer than two cities", () => {
-    expect(TripSchema.safeParse(makeTrip(1)).success).toBe(false);
+  it("accepts a single-city trip with no legs", () => {
+    const result = TripSchema.safeParse(makeTrip(1));
+    expect(result.success).toBe(true);
+    expect(MIN_CITIES).toBe(1);
+  });
+
+  it("rejects a trip with no cities", () => {
+    expect(TripSchema.safeParse(makeTrip(0)).success).toBe(false);
+  });
+
+  it("rejects a single-city trip that carries a leg", () => {
+    expect(TripSchema.safeParse(makeTrip(1, { legs: [makeLeg()] })).success).toBe(
+      false,
+    );
   });
 
   it("rejects when legs do not connect consecutive cities", () => {

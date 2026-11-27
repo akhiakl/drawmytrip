@@ -65,8 +65,8 @@ Skills in `.claude/skills` are part of the rules; load them by task:
 - **Domain modules**: `src/lib/<domain>` folders are internal packages with
   an `index.ts` public API (see `docs/ARCHITECTURE.md`). Consume them via
   `@/lib/trip`, `@/lib/ai`, `@/lib/http` — deep imports are lint-rejected
-  except the server entry points `@/lib/trip/service` and
-  `@/lib/ai/generate`, which carry `import "server-only"`.
+  except the server entry points `@/lib/trip/service`,
+  `@/lib/ai/generate` and `@/lib/ai/suggest`, which carry `import "server-only"`.
 - **Service layer**: `src/lib/trip/service.ts` is plain transport-agnostic
   functions over Upstash Redis. Only route handlers / server components may
   call it. UI components receive data and handlers via props — no component
@@ -74,7 +74,8 @@ Skills in `.claude/skills` are part of the rules; load them by task:
 - **Validation**: everything through Zod (`src/lib/trip/schema.ts`).
   `GUEST_MAX_CITIES = 5` is enforced server-side (the real gate), in the
   editor UI (counter + upsell modal), and in the AI prompt
-  (`suggestedExtra` ghost stops).
+  (`suggestedExtra` ghost stops). A trip has 1 to 5 cities (`MIN_CITIES = 1`;
+  one city means no legs).
 - **Persistence**: creator's editable trips in localStorage
   (`trips:index`, `trips:{id}`); shared snapshots immutable in Redis with
   60-day sliding TTL (GETEX refresh). Editing after sharing = share again.

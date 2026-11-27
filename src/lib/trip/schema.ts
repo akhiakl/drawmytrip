@@ -2,6 +2,8 @@ import * as z from "zod";
 
 /** Maximum stops a guest trip may contain (Phase 2 lifts this for accounts). */
 export const GUEST_MAX_CITIES = 5;
+/** A trip can be a single city: the route then has no legs. */
+export const MIN_CITIES = 1;
 
 /** Hard cap for any trip payload accepted by the API. */
 export const MAX_TRIP_PAYLOAD_BYTES = 50 * 1024;
@@ -46,7 +48,7 @@ export const TripSchema = z
   .object({
     v: z.literal(1),
     title: z.string().trim().min(1).max(80),
-    cities: z.array(CitySchema).min(2).max(GUEST_MAX_CITIES),
+    cities: z.array(CitySchema).min(MIN_CITIES).max(GUEST_MAX_CITIES),
     legs: z.array(LegSchema),
     /** Optional first day (YYYY-MM-DD); dates the itinerary when set. */
     startDate: z.iso.date().optional(),

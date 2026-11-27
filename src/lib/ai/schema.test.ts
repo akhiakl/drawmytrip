@@ -6,11 +6,40 @@ import { makeLeg } from "@/test/fixtures/trip";
 
 import { AiTripSchema, GenerateRequestSchema, clampToGuestLimit } from "./schema";
 
+describe("AiTripSchema single city", () => {
+  it("accepts one city and no legs, rejects none", () => {
+    expect(AiTripSchema.safeParse(makeAiTrip(1)).success).toBe(true);
+    expect(AiTripSchema.safeParse(makeAiTrip(0)).success).toBe(false);
+  });
+});
+
 describe("GenerateRequestSchema", () => {
   it("accepts the guided chat's three answers", () => {
     expect(GenerateRequestSchema.safeParse(makeGenerateRequest()).success).toBe(
       true,
     );
+  });
+
+  it("takes optional picks from the place picker", () => {
+    const request = makeGenerateRequest({
+      scope: "city",
+      picks: [{ name: "CN Tower", kind: "sight" }],
+    });
+    expect(GenerateRequestSchema.safeParse(request).success).toBe(true);
+  });
+
+  it("rejects more than twelve picks or an unknown scope", () => {
+    const picks = Array.from({ length: 13 }, (_, i) => ({
+      name: `P${i}`,
+      kind: "sight" as const,
+    }));
+    expect(
+      GenerateRequestSchema.safeParse(makeGenerateRequest({ picks })).success,
+    ).toBe(false);
+    expect(
+      GenerateRequestSchema.safeParse({ ...makeGenerateRequest(), scope: "world" })
+        .success,
+    ).toBe(false);
   });
 
   it("rejects out-of-range days", () => {

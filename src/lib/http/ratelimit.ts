@@ -7,6 +7,7 @@ import { Redis } from "@upstash/redis";
 const LIMITS = {
   trips: { requests: 10, window: "1 h" },
   generate: { requests: 5, window: "1 h" },
+  suggest: { requests: 10, window: "1 h" },
 } as const satisfies Record<string, { requests: number; window: "1 h" }>;
 
 export type RatelimitName = keyof typeof LIMITS;

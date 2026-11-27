@@ -4,19 +4,28 @@ import { RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AiNotice, TermsNotice } from "@/components/legal/notices";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGenerateTrip, type GeneratedDraft } from "@/hooks/use-generate-trip";
-import { writeAiHandoff, type GenerateRequest } from "@/lib/ai";
+import { useSuggestions } from "@/hooks/use-suggestions";
+import {
+  preselect,
+  writeAiHandoff,
+  type GenerateRequest,
+  type Pick as Place,
+} from "@/lib/ai";
+import { GUEST_MAX_CITIES } from "@/lib/trip";
 import { cn } from "@/lib/utils";
 
 import { ChatBubble } from "./chat-bubble";
 import { DaysStep, DestinationStep, VibeStep } from "./chat-steps";
+import { PickStep } from "./pick-step";
 
-type Answers = Partial<GenerateRequest>;
+/** The three questions; the picker adds scope and picks to the request. */
+type Answers = Partial<Omit<GenerateRequest, "scope" | "picks">>;
 
 function DraftingBubble() {
   const t = useTranslations("Chat");
@@ -65,7 +74,27 @@ function FailureBubble({
   );
 }
 
-const QUESTIONS = 3;
+/** Three questions, then the place picker. */
+const QUESTIONS = 4;
+const SKELETON_CHIPS = [24, 32, 20, 28, 36, 24] as const;
+
+function FindingBubble() {
+  const t = useTranslations("Chat");
+  return (
+    <ChatBubble from="atlas">
+      <p className="mb-2">{t("findingPlaces")}</p>
+      <div aria-hidden className="flex flex-wrap gap-2">
+        {SKELETON_CHIPS.map((width, i) => (
+          <Skeleton
+            key={i}
+            className="h-11 rounded-full"
+            style={{ width: `${width / 4}rem` }}
+          />
+        ))}
+      </div>
+    </ChatBubble>
+  );
+}
 
 /** Three short bars, filled up to the open question. */
 function ChatProgress({ step }: { readonly step: number }) {
@@ -107,30 +136,68 @@ export function AiChat({
   const [answers, setAnswers] = useState<Answers>({
     destination: initialDestination,
   });
+  /** What was sent: kept so a retry resends the same picks. */
+  const [request, setRequest] = useState<GenerateRequest | null>(null);
 
   const onDrafted = (
     { trip, suggestedExtra }: GeneratedDraft,
-    request: GenerateRequest,
+    drafted: GenerateRequest,
   ) => {
     writeAiHandoff(
       { title: trip.title, cities: trip.cities, legs: trip.legs, suggestedExtra },
-      request,
+      drafted,
     );
     router.push("/new?from=ai");
   };
   const { generate, status } = useGenerateTrip({ onDrafted });
-
-  const answer = (patch: Answers) => {
-    const next = { ...answers, ...patch };
-    setAnswers(next);
-    if (next.destination && next.days && next.vibe) {
-      void generate(next as GenerateRequest);
-    }
-  };
+  const suggestions = useSuggestions();
+  const { load } = suggestions;
 
   const { destination, days, vibe } = answers;
+  const send = (next: GenerateRequest) => {
+    setRequest(next);
+    void generate(next);
+  };
+
+  // Places load while the guest answers the next two questions.
+  useEffect(() => {
+    if (destination) void load(destination);
+  }, [destination, load]);
+
+  // No suggestions to pick from: build the trip the way it always was.
+  const fallback = destination && days && vibe && !request;
+  const fallbackRequest: GenerateRequest | null =
+    fallback && suggestions.status === "failed" ? { destination, days, vibe } : null;
+  const fallbackSent = useRef(false);
+  useEffect(() => {
+    if (!fallbackRequest || fallbackSent.current) return;
+    fallbackSent.current = true;
+    void generate(fallbackRequest);
+  });
+
+  const initialPicks = useMemo(
+    () =>
+      suggestions.suggestions && days && vibe
+        ? preselect(suggestions.suggestions, days, vibe)
+        : [],
+    [suggestions.suggestions, days, vibe],
+  );
+  const ready = suggestions.status === "ready" ? suggestions.suggestions : null;
+  const choosing = fallback && suggestions.status !== "failed";
+
+  const build = (picks: Place[]) => {
+    if (!destination || !days || !vibe || !ready) return;
+    send({ destination, days, vibe, scope: ready.scope, picks });
+  };
+  const surprise = () => {
+    if (destination && days && vibe) send({ destination, days, vibe });
+  };
+
   // Questions are answered in order, so the answers so far give the step.
-  const step = [destination, days].filter(Boolean).length + 1;
+  const step = Math.min(
+    [destination, days, vibe].filter(Boolean).length + 1,
+    QUESTIONS,
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -146,26 +213,54 @@ export function AiChat({
         {days && <ChatBubble from="atlas">{t("askPace")}</ChatBubble>}
         {vibe && <ChatBubble from="guest">{vibes(`${vibe}.label`)}</ChatBubble>}
 
+        {choosing && !ready && <FindingBubble />}
+        {choosing && ready && (
+          <ChatBubble from="atlas">
+            {ready.scope === "region"
+              ? t("askPicksRegion", { max: GUEST_MAX_CITIES })
+              : t("askPicksCity", { destination })}
+          </ChatBubble>
+        )}
+        {request?.picks && (
+          <ChatBubble from="guest">
+            {t("answerPicks", { count: request.picks.length })}
+          </ChatBubble>
+        )}
+        {request && !request.picks && suggestions.status === "ready" && (
+          <ChatBubble from="guest">{t("answerSurprise")}</ChatBubble>
+        )}
+
         {status === "drafting" && <DraftingBubble />}
         {(status === "rate_limited" || status === "failed") && (
           <FailureBubble
             rateLimited={status === "rate_limited"}
-            onRetry={() => void generate(answers as GenerateRequest)}
+            onRetry={() => {
+              const again = request ?? fallbackRequest;
+              if (again) void generate(again);
+            }}
           />
         )}
       </div>
 
       {!destination && (
-        <DestinationStep onAnswer={(value) => answer({ destination: value })} />
+        <DestinationStep onAnswer={(value) => setAnswers({ destination: value })} />
       )}
       {destination && !days && (
-        <DaysStep onAnswer={(value) => answer({ days: value })} />
+        <DaysStep onAnswer={(value) => setAnswers({ ...answers, days: value })} />
       )}
       {days && !vibe && (
         <>
-          <VibeStep onAnswer={(value) => answer({ vibe: value })} />
+          <VibeStep onAnswer={(value) => setAnswers({ ...answers, vibe: value })} />
           <TermsNotice action="drafting" />
         </>
+      )}
+      {choosing && ready && (
+        <PickStep
+          suggestions={ready}
+          initial={initialPicks}
+          onBuild={build}
+          onSurprise={surprise}
+        />
       )}
     </div>
   );

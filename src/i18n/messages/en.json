@@ -54,7 +54,7 @@
   },
   "Plan": {
     "title": "Plan with AI",
-    "lede": "Answer three questions and get a draft route. You can edit everything afterwards."
+    "lede": "Answer three questions, pick the places you like and get a draft route. You can edit everything afterwards."
   },
   "Landing": {
     "planWithAi": "Plan with AI",
@@ -128,7 +128,7 @@
     "daysUnit": "days",
     "dayChips": "Common trip lengths",
     "dayChip": "{days, select, 14 {2 weeks} 21 {3 weeks} other {{days} days}}",
-    "progress": "Question {step} of {total}",
+    "progress": "Step {step} of {total}",
     "paceLabel": "Pace",
     "askDestination": "Where do you want to go? A country, a region or a few cities all work.",
     "askDays": "How many days do you have, from 2 to 30?",
@@ -138,7 +138,22 @@
     "rateLimited": "Too many requests in a short time. Wait a minute and try again.",
     "failed": "That route didn't come together. Try once more, or start from a blank page.",
     "retry": "Try again",
-    "byHand": "Build it by hand"
+    "byHand": "Build it by hand",
+    "findingPlaces": "Finding places to pick from…",
+    "askPicksRegion": "Pick up to {max} cities for your route.",
+    "askPicksCity": "Pick what you want to see in {destination}.",
+    "pickCities": "Cities",
+    "pickSights": "Must see",
+    "pickGems": "Lesser known",
+    "pickFood": "Food and neighbourhoods",
+    "pickDaytrips": "Day trips",
+    "pickCounter": "{count} of {max} picked",
+    "pickLimitRegion": "That's the {max}-city limit. Unpick one to swap it.",
+    "pickLimitCity": "That's the most places for one trip ({max}). Unpick one to swap it.",
+    "build": "Build my route",
+    "surprise": "Surprise me",
+    "answerPicks": "{count, plural, one {1 pick} other {# picks}}",
+    "answerSurprise": "Surprise me"
   },
   "Modes": {
     "train": "Train",
