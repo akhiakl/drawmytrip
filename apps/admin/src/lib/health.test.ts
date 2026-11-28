@@ -114,7 +114,7 @@ describe("loadHealth", () => {
     const fetchMock = stubFetch();
     await loadHealth({ HEALTH_CHECK_SECRET: "s3cret" });
     expect(fetchMock.mock.calls.map(([url]) => String(url))).toContain(
-      "https://drawmytrip.click/api/health/services",
+      "https://www.drawmytrip.click/api/health/services",
     );
   });
 });
