@@ -16,7 +16,7 @@
     "@drawmytrip/eslint-config": "workspace:*",
     "@drawmytrip/tsconfig": "workspace:*",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^9.39.5",
+    "eslint": "^10.15.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   }
