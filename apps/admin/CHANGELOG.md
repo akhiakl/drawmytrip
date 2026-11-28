@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/akhiakl/drawmytrip/compare/admin-v0.2.0...admin-v0.2.1) (2026-11-28)
+
+
+### Bug Fixes
+
+* **admin:** call the www host for the site health check ([#169](https://github.com/akhiakl/drawmytrip/issues/169)) ([bda972f](https://github.com/akhiakl/drawmytrip/commit/bda972fa866bd11320d1813ff8bf1f1961fc3fd6))
+
 ## [0.2.0](https://github.com/akhiakl/drawmytrip/compare/admin-v0.1.0...admin-v0.2.0) (2026-11-27)
 
 
