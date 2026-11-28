@@ -19,7 +19,7 @@
   "devDependencies": {
     "@drawmytrip/eslint-config": "workspace:*",
     "@drawmytrip/tsconfig": "workspace:*",
-    "@types/node": "^26.6.6",
+    "@types/node": "^26.6.10",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9.39.5",
     "typescript": "^6.0.3",
