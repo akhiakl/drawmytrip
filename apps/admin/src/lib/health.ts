@@ -13,7 +13,8 @@ import { redis } from "./redis";
 
 type Env = Readonly<Record<string, string | undefined>>;
 
-export const DEFAULT_WEB_ORIGIN = "https://drawmytrip.click";
+/** The apex redirects here, and a redirect to another host drops the auth header. */
+export const DEFAULT_WEB_ORIGIN = "https://www.drawmytrip.click";
 /** The site runs its own probes in parallel, each capped at a few seconds. */
 const SITE_TIMEOUT_MS = 10_000;
 
