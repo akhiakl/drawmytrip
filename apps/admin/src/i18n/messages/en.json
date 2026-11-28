@@ -35,7 +35,7 @@
     "range30": "30 days",
     "range90": "90 days",
     "collected": "Provider usage collected {time}",
-    "neverCollected": "Provider usage not collected yet. The daily job runs at 04:00 UTC.",
+    "neverCollected": "Provider usage not collected yet. The daily job runs at 06:30 IST.",
     "headroom": "Free-tier headroom this month",
     "projected": "{pct}% projected",
     "daysLeft": "{days, plural, one {# day} other {# days}} to the limit",
@@ -177,7 +177,7 @@
       "ok": "Every connected service should stay inside its free tier this month.",
       "watch": "It is projected to pass 70% of its free limit this month.",
       "critical": "It is projected to pass 90% of its free limit this month.",
-      "unknown": "Connect Vercel and Upstash so forecasts can run. The daily job runs at 04:00 UTC."
+      "unknown": "Connect Vercel and Upstash so forecasts can run. The daily job runs at 06:30 IST."
     },
     "connected": "{connected} of {total} meters connected",
     "headroom": "Headroom",
